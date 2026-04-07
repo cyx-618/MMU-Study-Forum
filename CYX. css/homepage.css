@@ -1,0 +1,75 @@
+body{
+  font-family: "Roboto", sans-serif;
+}
+.homepage{
+ display:grid;
+ grid-template-columns: 300px 1fr 1fr;
+ column-gap: 80px;
+ border-color: black;
+ border-width: 2px;
+ border-style: solid;
+ width:900px;
+ height:600px;
+ margin-left: auto;
+ margin-right: auto;
+ background-color: rgb(199, 237, 199);
+
+}
+.mmu-robot{
+  width:250px;
+  height:600px;
+  object-fit: contain;
+  margin-left: 40px;
+
+}
+.big-title{
+ font-size: 20px;
+ 
+}
+.profile-icon{
+  width:200px;
+  display:block;
+  margin-right:40px;
+  margin-top: 60px;
+  margin-left: -25px;
+  margin-bottom: 30px;
+  
+}
+.log-in{
+  border: none;
+  background-color: rgb(41, 112, 72);
+  color: white;
+  padding:12px 10px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.20s;
+  margin-right: 20px;
+}
+.log-in:hover{
+  background-color: white;
+  color: rgb(41, 112, 72);
+}
+.sign-up{
+  border: none;
+  background-color: rgb(83, 47, 226);
+  color: white;
+  padding:12px 10px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.20s;
+  margin-right: 20px;
+}
+.sign-up:hover{
+  background-color: white;
+  color: rgb(83, 47, 226);
+}
+input{
+  width:200px;
+  margin-bottom: 4px;
+  margin-left: -30px;
+  border: 1px solid black;
+  border-radius: 2px;
+  padding:8px
+}
