@@ -1,5 +1,6 @@
 body{
   font-family: "Roboto", sans-serif;
+  background-image: url(../Cyx.photo/green-background2.jpg);
 }
 .homepage{
  display:grid;
@@ -7,7 +8,7 @@ body{
  column-gap: 50px;
  border-radius: 20px;
  box-shadow: 0px 0px 5px grey;
- width:1000px;
+ width:1190px;
  height:600px;
  margin-left: auto;
  margin-right: auto;
@@ -25,11 +26,9 @@ background-image: url(../Cyx.photo/green.background.png);
 .profile-icon{
   width:200px;
   display:block;
-  margin-right:40px;
   margin-top: 30px;
-  margin-left: -25px;
   margin-bottom: 30px;
-  
+  margin-left: 40px;
 }
 .log-in{
   border: none;
@@ -39,9 +38,10 @@ background-image: url(../Cyx.photo/green.background.png);
   text-align: center;
   border-radius: 4px;
   cursor: pointer;
+  margin-left: 40px;
   transition: background-color 0.20s;
-  margin-right: 20px;
-  margin-left: -30px;
+ 
+ 
   font-weight: bold;
   
 }
@@ -58,10 +58,9 @@ background-image: url(../Cyx.photo/green.background.png);
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.20s;
-  margin-right: 20px;
-  margin-left: -30px;
   box-shadow:0px 0px 3px rgb(145, 134, 134);
   font-weight: bold;
+  margin-left: 40px;
 }
 .sign-up:hover{
   background-color: white;
@@ -70,29 +69,31 @@ background-image: url(../Cyx.photo/green.background.png);
 input{
   width:240px;
   margin-bottom: 6px;
-  margin-left: -30px;
   border: 1px solid black;
-  border-radius: 2px;
+  border-radius: 3px;
   cursor: pointer;
   background-color: rgb(255, 255, 255);
-  padding:8px
+  padding:8px;
+  margin-left: 30px;
 }
 .forgot-password{
-  margin-top: 0px;
+  margin-top: 13px;
   text-align: right;
   font-size: 13px;
   font-style: italic;
   cursor: pointer;
-  margin-right: 68px;
+  margin-right: 100px;
 
 }
 .no-account{
-  margin-left: -30px;
+
   margin-top: 36px;
   margin-bottom: 5px;
   font-size: 18px;
   font-weight: bold;
   color: rgb(255, 255, 255);
+  margin-left: 40px;
+  
 }
 h1{
   text-align: center;
@@ -104,4 +105,58 @@ h1{
   background-color: rgb(255, 255, 255);
   border-radius: 20px;
   width:200px;
+  margin-left: 40px;
+}
+h3{
+  font-size:45px;
+  margin-top: 100px;
+  color:rgb(255, 255, 255);
+  font-family:Copperplate, Papyrus, fantasy;
+  border: none;
+  box-shadow: inset 0px 0px 5px white;
+  border-radius: 20px;
+  padding: 10px 10px;
+}
+.mm{
+  color: rgb(33, 33, 204);
+}
+.u{
+  color:rgb(211, 3, 3)
+}
+.quote{
+  color: rgb(255, 241, 241);
+  font-family: Times New Roman;
+  font-size: 22px;
+}
+.about{
+ border-radius: 20px;
+ box-shadow: 0px 0px 5px grey;
+ width:1190px;
+ height:400px;
+ margin-left: auto;
+ margin-right: auto;
+background-color: rgb(150, 213, 168);
+margin-top: 30px;
+display: grid;
+grid-template-rows: 100px 1fr;
+}
+.about-us{
+  color:rgb(19, 66, 19);
+  text-align: center;
+  margin-top: 20px;
+  font-family: "Boldonse", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 55px;
+  font-family: "Libre Baskerville", serif;
+  font-optical-sizing: auto;
+  text-decoration-line: underline;
+  text-decoration-style: double;
+ }
+.intro{
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-size: 20px;
+  text-align: center;
+  line-height: 1.6;
 }
