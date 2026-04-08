@@ -4,17 +4,16 @@ body{
 .homepage{
  display:grid;
  grid-template-columns: 300px 1fr 1fr;
- column-gap: 80px;
- border-color: black;
- border-width: 2px;
- border-style: solid;
- width:900px;
+ column-gap: 50px;
+ border-radius: 20px;
+ box-shadow: 0px 0px 5px grey;
+ width:1000px;
  height:600px;
  margin-left: auto;
  margin-right: auto;
- background-color: rgb(199, 237, 199);
-
+background-image: url(../Cyx.photo/green.background.png);
 }
+
 .mmu-robot{
   width:250px;
   height:600px;
@@ -22,22 +21,19 @@ body{
   margin-left: 40px;
 
 }
-.big-title{
- font-size: 20px;
- 
-}
+
 .profile-icon{
   width:200px;
   display:block;
   margin-right:40px;
-  margin-top: 60px;
+  margin-top: 30px;
   margin-left: -25px;
   margin-bottom: 30px;
   
 }
 .log-in{
   border: none;
-  background-color: rgb(41, 112, 72);
+  background-color: rgb(71, 174, 116);
   color: white;
   padding:12px 10px;
   text-align: center;
@@ -45,6 +41,9 @@ body{
   cursor: pointer;
   transition: background-color 0.20s;
   margin-right: 20px;
+  margin-left: -30px;
+  font-weight: bold;
+  
 }
 .log-in:hover{
   background-color: white;
@@ -52,7 +51,7 @@ body{
 }
 .sign-up{
   border: none;
-  background-color: rgb(83, 47, 226);
+  background-color: rgb(93, 120, 198);
   color: white;
   padding:12px 10px;
   text-align: center;
@@ -60,16 +59,49 @@ body{
   cursor: pointer;
   transition: background-color 0.20s;
   margin-right: 20px;
+  margin-left: -30px;
+  box-shadow:0px 0px 3px rgb(145, 134, 134);
+  font-weight: bold;
 }
 .sign-up:hover{
   background-color: white;
   color: rgb(83, 47, 226);
 }
 input{
-  width:200px;
-  margin-bottom: 4px;
+  width:240px;
+  margin-bottom: 6px;
   margin-left: -30px;
   border: 1px solid black;
   border-radius: 2px;
+  cursor: pointer;
+  background-color: rgb(255, 255, 255);
   padding:8px
+}
+.forgot-password{
+  margin-top: 0px;
+  text-align: right;
+  font-size: 13px;
+  font-style: italic;
+  cursor: pointer;
+  margin-right: 68px;
+
+}
+.no-account{
+  margin-left: -30px;
+  margin-top: 36px;
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+}
+h1{
+  text-align: center;
+  border:none;
+  box-shadow: 0px 0px 4px rgb(159, 150, 150);
+  margin-left: -25px;
+  margin-bottom: 0px;
+  color: rgb(72, 177, 131);
+  background-color: rgb(255, 255, 255);
+  border-radius: 20px;
+  width:200px;
 }
