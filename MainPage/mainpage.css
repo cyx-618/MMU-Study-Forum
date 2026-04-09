@@ -1,3 +1,12 @@
 body{
     background-color: rgb(180, 219, 160);
 }
+
+nav.header{
+    text-align: center;
+}
+
+nav.features{
+    width:30px;
+    height:30px;
+}
