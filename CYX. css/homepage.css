@@ -54,22 +54,28 @@ margin-top: 30px;
   background-color: white;
   color: rgb(41, 112, 72);
 }
-.sign-up{
+
+#register{
+  text-decoration: none ;
   border: none;
   background-color: rgb(93, 120, 198);
   color: white;
-  padding:12px 10px;
+  padding:10px 10px;
   text-align: center;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.20s;
   box-shadow:0px 0px 3px rgb(145, 134, 134);
   font-weight: bold;
+  font-family: Arial;
   margin-left: 40px;
+  font-size: 13.33px; 
+  margin-top: 4px;
+
 }
-.sign-up:hover{
-  background-color: white;
-  color: rgb(83, 47, 226);
+#register:hover{
+  background-color: #e3e3e3;
+  color: rgb(93, 120, 198);
 }
 input{
   width:240px;
@@ -93,7 +99,7 @@ input{
 .no-account{
 
   margin-top: 36px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   font-size: 18px;
   font-weight: bold;
   color: rgb(255, 255, 255);
