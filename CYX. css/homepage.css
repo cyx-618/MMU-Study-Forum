@@ -18,6 +18,8 @@ body{
 background-image: url(../Cyx.photo/green.background.png);
 overflow: hidden;
 margin-top: 30px;
+animation-name: slideUp;
+animation-duration: 1s;
 }
 
 .mmu-robot{
@@ -151,6 +153,8 @@ margin-top: 30px;
 display: grid;
 grid-template-rows: 100px 1fr;
 margin-bottom: 40px;
+animation-name: slideUp;
+animation-duration: 1s;
 }
 .about-us{
   color:rgb(19, 66, 19);
@@ -195,4 +199,9 @@ a{
   }
 a:hover{
   color: rgb(127, 127, 131);
+}
+@keyframes slideUp{
+  from{
+    transform:translateY(100%);
+  }
 }
