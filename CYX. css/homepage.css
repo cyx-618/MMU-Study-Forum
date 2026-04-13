@@ -1,0 +1,207 @@
+body{
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(180deg, #7ccff8 14%, #ffffff 70%);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.homepage{
+ display:grid;
+ grid-template-columns: 300px 1fr 1fr;
+ column-gap: 50px;
+ border-radius: 20px;
+ box-shadow: 0px 0px 5px grey;
+ width:1190px;
+ height:600px;
+ margin-left: auto;
+ margin-right: auto;
+background-image: url(../Cyx.photo/green.background.png);
+overflow: hidden;
+margin-top: 30px;
+animation-name: slideUp;
+animation-duration: 1s;
+}
+
+.mmu-robot{
+  width:250px;
+  height:600px;
+  object-fit: contain;
+  margin-left: 40px;
+
+}
+
+.profile-icon{
+  width:200px;
+  display:block;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-left: 40px;
+}
+.log-in{
+  border: none;
+  background-color: rgb(71, 174, 116);
+  color: white;
+  padding:12px 10px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 40px;
+  transition: background-color 0.20s;
+ 
+ 
+  font-weight: bold;
+  
+}
+.log-in:hover{
+  background-color: white;
+  color: rgb(41, 112, 72);
+}
+
+#register{
+  text-decoration: none ;
+  border: none;
+  background-color: rgb(93, 120, 198);
+  color: white;
+  padding:10px 10px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.20s;
+  box-shadow:0px 0px 3px rgb(145, 134, 134);
+  font-weight: bold;
+  font-family: Arial;
+  margin-left: 40px;
+  font-size: 13.33px; 
+  margin-top: 4px;
+
+}
+#register:hover{
+  background-color: #e3e3e3;
+  color: rgb(93, 120, 198);
+}
+input{
+  width:240px;
+  margin-bottom: 6px;
+  border: 1px solid black;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: rgb(255, 255, 255);
+  padding:8px;
+  margin-left: 30px;
+}
+.forgot-password{
+  margin-top: 13px;
+  text-align: right;
+  font-size: 13px;
+  font-style: italic;
+  cursor: pointer;
+  margin-right: 100px;
+
+}
+.no-account{
+
+  margin-top: 36px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  margin-left: 40px;
+  
+}
+h1{
+  text-align: center;
+  border:none;
+  box-shadow: 0px 0px 4px rgb(159, 150, 150);
+  margin-left: -25px;
+  margin-bottom: 0px;
+  color: rgb(72, 177, 131);
+  background-color: rgb(255, 255, 255);
+  border-radius: 20px;
+  width:200px;
+  margin-left: 40px;
+}
+h3{
+  font-size:45px;
+  margin-top: 100px;
+  color:rgb(255, 255, 255);
+  font-family:Copperplate, Papyrus, fantasy;
+  border: none;
+  box-shadow: inset 0px 0px 5px white;
+  border-radius: 20px;
+  padding: 10px 10px;
+}
+.mm{
+  color: rgb(33, 33, 204);
+}
+.u{
+  color:rgb(211, 3, 3)
+}
+.quote{
+  color: rgb(255, 241, 241);
+  font-family: Times New Roman;
+  font-size: 22px;
+}
+.about{
+ border-radius: 20px;
+ box-shadow: 0px 0px 5px grey;
+ width:1190px;
+ height:400px;
+ margin-left: auto;
+ margin-right: auto;
+background: linear-gradient(180deg, #e3e3e3 9%, #a3d48c 90%);
+margin-top: 30px;
+display: grid;
+grid-template-rows: 100px 1fr;
+margin-bottom: 40px;
+animation-name: slideUp;
+animation-duration: 1s;
+}
+.about-us{
+  color:rgb(19, 66, 19);
+  text-align: center;
+  margin-top: 20px;
+  font-family: "Boldonse", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 55px;
+  font-family: "Libre Baskerville", serif;
+  font-optical-sizing: auto;
+  text-decoration-line: underline;
+  text-decoration-style: double;
+  overflow: hidden;
+ 
+ }
+.intro{
+  font-size: 22px;
+  text-align: left;
+  line-height: 1.6;
+  margin-left:120px;
+  font-family: "Saira Stencil", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 112.5;
+}
+.footer{
+ background-color: black;
+ color: white;
+  margin:0;
+  padding: 20px;
+  display:block;
+  text-align: center;
+}
+a{
+  font-size: 17px;
+  color: rgb(89, 128, 245);
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  transition: color 0.15s;
+  }
+a:hover{
+  color: rgb(127, 127, 131);
+}
+@keyframes slideUp{
+  from{
+    transform:translateY(100%);
+  }
+}
