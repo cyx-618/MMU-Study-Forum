@@ -1,12 +1,38 @@
 body{
-    background-color: rgb(180, 219, 160);
+    background-color: #BFD1B2;
 }
 
-nav.header{
+.top_bar{
+    display:flex;
+}
+
+div.header{
+    text-align: left;
+}
+
+div.header h1{
     text-align: center;
 }
 
+nav.search_bar{
+    border:2px;
+    border-color: #4E6548;
+    border-style:double;
+    padding:auto;
+    border-radius:30px;
+    width:30%;
+    text-align:center;
+    background-color:#91AE84;
+}
+
 nav.features{
-    width:30px;
-    height:30px;
+    background-color: #8EAF8C;
+    width: 5%;
+    height: 100%;
+    position: fixed;
+}
+
+nav.features img{
+    width:40px;
+    height:40px;
 }
