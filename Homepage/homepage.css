@@ -1,59 +1,47 @@
 body{
   font-family: "Roboto", sans-serif;
-  background: linear-gradient(180deg, #7ccff8 14%, #ffffff 70%);
   margin: 0;
   padding: 0;
   width: 100%;
+  background-color:#F8FBF8;
 }
 .homepage{
  display:grid;
- grid-template-columns: 300px 1fr 1fr;
- column-gap: 50px;
+ grid-template-columns:2fr 1fr;
  border-radius: 20px;
  box-shadow: 0px 0px 5px grey;
  width:1190px;
  height:600px;
  margin-left: auto;
  margin-right: auto;
-background-color: #cbf3b8;
 overflow: hidden;
 margin-top: 30px;
 animation-name: slideUp;
 animation-duration: 1s;
 }
 
-.mmu-robot{
-  width:250px;
-  height:600px;
-  object-fit: contain;
-  margin-left: 40px;
-
-}
-
 .profile-icon{
   width:200px;
   display:block;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  margin-left: 40px;
+  margin-top: 20px;
+  margin-bottom: 25px;
+
 }
 .log-in{
   border: none;
   background-color: rgb(1, 123, 54);
-  color: white;
+  color: rgb(255, 255, 255);
   padding:12px 10px;
   text-align: center;
   border-radius: 4px;
   cursor: pointer;
-  margin-left: 40px;
   transition: background-color 0.20s;
- 
- 
   font-weight: bold;
+  margin-left: -197px;
   
 }
 .log-in:hover{
-  background-color: white;
+  background-color: #e3e3e3;
   color: rgb(1,123,54);
 }
 
@@ -70,9 +58,10 @@ animation-duration: 1s;
   box-shadow:0px 0px 3px rgb(145, 134, 134);
   font-weight: bold;
   font-family: Arial;
-  margin-left: 40px;
   font-size: 13.33px; 
   margin-top: 4px;
+  margin-left: -190px;
+
 
 }
 #register:hover{
@@ -82,52 +71,48 @@ animation-duration: 1s;
 input{
   width:240px;
   margin-bottom: 6px;
-  border: 1px solid black;
-  border-radius: 3px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 3px rgb(160, 160, 160);
   cursor: pointer;
-  background-color: rgb(255, 255, 255);
-  padding:8px;
-  margin-left: 30px;
+  background-color:  rgb(200, 233, 177);
+  padding:12px 12px;
+ 
 }
 .forgot-password{
-  margin-top: 13px;
   text-align: right;
   font-size: 13px;
   font-style: italic;
   cursor: pointer;
-  margin-right: 100px;
+  margin-right: -140px;
+ 
 
 }
 .no-account{
-
-  margin-top: 36px;
-  margin-bottom: 10px;
+  margin-top: 27px;
+  margin-bottom: 5px;
   font-size: 18px;
   font-weight: bold;
   color: rgb(0, 0, 0);
-  margin-left: 40px;
+  margin-left: -80px;
   
 }
 h1{     /*log in title*/
   text-align: center;
   border:none;
-  box-shadow: 0px 0px 4px rgb(159, 150, 150);
   margin-left: -25px;
   margin-bottom: 0px;
   color: rgb(0, 81, 46);
-  background-color: rgb(255, 255, 255);
-  border-radius: 20px;
   width:200px;
-  margin-left: 40px;
+ 
 }
 h3{ /*MMU Study Forum Title*/
-  font-size:45px;
+  font-size:55px;
   margin-top: 100px;
   color:rgb(0, 0, 0);
   font-family:Copperplate, Papyrus, fantasy;
   border: none;
-  box-shadow: inset 0px 0px 5px white;
-  border-radius: 20px;
+  font-weight: 900;
   padding: 10px 10px;
 }
 .mm{
@@ -140,6 +125,7 @@ h3{ /*MMU Study Forum Title*/
   color: rgb(3, 2, 2);
   font-family: Times New Roman;
   font-size: 22px;
+  font-weight: 500;
 }
 .about{
  border-radius: 20px;
@@ -148,7 +134,7 @@ h3{ /*MMU Study Forum Title*/
  height:400px;
  margin-left: auto;
  margin-right: auto;
-background: linear-gradient(180deg, #e3e3e3 9%, #a3d48c 90%);
+background-color: black;
 margin-top: 30px;
 display: grid;
 grid-template-rows: 100px 1fr;
@@ -161,7 +147,7 @@ animation-duration: 1s;
   text-align: center;
   margin-top: 20px;
   font-family: "Boldonse", system-ui;
-  font-weight: 400;
+  font-weight: 500;
   font-style: normal;
   font-size: 55px;
   font-family: "Libre Baskerville", serif;
@@ -169,6 +155,7 @@ animation-duration: 1s;
   text-decoration-line: underline;
   text-decoration-style: double;
   overflow: hidden;
+  color: rgb(255, 255, 255);
  
  }
 .intro{
@@ -180,6 +167,7 @@ animation-duration: 1s;
   font-optical-sizing: auto;
   font-weight: 600;
   font-style: normal;
+  color:#F8FBF8;
   font-variation-settings:
     "wdth" 112.5;
 }
@@ -204,4 +192,20 @@ a:hover{
   from{
     transform:translateY(100%);
   }
+}
+.register-col{
+  background-color: rgb(251, 255, 241);
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0px 0px 5px rgb(160, 160, 160);
+}
+.words{
+  background-image: url(greenbackrgound2.jpg),  linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+  text-align: center;
+  margin-right: -10px;
+  background-repeat: no-repeat;
+  background-size:cover;
 }
