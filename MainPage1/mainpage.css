@@ -11,28 +11,20 @@ body{
 div.title h1{
     font-size: 150%;
     text-decoration-color: #3a4936;
+    margin-left: 80px;
 }
 
-nav.search_bar{
-    display: flex;
-    border: 2px;
-    border-color: #3a4936;
-    border-style:double;
-    padding:auto;
-    border-radius:30px;
-    text-align:center;
+form.search_bar{
+    border: 2px double #3a4936;
+    border-radius:60px;
+    align-items:center;
     background-color:#bbcca8;
     height: 35px;
-    width: 300px;
+    width: 500px;
     margin: auto;
 }
 
-nav.search_bar p{
-    text-align: center;
-    text-decoration-color: #3a4936;
-}
-
-nav.search_bar img{
+form img{
     width:20px;
     height:20px;
 }
@@ -47,4 +39,6 @@ nav.features{
 nav.features img{
     width:40px;
     height:40px;
+    margin-left: 10px;
+    padding-top: 10px;
 }
