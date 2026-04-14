@@ -1,32 +1,44 @@
 body{
-    background-color: #BFD1B2;
+    background-color: #d2dfcd;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
 }
 
 .top_bar{
-    display:flex;
+    display: flex;
+    background-color:#8c9e88;
 }
 
-div.header{
-    text-align: left;
-}
-
-div.header h1{
-    text-align: center;
+div.title h1{
+    font-size: 150%;
+    text-decoration-color: #3a4936;
 }
 
 nav.search_bar{
-    border:2px;
-    border-color: #4E6548;
+    display: flex;
+    border: 2px;
+    border-color: #3a4936;
     border-style:double;
     padding:auto;
     border-radius:30px;
-    width:30%;
     text-align:center;
-    background-color:#91AE84;
+    background-color:#bbcca8;
+    height: 35px;
+    width: 300px;
+    margin: auto;
+}
+
+nav.search_bar p{
+    text-align: center;
+    text-decoration-color: #3a4936;
+}
+
+nav.search_bar img{
+    width:20px;
+    height:20px;
 }
 
 nav.features{
-    background-color: #8EAF8C;
+    background-color: #8c9e88;
     width: 5%;
     height: 100%;
     position: fixed;
