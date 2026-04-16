@@ -1,6 +1,6 @@
 body{
     background-color: #d2dfcd;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .top_bar{
@@ -8,10 +8,21 @@ body{
     background-color:#8c9e88;
 }
 
+div.title{
+    display: flex;
+}
 div.title h1{
     font-size: 150%;
-    text-decoration-color: #3a4936;
-    margin-left: 80px;
+    color: #3a4936;
+    margin-left: 50px;
+    
+}
+
+div.title img{
+    width:30px;
+    height:30px;
+    margin-left: 10px;
+    padding-top: 10px;
 }
 
 form.search_bar{
@@ -29,6 +40,26 @@ form img{
     height:20px;
 }
 
+button.sign_up{
+    background-color: #d2dfcd;
+    color: #3a4936;
+    padding: 8px;
+    margin: 20px;
+    margin-right: 5px;
+    border-radius: 10px;
+    border-color: #d2dfcd;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+button.log_in{
+    background-color: #3a4936;
+    color: #d2dfcd;
+    padding: 8px;
+    margin: 20px;
+    border-radius: 10px;
+    border-color: #3a4936;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
 nav.features{
     background-color: #8c9e88;
     width: 5%;
@@ -37,8 +68,8 @@ nav.features{
 }
 
 nav.features img{
-    width:40px;
-    height:40px;
+    width:30px;
+    height: 30px;
     margin-left: 10px;
-    padding-top: 10px;
+    padding-top: 20px;
 }
