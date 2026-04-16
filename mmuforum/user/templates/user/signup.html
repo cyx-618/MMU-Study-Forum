@@ -1,0 +1,21 @@
+{% extends "home/base.html" %}
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'user/signup.css' %}">
+    </head>
+    {% block content %}
+        <!--<form>{% csrf_token %}</form>-->
+
+        <!--pop up message for sucessful signup/login-->
+        {% if message in messages %}
+            {% for message in messages %}
+                <!--alert/pop up message-->
+                <div>
+                    <!--(name a class) for this alert message -{{ message.tag }}-->
+                    {{ message }}
+                </div>
+            {% end for%}
+        {% end if %}
+        
+    {% endblock content %}
+</html>

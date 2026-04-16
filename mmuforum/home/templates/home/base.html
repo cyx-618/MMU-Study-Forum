@@ -1,0 +1,13 @@
+<!--Anything same in different html files can put here-->
+<html>
+    <head>
+        {% if title %}
+        <title>MMU-Forum - {{title}}</title>
+        {% else %}
+        <title>MMU-Forum</title>
+        {% endif %}
+    </head>
+    <body>
+        {% block content %}{% endblock %}
+    </body>
+</html>
