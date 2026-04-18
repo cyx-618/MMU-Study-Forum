@@ -1,0 +1,87 @@
+body{
+    background-color: #d2dfcd;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.top_bar{
+    display: flex;
+    background-color:#8c9e88;
+}
+
+div.title{
+    display: flex;
+}
+
+div.title h1{
+    font-size: 170%;
+    color: #3a4936;
+    margin: auto;
+    margin-left: 70px;
+    padding: auto;
+    font-style: bold;
+}
+
+form.search_bar{
+    display: flex;
+    border-radius:60px;
+    align-items:center;
+    background-color:#bbcca8;
+    height: 35px;
+    width: 500px;
+    margin: auto;
+    padding: auto;
+}
+
+form img{
+    width:20px;
+    height:20px;
+}
+
+div.register{
+    align-items:right;
+}
+
+button.sign_up{
+    background-color: #d2dfcd;
+    color: #3a4936;
+    padding: 8px;
+    border-radius: 10px;
+    border-color: #d2dfcd;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+button.log_in{
+    background-color: #3a4936;
+    color: #d2dfcd;
+    padding: 8px;
+    margin: 20px;
+    margin-left: 5px;
+    border-radius: 10px;
+    border-color: #3a4936;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+nav.category{
+    text-align: center;
+    padding: auto;
+}
+nav.category button{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: #bbcca8;
+    color: #3a4936;
+    border-radius: 15px;
+}
+
+nav.features{
+    background-color: #8c9e88;
+    width: 5%;
+    height: 100%;
+    position: fixed;
+}
+
+nav.features img{
+    width:30px;
+    height: 30px;
+    margin-left: 15px;
+    padding-top: 20px;
+}
