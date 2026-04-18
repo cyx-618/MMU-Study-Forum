@@ -2,9 +2,43 @@
 <html>
     <head>
         <link rel="stylesheet" href="{% static 'user/signup.css' %}">
+         <title>Sign Up</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="website-logo.png">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     </head>
     {% block content %}
-        <!--<form>{% csrf_token %}</form>-->
+        <body>
+       <div class="sign-up">
+        <h2>SIGN UP</h2>
+        <div class="info">
+            <form>
+                <div class="align-col">
+                <i class="material-icons" id="profile-circle">account_circle</i>
+                <input type="text" name="username" placeholder="Username">
+                </div>
+                <div class="align-col">
+                <i class="material-icons" id="lock-icon">lock</i>
+                <input type="password" name="password" placeholder="Password">
+                </div>
+                <div class="align-col">
+                <i class="material-icons" id="mail-icon">mail</i>
+                <input type="text" name="email" placeholder="School Email">
+                </div>
+            </form>
+        </div>
+        <div class="button">
+            <button class="log-in" ><a href="homepage.html">Back to Log In</a></button>
+            <button class="register" type="submit">Register <i class="material-icons" id="arrow-icon">arrow_forward</i></button>           
+        </div>
+       </div>
+    </body> <!--<form>{% csrf_token %}</form>-->
 
         <!--pop up message for sucessful signup/login-->
         {% if message in messages %}
@@ -18,4 +52,6 @@
         {% end if %}
         
     {% endblock content %}
+
+    <!--Test-->
 </html>
