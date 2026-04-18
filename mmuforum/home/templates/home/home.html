@@ -1,0 +1,14 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'home/home.css' %}">
+    </head>
+    <!--(nav link) href = "{% url 'forum-home' %}"-->
+    {% block content %}
+    <h1>
+        This is MMU-Forum home.
+    </h1>
+    {% endblock content %}
+</html>

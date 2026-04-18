@@ -9,5 +9,6 @@ from . import views
 #写完之后去urls.py(main)
 
 urlpatterns = [
-path('homepage/',views.homepage_hello)
+    path('signup/', views.signup, name='forum-signup'),
+    path('login/', views.login, name='forum-login')
 ]
