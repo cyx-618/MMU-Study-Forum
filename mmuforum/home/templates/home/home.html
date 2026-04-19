@@ -1,49 +1,52 @@
 {% extends "home/base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'home/home.css' %}">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{% static 'home/images/website-logo.png' %}">
-{% endblock %}
-
-{% block content %}
-    <div class="homepage">
+<html>
+    <head>
+        <link rel="stylesheet" href=" {% static'home/home.css'%} ">
+         <title>MMU Study Forum</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">       
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="{% static 'home/static/images/website-logo.png' %}">
+    </head>
+    <!--(nav link) href = "{% url 'forum-home' %}"-->
+    {% block content %}
+    <body>
+       <div  class="homepage">
         <div class="words">
             <h3 class="title"><span class="mm">MM</span><span class="u">U</span><br>Study Forum</h3>
             <p class="quote">Study smarter, not alone — log in and learn together.</p>
         </div>
         <div class="register-col">
+            
             <h1><u>Log In</u></h1>
-            <img class="profile-icon" src="{% static 'home/images/profile.png' %}" alt="profile-icon">
+            <img class="profile-icon" src="{% static 'home/static/images/profile.png' %}" alt="profile-icon">
             <input type="text" name="username" placeholder="Username">
             <input type="password" name="password" placeholder="Password">
             <p class="forgot-password"><u>Forgot your password?</u></p>
-            <button class="log-in">Log In</button>
+            <button class="log-in" >Log In</button>
             <p class="no-account">Don't have an account? </p>
-            <a id="register" href="{% url 'user-signup' %}">Sign Up</a>
+            <a id="register" href="{% static 'home/signup.html' %}">Sign Up</a>
         </div>
-    </div>
-    <div class="about">
+       </div>
+       <div class="about">
         <div class="about-us">About Us</div>
         <p class="intro">MMU Study Forum is a web-based forum for student create post about academic
          and<br> study problem.Any user can comment to help solve the student problem.In this site you<br> can create
-            posts,delete, and edit posts that you want. You can interact with other students<br>with comment and like
+            posts,delete, and edit posts that you want. You can interact with other students<br>with comment and like 
             other posts.Feel free to write us email if you see any issues.<br>Report button is available for any inappropriate
             and offensive content.Thanks you!</p>
-    </div>
-    <div class="footer">
-        <h2 class="email-us">Email Us :</h2>
-        <p class="email-add"><a href="mailto:yap.qian.ning@student.mmu.edu.my">Yap.Qian.Ning@student.mmu.edu.my</a></p>
-        <p class="email-add"><a href="mailto:lim.yee.jing@student.mmu.edu.my">Lim.Yee.Jing@student.mmu.edu.my</a></p>
-        <p class="email-add"><a href="mailto:cheong.yi.xuan@student.mmu.edu.my">Cheong.Yi.Xuan@student.mmu.edu.my</a></p>
-    </div>
-{% endblock %}
+       </div>
+    
+        <div class="footer">
+         <h2 class="email-us">Email Us :</h2>
+         <p class="email-add" ><a href="mailto:yap.qian.ning@student.mmu.edu.my">Yap.Qian.Ning@student.mmu.edu.my</a></p>
+         <p class="email-add"><a href="mailto:lim.yee.jing@student.mmu.edu.my">Lim.Yee.Jing@student.mmu.edu.my</a></p>
+         <p class="email-add"><a href="mailto:cheong.yi.xuan@student.mmu.edu.my">Cheong.Yi.Xuan@student.mmu.edu.my</a></p>
        
         </div>
     </body>

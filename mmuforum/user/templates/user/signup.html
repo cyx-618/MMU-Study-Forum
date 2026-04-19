@@ -1,20 +1,23 @@
 {% extends "home/base.html" %}
+{% load static %}
 <html>
+    {% block content %}
     <head>
-        <link rel="stylesheet" href="{% static 'user/signup.css' %}">
-         <title>Sign Up</title>
+        <link rel="stylesheet" href=" {% static 'user/signup.css' %} ">
+        <title>Sign Up</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
         <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
-<link rel="icon" type="image/png" href="website-logo.png">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap" rel="stylesheet">
+        <link rel="icon" type="image/png" href="website-logo.png">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     </head>
-    {% block content %}
-        <body>
+
+    <body>
        <div class="sign-up">
         <h2>SIGN UP</h2>
         <div class="info">
@@ -38,20 +41,23 @@
             <button class="register" type="submit">Register <i class="material-icons" id="arrow-icon">arrow_forward</i></button>           
         </div>
        </div>
-    </body> <!--<form>{% csrf_token %}</form>-->
+    </body> 
+    
+    <!--<form>{% csrf_token %}</form>-->
 
         <!--pop up message for sucessful signup/login-->
-        {% if message in messages %}
-            {% for message in messages %}
-                <!--alert/pop up message-->
+
+    <!--
+    { if message in messages }
+            { for message in messages }
+                _alert/pop up message_
                 <div>
-                    <!--(name a class) for this alert message -{{ message.tag }}-->
+                    _(name a class) for this alert message -{{ message.tag }}_
                     {{ message }}
                 </div>
-            {% end for%}
-        {% end if %}
+            { end for }
+        { end if }    
+    -->    
         
     {% endblock content %}
-
-    <!--Test-->
-</html>
+    </html>

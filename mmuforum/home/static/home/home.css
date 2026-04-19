@@ -5,6 +5,7 @@ body{
   width: 100%;
   background-color:#d2dfcd;
 }
+
 .homepage{
  display:grid;
  grid-template-columns:2fr 1fr;
@@ -21,12 +22,12 @@ animation-duration: 1s;
 }
 
 .profile-icon{
-  width:200px;
+  width: 130px;
   display:block;
   margin-top: 20px;
   margin-bottom: 25px;
-
 }
+
 .log-in{
   border: none;
   background-color: rgb(1, 123, 54);
@@ -38,8 +39,8 @@ animation-duration: 1s;
   transition: background-color 0.20s;
   font-weight: bold;
   margin-left: -197px;
-  
 }
+
 .log-in:hover{
   background-color: #e3e3e3;
   color: rgb(1,123,54);
@@ -61,13 +62,13 @@ animation-duration: 1s;
   font-size: 13.33px; 
   margin-top: 4px;
   margin-left: -190px;
-
-
 }
+
 #register:hover{
   background-color: #e3e3e3;
   color: rgb(93, 120, 198);
 }
+
 input{
   width:240px;
   margin-bottom: 6px;
@@ -77,17 +78,16 @@ input{
   cursor: pointer;
   background-color:  rgb(200, 233, 177);
   padding:12px 12px;
- 
 }
+
 .forgot-password{
   text-align: right;
   font-size: 13px;
   font-style: italic;
   cursor: pointer;
   margin-right: -140px;
- 
-
 }
+
 .no-account{
   margin-top: 27px;
   margin-bottom: 5px;
@@ -95,68 +95,83 @@ input{
   font-weight: bold;
   color: rgb(0, 0, 0);
   margin-left: -80px;
-  
 }
+
 h1{     /*log in title*/
+  font-family: "Passion One", sans-serif;
+  font-weight: 700;
+  font-style: normal;
   text-align: center;
   border:none;
   margin-left: -25px;
   margin-bottom: 0px;
   color: rgb(0, 81, 46);
   width:200px;
- 
 }
+
 h3{ /*MMU Study Forum Title*/
   font-size:55px;
   margin-top: 100px;
   color:rgb(0, 0, 0);
-  font-family:Copperplate, Papyrus, fantasy;
+  font-family: "Erica One", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  /*font-family:Copperplate, Papyrus, fantasy;
   border: none;
-  font-weight: 900;
+  font-weight: 900;*/
   padding: 10px 10px;
 }
+
 .mm{
   color: rgb(33, 33, 204);
 }
+
 .u{
   color:rgb(211, 3, 3)
 }
+
 .quote{
   color: rgb(3, 2, 2);
   font-family: Times New Roman;
   font-size: 22px;
   font-weight: 500;
-}.about{
- border-radius: 20px;
- box-shadow: 0px 0px 5px grey;
- width:1190px;
- height:400px;
- margin-left: auto;
- margin-right: auto;
-background-color: #b3d2ad;
-margin-top: 30px;
-display: grid;
-grid-template-rows: 100px 1fr;
-margin-bottom: 40px;
-animation-name: slideUp;
-animation-duration: 1s;
 }
+
+.about{
+  border-radius: 20px;
+  box-shadow: 0px 0px 5px grey;
+  width:1190px;
+  height:400px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #b3d2ad;
+  margin-top: 30px;
+  display: grid;
+  grid-template-rows: 100px 1fr;
+  margin-bottom: 40px;
+  animation-name: slideUp;
+  animation-duration: 1s;
+}
+
 .about-us{
   color:rgb(2, 68, 36);
   text-align: center;
   margin-top: 20px;
-  font-family: "Boldonse", system-ui;
+  /*font-family: "Boldonse", system-ui;
   font-weight: 500;
+  font-style: normal;*/
+  font-family: "Passion One", sans-serif;
+  font-weight: 700;
   font-style: normal;
   font-size: 55px;
-  font-family: "Libre Baskerville", serif;
+  /*font-family: "Libre Baskerville", serif;*/
   font-optical-sizing: auto;
   text-decoration-line: underline;
   text-decoration-style: double;
   overflow: hidden;
   color: rgb(10, 46, 0);
- 
  }
+
 .intro{
   font-size: 22px;
   text-align: left;
@@ -170,6 +185,7 @@ animation-duration: 1s;
   font-variation-settings:
     "wdth" 112.5;
 }
+
 .footer{
  background-color: black;
  color: white;
@@ -178,20 +194,24 @@ animation-duration: 1s;
   display:block;
   text-align: center;
 }
+
 a{
   font-size: 17px;
   color: rgb(89, 128, 245);
   font-family: Georgia, 'Times New Roman', Times, serif;
   transition: color 0.15s;
-  }
+}
+
 a:hover{
   color: rgb(127, 127, 131);
 }
+
 @keyframes slideUp{
   from{
     transform:translateY(100%);
   }
 }
+
 .register-col{
   background-color: rgb(251, 255, 241);
   display:flex;
@@ -201,10 +221,19 @@ a:hover{
   border: none;
   box-shadow: 0px 0px 5px rgb(160, 160, 160);
 }
+
 .words{
-  background-image: url(home/static/images/greenbackground2.jpg),  linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+  /*background-image: url(home/static/images/greenbackground2.jpg),  linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));*/
+  background: linear-gradient(-45deg, #C3DC88, #96C9A3, #96CCBE) ;
+  animation: gradient 10s ease infinite;
   text-align: center;
   margin-right: -10px;
   background-repeat: no-repeat;
-  background-size:cover;
+  background-size: 250%;
+}
+
+@keyframes gradient {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
 }

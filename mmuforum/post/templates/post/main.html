@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>MMU Study Forum</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'post\main.css' %}">
+    
+<style>
+
+body{
+    background-color: #d2dfcd;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.modal{
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+
+}
+
+.modal_content{
+    background-color: #c0d09d;
+    margin: 20% auto;
+    width: 500px; height: 100px;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    font-size:30px;
+    color: #3a4936;
+}
+
+.close{
+    float: right;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.top_bar{
+    display: flex;
+    background-color:#8c9e88;
+}
+
+div.title{
+    display: flex;
+}
+
+div.title h1{
+    font-size: 170%;
+    color: #3a4936;
+    margin: auto;
+    margin-left: 70px;
+    padding: auto;
+    font-style: bold;
+}
+
+input[type=text]{
+    display: flex;
+    border-radius:60px;
+    align-items:center;
+    background-color:#bbcca8;
+    height: 35px;
+    width: 500px;
+    margin: auto;
+    padding: auto;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #3a4936;
+
+}
+
+input[type=text] img{
+    width:20px;
+    height:20px;
+}
+
+div.register{
+    text-align: right;
+}
+
+button.log_out{
+    background-color: #3a4936;
+    color: #d2dfcd;
+    padding: 8px;
+    margin: 20px;
+    margin-left: 5px;
+    border-radius: 10px;
+    border-color: #3a4936;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+nav.category{
+    text-align: center;
+    padding-top: 10px;
+}
+
+nav.category button{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: #bbcca8;
+    color: #3a4936;
+    border-radius: 15px;
+    padding: 5px 15px;
+}
+
+nav.features{
+    background-color: #8c9e88;
+    width: 5%;
+    height: 100vh;
+}
+
+nav.features img{
+    width:30px;
+    height: 30px;
+    margin-left: 15px;
+    padding-top: 20px;
+}
+
+    </style>
+    </head>
+
+<body>
+
+    <div id="welcome" class="modal">
+        <div class="modal_content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Welcome, {{username}}</p>
+        </div>
+    </div>
+    
+    <div class="top_bar">
+        <div class="title">
+            <h1>MMU Study Forum</h1>
+        </div>
+        <form class="search_bar">
+            <label><img src="search.png" alt="Search"></label>
+            <input type="text" name="fquestion" placeholder="Finding something?"><br>
+        </form>
+        <div class="register">
+            <button class="log_out">LOG OUT</button>
+        </div>
+    </div>
+
+    <nav class="category">
+        <button>FCI</button>
+        <button>FCM</button>
+        <button>FOM</button>
+        <button>FCA</button>
+        <button>FAC</button>
+        <button>FAIE</button>
+    </nav>
+
+    <nav class="features">
+        <a href="home.html"><img src="home.png" alt="Home"></a>
+        <a href="profile.html"><img src="user.png" alt="Profile"></a>
+        <a href="notification.html"><img src="bell.png" alt="Notification"></a>
+        <a href="favourite.html"><img src="heart.png" alt="Favourite"></a>
+        <a href="create_post.html"><img src="add.png" alt="Create"></a>
+    </nav>
+
+    <footer>
+    </footer>
+
+    <script>
+        window.onload = function(){
+            document.getElementById('welcome').style.display = 'block';
+        }
+        function closeModal(){
+            document.getElementById('welcome').style.display = 'none';
+        }
+
+    </script>
+</body>
+</html>
