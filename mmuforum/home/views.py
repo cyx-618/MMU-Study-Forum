@@ -6,5 +6,8 @@ from django.http import HttpResponse
 #    return HttpResponse('<h1>Hi, Welcome to our MMU-Forum</h1>')
 
 def home (request):
-    return render(request, 'home.html')
+    context = {
+        'title':'Home',
+    }
+    return render(request, 'home/home.html', context)
 
