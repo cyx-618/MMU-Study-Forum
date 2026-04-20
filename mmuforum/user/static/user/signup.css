@@ -83,7 +83,6 @@ a{
     justify-content: center;
 }
 h2{
-    /*font-family: "Merriweather", serif;*/
     font-family: "Passion One", sans-serif;
   font-weight: 700;
   font-style: normal;
@@ -95,7 +94,6 @@ h2{
   text-decoration-style: double;
 }
 body{
-    /*background-color: rgb(7, 4, 40);*/
     background: linear-gradient(-45deg, #C3DC88, #96C9A3, #96CCBE) ;
     animation: gradient 10s ease infinite;
     background-size: 250%;

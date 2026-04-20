@@ -116,9 +116,6 @@ h3{ /*MMU Study Forum Title*/
   font-family: "Erica One", sans-serif;
   font-weight: 300;
   font-style: normal;
-  /*font-family:Copperplate, Papyrus, fantasy;
-  border: none;
-  font-weight: 900;*/
   padding: 10px 10px;
 }
 
@@ -157,14 +154,10 @@ h3{ /*MMU Study Forum Title*/
   color:rgb(2, 68, 36);
   text-align: center;
   margin-top: 20px;
-  /*font-family: "Boldonse", system-ui;
-  font-weight: 500;
-  font-style: normal;*/
   font-family: "Passion One", sans-serif;
   font-weight: 700;
   font-style: normal;
   font-size: 55px;
-  /*font-family: "Libre Baskerville", serif;*/
   font-optical-sizing: auto;
   text-decoration-line: underline;
   text-decoration-style: double;
@@ -223,7 +216,6 @@ a:hover{
 }
 
 .words{
-  /*background-image: url(home/static/images/greenbackground2.jpg),  linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));*/
   background: linear-gradient(-45deg, #C3DC88, #96C9A3, #96CCBE) ;
   animation: gradient 10s ease infinite;
   text-align: center;
