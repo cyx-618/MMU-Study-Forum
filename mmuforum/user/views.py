@@ -16,9 +16,20 @@ def signup (request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
+            email = request.POST.get('email')
+
+            if not email or not email.endwith('@student.mmu.edu.my'):
+                messages.error(request, 'Please enter a valid MMU student email address.')
+                return render(request, 'user/signup.html', {'form': form})
+            
+            user = form.save(commit=False)
+            user.email = email
+            user.save()
+
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created successfully! Welcome, {username}!')
             return redirect('forum-main')
+        
     else:
         form = UserCreationForm()
     return render(request, 'user/signup.html', {'form': form})
