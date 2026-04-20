@@ -26,14 +26,18 @@
                 <input type="password" name="password" placeholder="Password">
                 </div>
                 <div class="align-col">
+                <i class="material-icons" id="lock-icon">lock</i>
+                <input type="password" name="password2" placeholder="Re-enter Password">
+                </div>
+                <div class="align-col">
                 <i class="material-icons" id="mail-icon">mail</i>
                 <input type="text" name="email" placeholder="School Email">
                 </div>
             </form>
         </div>
-        <div class="button">
-            <button class="log-in" ><a href="homepage.html">Back to Log In</a></button>
-            <button class="register" type="submit">Register <i class="material-icons" id="arrow-icon">arrow_forward</i></button>           
+        <div class="button"> 
+            <button class="log-in" ><a href="{% url 'forum-home'%}">Back to Log In</a></button>
+            <button class="register" type="submit" name="CreateUser">Register <i class="material-icons" id="arrow-icon">arrow_forward</i></button>           
         </div>
        </div>
     </body>
