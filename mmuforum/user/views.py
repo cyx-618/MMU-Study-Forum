@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 #from django.http import HttpResponse
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from .form import UserRegisterForm
 # Create your views here.
 
 #view function
@@ -14,11 +14,11 @@ def signup (request):
     }
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             email = request.POST.get('email')
 
-            if not email or not email.endwith('@student.mmu.edu.my'):
+            if not email or not email.endswith('@student.mmu.edu.my'):
                 messages.error(request, 'Please enter a valid MMU student email address.')
                 return render(request, 'user/signup.html', {'form': form})
             
@@ -31,7 +31,7 @@ def signup (request):
             return redirect('forum-main')
         
     else:
-        form = UserCreationForm()
+        form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
 
 
@@ -40,5 +40,5 @@ def login (request):
         'title':'Log In',
     }
 
-    form = UserCreationForm()
+    form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})

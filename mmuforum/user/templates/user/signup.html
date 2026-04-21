@@ -1,31 +1,27 @@
 {% extends "home/base.html" %}
-{% load static %}
-{%load crispy_forms_tags%}
 <html>
     {% block content %}
     <head>
         
-        <link rel="icon" type="image/png" href="website-logo.png">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
 
     <body>
-       <div class="sign-up">
-        <div class="info">
-            <form method="POST" action="{url 'forum-signup'}">
+       <div >
+        <div>
+            <form method="POST">
                 {%csrf_token%}
              <fieldset class="form-group">
                 <legend>Sign Up</legend>
-                <div class="align-col">
-                {{form|crispy}}
+                <div>
+               {{ form.as_p }}
                 </div>
+                 <button name="CreateUser" type="submit">Register </button>
              </fieldset>
             </form>
         </div>
         <div class="button">
-            <button class="log-in" ><a href= "{% url 'forum-login' %}">Back to Log In</a></button>
-            <button class="register" name="CreateUser" type="submit">Register <i class="material-icons" id="arrow-icon">arrow_forward</i></button>           
-        </div>
+            <button  ><a href= "{% url 'forum-login' %}">Back to Log In</a></button>
+            
        </div>
       
     </body> 
