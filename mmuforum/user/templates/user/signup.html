@@ -1,36 +1,29 @@
 {% extends "home/base.html" %}
 {% load static %}
+{%load crispy_forms_tags%}
 <html>
     {% block content %}
     <head>
-        <link rel="stylesheet" href=" {% static 'user/signup.css' %} ">
+        
         <link rel="icon" type="image/png" href="website-logo.png">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
 
     <body>
        <div class="sign-up">
-        <h2>SIGN UP</h2>
         <div class="info">
             <form method="POST" action="{url 'forum-signup'}">
                 {%csrf_token%}
+             <fieldset class="form-group">
+                <legend>Sign Up</legend>
                 <div class="align-col">
-                <i class="material-icons" id="profile-circle">account_circle</i>
-                <input name="username" type="text" placeholder="Username" >
+                {{form|crispy}}
                 </div>
-                <div class="align-col">
-                <i class="material-icons" id="lock-icon">lock</i>
-                <input name="password" type="password" placeholder="Password">
-                </div>
-
-                <div class="align-col">
-                <i class="material-icons" id="mail-icon">mail</i>
-                <input name="email" type="text" placeholder="Email">
-                </div>
+             </fieldset>
             </form>
         </div>
         <div class="button">
-            <button class="log-in" ><a href= "{% url 'forum-home' %}">Back to Log In</a></button>
+            <button class="log-in" ><a href= "{% url 'forum-login' %}">Back to Log In</a></button>
             <button class="register" name="CreateUser" type="submit">Register <i class="material-icons" id="arrow-icon">arrow_forward</i></button>           
         </div>
        </div>
