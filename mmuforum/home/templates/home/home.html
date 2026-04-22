@@ -17,20 +17,9 @@
                 <p class="quote">Study smarter, not alone — log in and learn together.</p>
             </div>
 
-            <div class="register-col">
-                <h1><u>LOG IN</u></h1>
-                <img class="profile-icon" src="{% static 'home/images/profile.png' %}" alt="profile-icon">
-              <!--here need to open form.py to make css function-->
-              
-         
-                <input type="text" name="username" placeholder="Username">
-                <input type="password" name="password" placeholder="Password">
-                <p class="forgot-password"><u>Forgot your password?</u></p>
-                <button href="{%url 'forum-main'%}"class="log-in" >Log In</button><br>
-
-                <p class="no-account">Don't have an account? </p><br>
-                <a id="register" href="{% url 'forum-signup' %}">Sign Up</a>
-            </div>
+         <button type="submit" href="{% url 'forum-login' %}">Log In</button>
+         <button type="submit" href="{% url 'forum-signup' % }">Sign Up</button>
+         <!--here need to link to signup and sign in page -->
        </div>
 
        <div class="about">
