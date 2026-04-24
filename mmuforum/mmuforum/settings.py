@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
     'user.apps.UserConfig',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'post.apps.PostConfig'
 ]
 
@@ -125,3 +127,6 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = 'forum-main'
 LOGOUT_REDIRECT_URL = 'forum-home'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

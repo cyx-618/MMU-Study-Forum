@@ -1,4 +1,5 @@
 {% extends "home/base.html" %}
+{% load crispy_forms_tags %}
 <html>
     {% block content %}
     <head>
@@ -13,7 +14,7 @@
              <fieldset class="form-group">
                 <legend>Sign Up</legend>
                 <div>
-               {{ form.as_p }}
+                {{ form|crispy }}
                 </div>
                  <button name="CreateUser" type="submit">Register </button>
              </fieldset>
