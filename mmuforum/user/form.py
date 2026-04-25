@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import User_profile
+from .models import User_profile,Feedback
 
 class UserRegisterForm(UserCreationForm):
   email=forms.EmailField()
@@ -19,3 +19,8 @@ class UserUpdateForm(forms.ModelForm):
          'bio':'Write your bio',
          'profile_picture':'Select Profile'
       }
+
+class UserFeedbackForm(forms.ModelForm):
+  class Meta:
+        model = Feedback
+        fields = ['subject', 'message']

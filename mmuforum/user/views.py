@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .form import UserRegisterForm
 from .form import UserUpdateForm
+from .form import UserFeedbackForm
+from .models import Feedback
 # Create your views here.
 
 #view function
@@ -34,7 +36,7 @@ def signup (request):
     else:
         form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
-
+#----------------------------------------------------------------------------------------------------------
 
 def login (request):
     context = {
@@ -44,9 +46,38 @@ def login (request):
     form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
 
+#----------------------------------------------------------------------------------------------------------
+
 def profile(request):
     form=UserUpdateForm()
     context={
         'title':'Update Profile'
              }
     return render(request,'user/profile.html',{'form': form})
+  #havent finish the profile update form, have to link to mainpage and the profile function
+
+#----------------------------------------------------------------------------------------------------------
+
+def feedback_view(request):
+   user_reports = Feedback.objects.filter(user=request.user).order_by('-date_submitted')
+
+   def feedback_view(request):
+    # Get all reports sent by the logged-in user
+    user_reports = Feedback.objects.filter(user=request.user).order_by('-date_submitted')
+
+    if request.method == 'POST':
+        form = UserFeedbackForm(request.POST)
+        if form.is_valid():
+            new_report = form.save(commit=False)
+            new_report.user = request.user # Attach the current user
+            new_report.save()
+            return redirect('feedback_view') 
+    else:
+        form = UserFeedbackForm()
+
+    return render(request, 'feedback.html', {
+        'form': form,
+        'user_reports': user_reports
+    })
+
+#----------------------------------------------------------------------------------------------------------
