@@ -5,6 +5,7 @@ from .form import UserRegisterForm
 from .form import UserUpdateForm
 from .form import UserFeedbackForm
 from .models import Feedback
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 #view function
@@ -58,26 +59,25 @@ def profile(request):
 
 #----------------------------------------------------------------------------------------------------------
 
+@login_required
 def feedback_view(request):
    user_reports = Feedback.objects.filter(user=request.user).order_by('-date_submitted')
-
-   def feedback_view(request):
-    # Get all reports sent by the logged-in user
-    user_reports = Feedback.objects.filter(user=request.user).order_by('-date_submitted')
-
-    if request.method == 'POST':
+  
+   if request.method == 'POST':
         form = UserFeedbackForm(request.POST)
         if form.is_valid():
             new_report = form.save(commit=False)
-            new_report.user = request.user # Attach the current user
+            new_report.user = request.user 
             new_report.save()
             return redirect('feedback_view') 
-    else:
+   else:
         form = UserFeedbackForm()
 
-    return render(request, 'feedback.html', {
+   return render(request, 'user/feedback.html', {
         'form': form,
-        'user_reports': user_reports
+        'user_reports': user_reports,
+       
+
     })
 
 #----------------------------------------------------------------------------------------------------------

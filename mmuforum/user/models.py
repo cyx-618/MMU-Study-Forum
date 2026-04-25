@@ -19,7 +19,7 @@ class User_profile (models.Model):
     bio = models.TextField(max_length=500, blank=True)
 
 class Feedback(models.Model):
-       user = models.OneToOneField(Account, on_delete=models.CASCADE)
+       user = models.ForeignKey(Account, on_delete=models.CASCADE)
        subject = models.CharField(max_length=200)
        message=models.TextField(max_length=500,blank=False)
        
