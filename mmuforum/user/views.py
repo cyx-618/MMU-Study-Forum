@@ -40,7 +40,6 @@ def signup (request):
         form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
 
-
 def login (request):
     context = {
         'title':'Log In',
