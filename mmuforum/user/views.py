@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 #from django.http import HttpResponse
 from django.contrib import messages
 from .form import UserRegisterForm
+from .form import UserUpdateForm
 # Create your views here.
 
 #view function
@@ -42,3 +43,10 @@ def login (request):
 
     form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
+
+def profile(request):
+    form=UserUpdateForm()
+    context={
+        'title':'Update Profile'
+             }
+    return render(request,'user/profile.html',{'form': form})
