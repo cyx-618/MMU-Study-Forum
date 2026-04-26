@@ -1,0 +1,245 @@
+<html>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create Your Post</a></h1>
+        </div>
+
+    <div class="post_form_card">
+        <div class="post_form_title">New Post</div>
+        <div class="post_input">
+            <label>Title:<input type="text" id="post_title" placeholder="Write your questions here..." maxlength="200" autocomplete="off"></label>
+    </div>
+
+    <div class="input_group">
+        <label>Content:<textarea id="post_content" placeholder="Write your content here...(Maximum 1000 words)"></textarea></label>
+        <div class="char_count" id="charCount">0/2000 words</div>
+    </div>
+
+    <div class="form_actions">
+        <button type="button" class="btn-outline" id="clear_form">Clear</button>
+        <button type="button" class="btn-primary" id="submit">Done</button>
+    </div>
+
+    <div class="post_header">
+        <h3>Latest Post<span class="post-count" id="post_count">0</span></h3>
+    </div>
+
+    <div class="post_list" id="post_container">
+        <div class="empty">
+            <p>No post now. Share your questions!</p>
+        </div>
+    </div>
+
+<script>
+
+    const STORAGE_KEY="forum_posts";
+
+    const title_input = document.getElementById("post_title")
+    const content_input = document.getElementById("post_content")
+    const submit_button = document.getElementById("submit")
+    const clear_button = document.getElementById("clear_form")
+    const postContainer = document.getElementById("post_container")
+    const postCount = document.getElementById("post_count")
+    const charCountSpan = document.getElementById("charCount")
+
+    let posts = [];
+
+    function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+    function loadPosts(){
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            posts = JSON.parse(saved);
+        } else{
+            posts = [
+                {
+                    id: Date.now(),
+                    title: "Welcome to MMU Forum!",
+                    content: "This is an example post for our forum. You can start sharing your questions here.",
+                    date: new Date().toLocaleString()
+                }
+            ];
+            savePosts();
+        }
+        renderPosts();
+    }
+
+    function savePosts(){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+    }
+
+    function renderPosts(){
+        postCount.textContent = posts.length;
+
+        if (posts.length === 0){
+            postContainer.innerHTML = '<div class = "empty"><p>No post now. Share your questions!</p></div';
+            return;
+        }
+
+        const sortedPosts = [...posts].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+        let html = '';
+        sortedPosts.forEach(post =>{
+            const safeTitle = escapeHtml(post.title);
+            const safeContent = escapeHtml(post.content).replace(/\n/g,'<br>');
+            html += `
+                <div class ="post-item" data-id="${post.id}">
+                    <div class ="post-title">${safeTitle}</div>
+                    <div class ="post-meta">
+                        <span>${post.date}</span>
+                        <span>#${post.id}</span>
+                    </div>
+                    <div class ="post-content">${safeContent}</div>
+                        <button class ="delete-btn" onclick="deletePost(${post.id})">Delete</button>
+                    </div>
+                `;
+        });
+        postContainer.innerHTML = html;
+    }
+
+    function addPost(){
+        const title = title_input.value.trim();
+        const content = content_input.value.trim();
+
+        if(!title){
+            showMessage('Please enter your title.','error')
+            title_input.focus();
+            return false;
+        }
+
+        if(!content){
+            showMessage('Please enter your content','error');
+            content_input.focus();
+            return false;
+        }
+
+        if (content.length > 2000) {
+            showMessage('Your maximum content is 2000 characters.','error');
+            return false;
+        }
+
+        const newPost = {
+            id: Date.now(),
+            title: title,
+            content: content,
+            date: new Date().toLocaleString()
+        };
+
+        posts.push(newPost);
+            savePosts();
+            renderPosts();
+            
+        title_input.value = '';
+        content_input.value = '';
+        updateCharCount();
+         
+        showMessage('Upload successfully!', 'success');
+            
+        setTimeout(() => {
+            const firstPost = document.querySelector('.post-item');
+            if (firstPost) {
+                firstPost.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);    
+            return true;
+        }
+
+        function deletePost(id) {
+            if (confirm('Are you sure want to delete your post?')) {
+                posts = posts.filter(post => post.id !== id);
+                savePosts();
+                renderPosts();
+                showMessage('Post deleted.', 'success');
+            }
+        }
+
+        function clearForm() {
+            if (title_input.value.trim() || content_input.value.trim()) {
+                if (confirm('Are you sure want to delete all content?')) {
+                    title_input.value = '';
+                    content_input.value = '';
+                    updateCharCount();
+                    showMessage('Content cleared', 'info');
+                }
+            } else {
+                showMessage('This form is empty.', 'info');
+            }
+        }
+
+        function updateCharCount() {
+            const length = content_input.value.length;
+            charCountSpan.textContent = `${length} / 2000 characters`;
+            
+            if (length > 500) {
+                charCountSpan.style.color = '#007d62';
+            } else if (length > 1000) {
+                charCountSpan.style.color = '#2a6e3f';
+            } else {
+                charCountSpan.style.color = '#999';
+            }
+            
+            if (length > 2000) {
+                content_input.value = content_input.value.substring(0, 2000);
+                updateCharCount();
+            }
+        }
+
+        function showMessage(msg, type = 'info') {
+            const existingMsg = document.querySelector('.toast-message');
+            if (existingMsg) existingMsg.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.textContent = msg;
+            
+            const colors = {
+                success: '#4caf50',
+                error: '#ff4757',
+                info: '#667eea'
+            };
+            
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        submit_button.addEventListener('click', addPost);
+        clear_button.addEventListener('click', clearForm);
+        content_input.addEventListener('input', updateCharCount);
+        title_input.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                addPost();
+            }
+        });
+        
+        loadPosts();
+        updateCharCount();
+        
+        window.deletePost = deletePost;
+    
+</script>
+</body>
+</html>

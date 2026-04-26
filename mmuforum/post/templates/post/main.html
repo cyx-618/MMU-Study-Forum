@@ -10,131 +10,6 @@
     
 <style>
 
-body{
-    background-color: #d2dfcd;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.modal{
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(255, 255, 255, 0.5);
-
-}
-
-.modal_content{
-    background-color: #c0d09d;
-    margin: 20% auto;
-    width: 500px; height: 100px;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size:30px;
-    color: #3a4936;
-}
-
-.close{
-    cursor: pointer;
-    font-size: 15px;
-    border: 1px solid #3a4936;
-    background-color: #d2dfcd;
-    padding: 8px;
-    border-radius: 5px;
-}
-
-.top_bar{
-    display: flex;
-    background-color:#8c9e88;
-    align-items: center;
-}
-
-div.title{
-    display: flex;
-}
-
-div.title h1{
-    font-size: 170%;
-    color: #3a4936;
-    margin: auto;
-    margin-left: 70px;
-    padding: auto;
-    font-style: bold;
-}
-
-.search_bar{
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    margin-right: 20px;
-}
-
-input[type=text]{
-    display: flex;
-    border-radius:60px;
-    align-items: center;
-    background-color:#bbcca8;
-    height: 35px;
-    width: 400px;
-    margin: auto;
-    padding: auto;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    color: #3a4936;
-}
-
-input[type=text] img{
-    width:20px;
-    height:20px;
-}
-
-div.register{
-    text-align: right;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-}
-
-button.log_out{
-    background-color: #3a4936;
-    color: #d2dfcd;
-    padding: 8px;
-    margin: 20px;
-    margin-left: 5px;
-    border-radius: 10px;
-    border-color: #3a4936;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-nav.category{
-    text-align: center;
-    padding-top: 10px;
-}
-
-nav.category button{
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    background-color: #bbcca8;
-    color: #3a4936;
-    border-radius: 15px;
-    padding: 5px 15px;
-}
-
-nav.features{
-    background-color: #8c9e88;
-    width: 5%;
-    height: 100vh;
-}
-
-nav.features img{
-    width:30px;
-    height: 30px;
-    margin-left: 15px;
-    padding-top: 20px;
-}
 
     </style>
     </head>
@@ -150,14 +25,15 @@ nav.features img{
     
     <div class="top_bar">
         <div class="title">
-            <h1>MMU Study Forum</h1>
+            <h1><a href="main.html">MMU Study Forum</a></h1>
         </div>
         <form class="search_bar">
-            <img src="{% static 'post/mainpage-icon/search.png' %}" alt="Search">
+            <img src="{% static 'post/images/search.png' %}" alt="Search">
+            <link rel="icon" type="images/png" href="{% static 'post/images/search.png' %}">
             <input type="text" name="fquestion" placeholder="Finding something?"><br>
         </form>
         <div class="register">
-            <button class="log_out">LOG OUT</button>
+            <button type="button "class="log_out">LOG OUT</button>
         </div>
     </div>
 
@@ -175,7 +51,7 @@ nav.features img{
         <a href="profile.html"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
         <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
-        <a href="create_post.html"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
+        <a href="create-post.html"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
     </nav>
 
     <footer>
