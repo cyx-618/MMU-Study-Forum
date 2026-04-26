@@ -34,11 +34,12 @@ body{
     background-color: #d2dfcd;
     padding: 8px;
     border-radius: 5px;
-
 }
+
 .top_bar{
     display: flex;
     background-color:#8c9e88;
+    align-items: center;
 }
 
 div.title{
@@ -54,36 +55,39 @@ div.title h1{
     font-style: bold;
 }
 
-form.search_bar{
+.search_bar{
     display: flex;
-    border-radius:60px;
-    align-items:center;
-    background-color:#bbcca8;
-    height: 35px;
-    width: 500px;
-    margin: auto;
-    padding: auto;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 20px;
 }
 
-form img{
+input[type=text]{
+    display: flex;
+    border-radius:60px;
+    align-items: center;
+    background-color:#bbcca8;
+    height: 35px;
+    width: 400px;
+    margin: auto;
+    padding: auto;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #3a4936;
+}
+
+input[type=text] img{
     width:20px;
     height:20px;
 }
 
 div.register{
-    align-items:right;
+    text-align: right;
+    align-items: center;
+    margin: 0;
+    padding: 0;
 }
 
-button.sign_up{
-    background-color: #d2dfcd;
-    color: #3a4936;
-    padding: 8px;
-    border-radius: 10px;
-    border-color: #d2dfcd;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-button.log_in{
+button.log_out{
     background-color: #3a4936;
     color: #d2dfcd;
     padding: 8px;
@@ -96,20 +100,21 @@ button.log_in{
 
 nav.category{
     text-align: center;
-    padding: auto;
+    padding-top: 10px;
 }
+
 nav.category button{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     background-color: #bbcca8;
     color: #3a4936;
     border-radius: 15px;
+    padding: 5px 15px;
 }
 
 nav.features{
     background-color: #8c9e88;
     width: 5%;
-    height: 100%;
-    position: fixed;
+    height: 100vh;
 }
 
 nav.features img{
