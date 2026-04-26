@@ -12,7 +12,6 @@ from user import views as user_views
 
 urlpatterns = [
     path('signup/', views.signup, name= 'forum-signup'),
-    path('login/', auth_views.LoginView.as_view(template_name='user/login'
-    '.html'), name='forum-login'),
+    path('login/', auth_views.LoginView.as_view(template_name='user/login.html'), name='forum-login'),
     path('profile/', views.profile, name= 'forum-profile')
 ]

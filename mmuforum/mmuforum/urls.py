@@ -28,4 +28,5 @@ urlpatterns = [
     # path('logout/', auth_views.LogoutView.as_view(),name='forum-logout'),
     path('signup/',user_views.signup,name='forum-signup'),
     
+    
 ]
