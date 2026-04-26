@@ -7,11 +7,7 @@
     <head>
         <title>MMU Study Forum</title>
         <link rel="stylesheet" type="text/css" href="{% static 'post\main.css' %}">
-    
-<style>
 
-
-    </style>
     </head>
 
 <body>
@@ -47,17 +43,101 @@
     </nav>
 
     <nav class="features">
-        <a href="home.html"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
+        <a href="/mmuforum/home/templates/home/home.html"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
         <a href="profile.html"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
         <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
-        <a href="create-post.html"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
+        <a href="/mmuforum/post/templates/post/create-post.html"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
     </nav>
+
+    <div class="post">
+        <div class="post_list" id="post_container">
+            <p>No post now. Share your questions!</p>
+        </div>
+    </div>
 
     <footer>
     </footer>
 
     <script>
+        const STORAGE_KEY = "forum_posts";
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function loadAndDisplayPosts() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            let posts = [];
+    
+            if (saved) {
+                posts = JSON.parse(saved);
+            } else {
+                posts = [{
+                    id: Date.now(),
+                    title: "Welcome to MMU Forum!",
+                    content: "This is an example post. Start sharing your questions here.",
+                    date: new Date().toLocaleString()
+                }];
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+            }
+    
+            displayPosts(posts);
+        }
+
+        function displayPosts(posts) {
+            const postContainer = document.getElementById("post_container");
+    
+            if (!posts || posts.length === 0) {
+                postContainer.innerHTML = '<div class="empty"><p>No posts now. Share your questions!</p></div>';
+                return;
+            }
+
+            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+            let html = '';
+            sortedPosts.forEach(post => {
+                const safeTitle = escapeHtml(post.title);
+                const safeContent = escapeHtml(post.content).replace(/\n/g, '<br>');
+                html += `
+                    <div class="post-item" data-id="${post.id}">
+                        <div class="post-title"><strong>${safeTitle}</strong></div>
+                        <div class="post-meta">
+                            <span> ${post.date}</span>
+                            <span> | #${post.id}</span>
+                        </div>
+                        <div class="post-content">${safeContent}</div>
+                        <button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>
+                        <hr>
+                    </div>
+                `;
+            });
+            postContainer.innerHTML = html;
+        }
+
+        function deletePost(id) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                let posts = saved ? JSON.parse(saved) : [];
+                posts = posts.filter(post => post.id !== id);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+                displayPosts(posts);
+                showMessage('Post deleted successfully!', 'success');
+            }
+        }
+
+        function showMessage(msg, type) {
+            alert(msg);
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEY) {
+                loadAndDisplayPosts();
+            }
+    });
+
         window.onload = function(){
             document.getElementById('welcome').style.display = 'block';
         }

@@ -69,9 +69,12 @@
         renderPosts();
     }
 
-    function savePosts(){
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-    }
+    function savePost(post) {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            let posts = saved ? JSON.parse(saved) : [];
+            posts.push(post);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+        }
 
     function renderPosts(){
         postCount.textContent = posts.length;
@@ -102,43 +105,41 @@
         postContainer.innerHTML = html;
     }
 
-    function addPost(){
-        const title = title_input.value.trim();
-        const content = content_input.value.trim();
+    function addPost() {
+    const title = title_input.value.trim();
+    const content = content_input.value.trim();
 
-        if(!title){
-            showMessage('Please enter your title.','error')
-            title_input.focus();
-            return false;
-        }
+    if (!title) {
+        alert('Please enter a title.');
+        title_input.focus();
+        return false;
+    }
 
-        if(!content){
-            showMessage('Please enter your content','error');
-            content_input.focus();
-            return false;
-        }
+    if (!content) {
+        alert('Please enter content.');
+        content_input.focus();
+        return false;
+    }
 
-        if (content.length > 2000) {
-            showMessage('Your maximum content is 2000 characters.','error');
-            return false;
-        }
+    if (content.length > 2000) {
+        alert('Content cannot exceed 2000 characters.');
+        return false;
+    }
 
-        const newPost = {
-            id: Date.now(),
-            title: title,
-            content: content,
-            date: new Date().toLocaleString()
-        };
+    const newPost = {
+        id: Date.now(),
+        title: title,
+        content: content,
+        date: new Date().toLocaleString()
+    };
 
-        posts.push(newPost);
-            savePosts();
-            renderPosts();
+    savePost(newPost);
             
         title_input.value = '';
         content_input.value = '';
         updateCharCount();
          
-        showMessage('Upload successfully!', 'success');
+        alert('Upload successfully!', 'success');
             
         setTimeout(() => {
             const firstPost = document.querySelector('.post-item');
