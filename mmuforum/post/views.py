@@ -10,12 +10,13 @@ from django.views.generic import (
     #DeleteView
     )
 from post.models import Post
+from user.models import Feedback
 
 # Create your views here.
 def main(request):
     context = {
         'posts': Post.objects.all(),
-        'title':'Main Forum'
+        'title':'Main Forum',
     }
     return render(request, 'post/dummy_main.html', context)
 

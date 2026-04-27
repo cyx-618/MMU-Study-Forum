@@ -18,3 +18,15 @@ class User_profile (models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
+    
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=150)
+    message = models.TextField(max_length=1000)
+    admin_reply = models.TextField(max_length=1000, blank=True)
+    is_resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback from {self.user.username}: {self.subject}"

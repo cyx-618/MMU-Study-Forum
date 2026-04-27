@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
 #from django.http import HttpResponse
 from django.contrib import messages
-from .form import UserRegisterForm
-from .form import UserUpdateForm
+from .form import (
+    UserRegisterForm,
+    UserUpdateForm,
+    FeedbackForm
+)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
+from .models import User_profile, Feedback
 # Create your views here.
 
 #view function
@@ -27,7 +31,6 @@ def signup (request):
             user.email = email
             user.save()
 
-            from .models import User_profile
             User_profile.objects.get_or_create(user=user)
 
             auth_login(request, user)
@@ -64,3 +67,34 @@ def profile(request):
         'title':'Update Profile'
     }
     return render(request,'user/profile.html',{'form': form})
+
+
+@login_required
+def submit_feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.save()
+            messages.success(request, 'Your feedback has been submitted!')
+            return redirect('feedback-list')
+    
+    else:
+        form = FeedbackForm()
+
+    context = {
+        'title': 'Submit Feedback'
+    }
+    return render(request, 'user/feedback.html', {'form': form})
+
+
+@login_required
+def feedback_list(request):
+    feedbacks = Feedback.objects.filter(user=request.user).order_by('-created_at')
+
+    context = {
+        'feedbacks': feedbacks,
+        'title': 'My Feedback'
+    }
+    return render(request, 'user/feedback_list.html', context)

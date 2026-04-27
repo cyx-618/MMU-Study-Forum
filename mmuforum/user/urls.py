@@ -13,5 +13,7 @@ from user import views as user_views
 urlpatterns = [
     path('signup/', views.signup, name= 'forum-signup'),
     path('login/', auth_views.LoginView.as_view(template_name='user/login.html'), name='forum-login'),
-    path('profile/', views.profile, name= 'forum-profile')
+    path('profile/', views.profile, name= 'forum-profile'),
+    path('feedback/', views.submit_feedback, name='submit-feedback'),
+    path('feedback/list/', views.feedback_list, name='feedback-list'),
 ]

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import User_profile, Major
+from .models import Feedback, User_profile, Major
 
 class UserRegisterForm(UserCreationForm):
    email=forms.EmailField()
@@ -24,3 +24,16 @@ class UserUpdateForm(forms.ModelForm):
           'bio':'Write your bio',
           'profile_picture':'Select Profile'
       }
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['subject', 'message']
+        widgets = {
+            'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter the subject of your feedback'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter your feedback here', 'rows': 5}),
+        }
+        labels = {
+            'subject': 'Subject',
+            'message': 'Message',
+        }

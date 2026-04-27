@@ -13,6 +13,9 @@
         <hr>
         <p>
             <a href= "{% url 'post-create' %}">Create Post</a>
+            <a href= "{% url 'submit-feedback' %}">Submit Feedback</a>
+            <a href= "{% url 'feedback-list' %}">My Feedbacks</a>
+
         </p>
 
         {% for post in posts %}
