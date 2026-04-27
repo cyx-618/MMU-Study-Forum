@@ -6,3 +6,6 @@ from django.contrib.auth.forms import UserCreationForm
 def main(request):
     form = UserCreationForm()
     return render(request, 'post/main.html', {'form': form})
+
+def create_post_page(request):
+    return render(request, 'post/create-post.html')
