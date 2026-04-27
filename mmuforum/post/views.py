@@ -30,14 +30,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
 def major_post_list(request, major_name):
-        posts = Post.objects.filter(author__user_profile__major=major_name).order_by('-date_posted')
+        posts = Post.objects.filter(author__user_profile__major__major_name=major_name).order_by('-date_posted')
 
         context = {
             'posts': posts,
             'major_name': major_name,
             'title': f'{major_name} Forum'
         }
-        return render(request, 'post/major_forum.html', context)
+        return render(request, 'post/major_forum.html', {'posts': posts, 'major_name': major_name})
 
 class  PostListView(ListView):
     model = Post

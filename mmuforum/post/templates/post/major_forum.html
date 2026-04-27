@@ -1,20 +1,9 @@
 <html>
     <head>
-        <title>dummy-main</title>
+        <title>{{ major_name }} Forum</title>
     </head>
     <body>
-        <p>
-            <a href= " {% url 'forum-main' %} ">Main</a>
-            <a href= "/main/forum/Management">Management</a>
-            <a href= "/main/forum/Computing">Computing</a>
-            <a href= "/main/forum/Multimedia">Multimedia</a>
-            <a href= "/main/forum/Law">Law</a>
-        </p>
-        <hr>
-        <p>
-            <a href= "{% url 'post-create' %}">Create Post</a>
-        </p>
-
+        <h1>{{ major_name }} Forum</h1>
         {% for post in posts %}
         <div>
             <p>Title: {{ post.title }}</p>
@@ -29,5 +18,4 @@
         {% empty %}
             <p>No posts.</p>
         {% endfor %}
-    </body>
 </html>

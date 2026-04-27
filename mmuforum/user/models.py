@@ -15,3 +15,6 @@ class User_profile (models.Model):
     major = models.ForeignKey(Major, on_delete=models.CASCADE, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     bio = models.TextField(max_length=500, blank=True)
+
+    def __str__(self):
+        return f'{self.user.username} Profile'
