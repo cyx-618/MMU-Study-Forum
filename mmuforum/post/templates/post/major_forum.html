@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>{{ major_name }} Forum</title>
+    </head>
+    <body>
+        <h1>{{ major_name }} Forum</h1>
+        {% for post in posts %}
+        <div>
+            <p>Title: {{ post.title }}</p>
+            <p>Author: {{ post.author }}</p>
+            <p>Major: {{ post.author.user_profile.major.major_name }}</p>
+            <p>Content: {{ post.content }}</p>
+
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px; max-height: 200px;">
+            {% endif %}
+        </div>
+        {% empty %}
+            <p>No posts.</p>
+        {% endfor %}
+        <a href= "{% url 'forum-main' %}">Back to Main</a>
+</html>

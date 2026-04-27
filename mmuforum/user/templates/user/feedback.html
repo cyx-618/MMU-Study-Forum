@@ -1,0 +1,8 @@
+<h2>Submit Feedback</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}  <button type="submit">Submit</button>
+</form>
+<br>
+<a href="{% url 'feedback-list' %}">View My Feedbacks</a>
+<a href="{% url 'forum-main' %}">Back to Main</a>
