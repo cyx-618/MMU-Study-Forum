@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView, 
     #DetailView, 
@@ -14,13 +13,7 @@ from post.models import Post
 from user.models import Feedback
 
 # Create your views here.
-@login_required(login_url='forum-home')
 def main(request):
-    return render(request, 'post/main.html',{'username': request.user.username})
-
-@login_required(login_url='forum-home')
-def create_post_page(request):
-    return render(request, 'post/create-post.html')
     context = {
         'posts': Post.objects.all(),
         'title':'Main Forum',
@@ -30,7 +23,7 @@ def create_post_page(request):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content', 'category','image']
-    template_name = 'post/post_form.html' #change to create-post.html
+    template_name = 'post/create-post.html' #change to create-post.html
     success_url = '/main/'
 
     def form_valid(self, form):
@@ -49,7 +42,7 @@ def major_post_list(request, major_name):
 
 class  PostListView(ListView):
     model = Post
-    template_name = 'post/dummy_main.html' #<app>/<model>_<viewtype>.html
+    template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
     context_object_name = 'posts'
     ordering = ['-date_posted']
 

@@ -9,7 +9,7 @@
     </head>
 
 <body>
-
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div id="welcome" class="modal">
         <div class="modal_content">
             <p>Welcome, {{user.username}} !</p>
@@ -19,7 +19,7 @@
     
     <div class="top_bar">
         <div class="title">
-            <h1><a href="main.html">MMU Study Forum</a></h1>
+            <h1>MMU Study Forum</h1>
         </div>
         <form class="search_bar">
             <link rel="icon" type="images/png" href="{% static 'post/images/search.png' %}">
@@ -27,145 +27,160 @@
         </form>
         <div class="register">
             <button type="button "class="log_out">LOG OUT</button>
+            <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
         </div>
     </div>
 
     <nav class="category">
-        <button>FCI</button>
-        <button>FCM</button>
-        <button>FOM</button>
-        <button>FCA</button>
-        <button>FAC</button>
-        <button>FAIE</button>
+        <button><a href= "/main/forum/Computing">FCI</a></button>
+        <button><a href= "/main/forum/Multimedia">FCM</a></button>
+        <button><a href= "/main/forum/Management">FOM</a></button>
+        <button><a href= "/main/forum/Cinematic">FCA</a></button>
+        <button><a href= "/main/forum/Communication">FAC</a></button>
+        <button><a href= "/main/forum/Engineering">FAIE</a></button>
+        <button><a href= "/main/forum/Law">FOL</a></button>
+        <button><a href= "/main/forum/Business">FOB</a></button>
     </nav>
 
     <nav class="features">
-        <a href="/mmuforum/home/templates/home/home.html"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
+        <a href="{% url 'forum-main' %}"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
         <a href="profile.html"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
         <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
-        <a href="{% url 'create-post' %}"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
+        <a href="{% url 'post-create' %}"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
     </nav>
 
     <div class="post">
-        <div class="post_list" id="post_container">
-            <p>No post now. Share your questions!</p>
-        </div>
+        {% if posts %}
+            {% for post in posts %}
+                <div>
+                    <p><strong>Title:</strong> {{ post.title }}</p>
+                    <p><strong>Author:</strong> {{ post.author.username }}</p>
+                    <p><strong>Major:</strong> 
+                        {% if post.author.user_profile and post.author.user_profile.major %}
+                            {{ post.author.user_profile.major.major_name }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </p>
+                    <p><strong>Content:</strong> {{ post.content }}</p>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
+                    {% endif %}
+                    <hr>
+                </div>
+            {% empty %}
+                <p>No posts now. Share your questions!</p>
+            {% endfor %}
+        {% else %}
+            <p>No posts now. Share your questions!</p>
+        {% endif %}
     </div>
 
-    <footer>
-    </footer>
-
     <script>
-        const STORAGE_KEY = "forum_posts";
-        const CURRENT_USER = "{{user.username}}";
+        /*
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
-        localStorage.setItem('current_user', CURRENT_USER);
-
-        function getCurrentUser(){
-            return localStorage.getItem('current_user') || CURRENT_USER;
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function loadAndDisplayPosts() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            let posts = [];
-    
-            if (saved) {
-                posts = JSON.parse(saved);
-            } else {
-                posts = [{
-                    id: Date.now(),
-                    title: "Welcome to MMU Forum!",
-                    content: "This is an example post. Start sharing your questions here.",
-                    author: "Admin",
-                    date: new Date().toLocaleString()
-                }];
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-            }
-    
-            displayPosts(posts);
-        }
-
-        function displayPosts(posts, filterUser = null) {
-            const postContainer = document.getElementById("post_container");
-
-            let displayPosts = posts;
-            if (filterUser){
-                displayPosts = posts.filter(post => post.author === filterUser);
-            }
-
-            if (!displayPosts || displayPosts.length === 0) {
-                postContainer.innerHTML = '<div class="empty"><p>No posts now. Share your questions!</p></div>';
-                return;
-            }
-
-            const sortedPosts = [...displayPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
-            const currentUser = getCurrentUser();
-    
-            let html = '';
-            sortedPosts.forEach(post => {
-                const safeTitle = escapeHtml(post.title);
-                const safeContent = escapeHtml(post.content).replace(/\n/g, '<br>');
-                const isAuthor = (currentUser === post.author);
-
-                html += `
-                    <div class="post-item" data-id="${post.id}">
-                        <div class="post-title"><strong>${safeTitle}</strong></div>
-                        <div class="post-meta">
-                            <span> ${escapeHtml(post.author || 'Unknown')}</span>
-                            <span> ${post.date}</span>
-                            <span> | #${post.id}</span>
-                        </div>
-                        <div class="post-content">${safeContent}</div>
-                        ${isAuthor ? `<button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>` : ''}
-                        <hr>
-                    </div>
-                `;
+    function deletePost(postId) {
+        if (confirm('Are you sure want to delete this post?')) {
+            fetch(`/post/${postId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Deleted successful.');
+                    location.reload();
+                } else {
+                    alert('Deleted failed：' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:',error);
+                alert('Delete failed. Please try again.');
             });
-            postContainer.innerHTML = html;
         }
+    }
 
-        function deletePost(id) {
-            if (confirm('Are you sure you want to delete this post?')) {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                let posts = saved ? JSON.parse(saved) : [];
-                const postToDelete = posts.find(post=>post.id === id);
-
-                if (postToDelete && postToDelete.author === getCurrentUser()) {
-                        posts = posts.filter(post => post.id !== id);
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-                        displayPosts(posts);
-                        showMessage('Post deleted successfully!', 'success');
-            }else{
-                showMessage('You can only delete your own posts.');
+    function getCSRFToken() {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=') || cookie.startsWith('csrfmiddlewaretoken=')) {
+                cookieValue = decodeURIComponent(cookie.substring(cookie.indexOf('=') + 1));
+                break;
             }
         }
     }
-        function showMessage(msg, type) {
-            alert(msg);
+    
+    if (!cookieValue) {
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput) {
+            cookieValue = csrfInput.value;
         }
+    }
+    
+    console.log('CSRF Token found:', cookieValue ? 'Yes' : 'No');
+    return cookieValue;
+}
 
-        window.addEventListener('storage', function(e) {
-            if (e.key === STORAGE_KEY) {
-                loadAndDisplayPosts();
+function deletePost(postId) {
+    if (confirm('Are you sure you want to delete this post?')) {
+        const csrfToken = getCSRFToken();
+        
+        if (!csrfToken) {
+            console.error('CSRF token not found');
+            alert('Security token missing. Please refresh the page and try again.');
+            return;
+        }
+        
+        fetch(`/post/${postId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin', 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-    });
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Post deleted successfully.');
+                location.reload();
+            } else {
+                alert('Delete failed: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Delete failed: ' + error.message);
+        });
+    }
+}
+*/
+    window.onload = function() {
+        document.getElementById('welcome').style.display = 'block';
+    }
 
-        window.onload = function(){
-            document.getElementById('welcome').style.display = 'block';
-            loadAndDisplayPosts();
-        }
+    function closeModal() {
+        document.getElementById('welcome').style.display = 'none';
+    }
 
-        function closeModal(){
-            document.getElementById('welcome').style.display = 'none';
-        }
-
-    </script>
+</script>
 </body>
 </html>
