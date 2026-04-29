@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView, 
     #DetailView, 
@@ -13,7 +14,13 @@ from post.models import Post
 from user.models import Feedback
 
 # Create your views here.
+@login_required(login_url='forum-home')
 def main(request):
+    return render(request, 'post/main.html',{'username': request.user.username})
+
+@login_required(login_url='forum-home')
+def create_post_page(request):
+    return render(request, 'post/create-post.html')
     context = {
         'posts': Post.objects.all(),
         'title':'Main Forum',
