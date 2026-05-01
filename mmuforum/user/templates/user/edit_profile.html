@@ -1,7 +1,6 @@
 {% extends "home/base.html" %}
 {% load crispy_forms_tags %}
 
-<html>
     {% block content %}
     <head>
         <title>Edit Profile</title>
@@ -17,4 +16,4 @@
         </div>
         <button><a href="{% url 'view-profile' %}">Back to Profile</a></button>
     </body>
-</html>
+    {% endblock content %}
