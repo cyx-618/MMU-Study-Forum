@@ -10,8 +10,8 @@
     <form method="POST" >
         {% csrf_token%}
 
-        <p>Username :{{username}}</p>
-        <p>Email : {{email}} </p>
+        <p>Username :{{user.username}}</p>
+        <p>Email : {{user.email}} </p>
         {{ form|crispy }}
         <button type="submit" >Submit Profile Info</button>
     </form>
