@@ -30,6 +30,7 @@
              {% csrf_token %}
              <button type="submit">Logout</button>
             </form>
+            <button><a href="{% url 'view-profile' %}">View Profile</a></button>
             <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
         </div>
     </div>
