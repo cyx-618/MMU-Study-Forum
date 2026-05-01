@@ -1,14 +1,21 @@
 <!--
 #26.4.2026
 post/view.py>class PostCreateView()
-template_name = "post_form.html" change to "create-post.html"
+template_name = "post_form.html" change to "create_post.html"
 
-dummy.html change to main.html
 
+
+<New.note>
 - Do filter for email. every email required one account. 
 if email exist, show error message 
 
 
-
+Delete Button Logic
+        {% if user.is_authenticated %}
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Log Out</button>
+            </form>
+        {% endif %}
 
 -->
