@@ -16,4 +16,5 @@ urlpatterns = [
     path('profile/', views.profile, name= 'forum-profile'),
     path('feedback/', views.submit_feedback, name='submit-feedback'),
     path('feedback/list/', views.feedback_list, name='feedback-list'),
+    path('profile/<str:username>/', views.view_profile, name='view-profile'),
 ]

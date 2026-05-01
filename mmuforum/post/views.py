@@ -22,7 +22,7 @@ def main(request):
         'posts': Post.objects.all(),
         'title':'Main Forum',
     }
-    return render(request, 'post/main.html', context)
+    return render(request, 'post/dummy_main.html', context)
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -49,7 +49,7 @@ def major_post_list(request, major_name):
 
 class  PostListView(ListView):
     model = Post
-    template_name = 'post/main.html'
+    template_name = 'post/dummy_main.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
 

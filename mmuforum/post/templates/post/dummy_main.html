@@ -15,9 +15,13 @@
             <a href= "{% url 'post-create' %}">Create Post</a>
             <a href= "{% url 'submit-feedback' %}">Submit Feedback</a>
             <a href= "{% url 'feedback-list' %}">My Feedbacks</a>
-            <a href= "{% url 'forum-logout' %}">Log Out</a>
-
-
+            <a href= "{% url 'view-profile' user.username %}">My Profile</a>
+            {% if user.is_authenticated %}
+                <form action = " {% url 'forum-logout' %} " method="post">
+                    {% csrf_token %}
+                    <button type="submit">Log Out</button>
+                </form>
+            {% endif %}
         </p>
 
         {% for post in posts %}
