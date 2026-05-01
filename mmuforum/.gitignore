@@ -14,8 +14,8 @@ pip-delete-this-directory.txt
 db.sqlite3
 db.sqlite3-journal
 
-media/profile_picture/*
-!media/profile_picture/default.pngstaticfiles/
+media/*
+!media/profile_picture/default.png
 
 .vscode/
 .idea/
