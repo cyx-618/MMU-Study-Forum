@@ -10,12 +10,12 @@
         <div class="profile-section">
             <h2> My Profile</h2>
             <br>
-            <button> Edit Profile</button>
+            <button><a href="{% url 'edit-profile' %}">Edit Profile</a></button>
             <br>
             <br>
             {% if view_profile %}
-<!-- profile picture still cannot comeout-->
-                {{view_profile.profile_pictures.url}}
+
+             <img src="{{view_profile.profile_picture.url}}" alt="Profile Picture" style="max-width: 200px; max-height: 200px;">
                 <br>
             {% endif %}
 
@@ -43,7 +43,7 @@
                 {% if post.image %}
                     <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px; max-height: 200px;">
                 {% endif %}
-                <button>Edit Post</button>
+                <button><a href="{% url 'edit-post' post.id %}">Edit Post</a></button>
                 <!-- Add on edit & delete post function-->
             </div>
             {% empty %}
