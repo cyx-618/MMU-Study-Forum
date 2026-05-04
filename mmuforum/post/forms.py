@@ -18,7 +18,7 @@ class PostForm(forms.ModelForm):
             }),
         }
         labels = {
-            'title': 'Title',  # 改变显示的文字
+            'title': 'Title', 
             'content': 'Content',
             'category': 'Category',
             'image': 'Image',

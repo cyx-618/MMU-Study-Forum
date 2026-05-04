@@ -22,6 +22,8 @@ class Post (models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     date_posted = models.DateTimeField(default=timezone.now)
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+ #yj
+    likes_count = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'Posts'
@@ -41,9 +43,17 @@ class Post_status (models.Model):
     class Meta:
         verbose_name_plural = 'Post_Statuses'
 
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ['user', 'post']
+    
 class Comment (models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(max_length=300)
     created_at = models.DateTimeField(default=timezone.now)
     likes_count = models.IntegerField(default=0)

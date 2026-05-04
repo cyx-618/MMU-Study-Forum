@@ -28,6 +28,33 @@
             {% if post.image %}
                 <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px; max-height: 200px;">
             {% endif %}
+
+            <form method="post" action="{% url 'like-post' post.id %}">
+                {% csrf_token %}
+                <button type="submit">Like ({{ post.likes_count }})</button>
+            </form>
+
+            <div>
+                <h4>Comment ({{ post.comments.count }})</h4>
+                
+                {% for comment in post.comments.all %}
+                <div>
+                    <strong>{{ comment.user.username }}:</strong>
+                    <span>{{ comment.text }}</span>
+                    <small>{{ comment.created_at }}</small>
+                </div>
+                {% empty %}
+                    <p>No comment.</p>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add-comment' post.id %}">
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Write comment..." required>
+                    <button type="submit">Submit</button>
+                </form>
+                {% endif %}
+            </div>
         </div>
         {% empty %}
             <p>No posts.</p>

@@ -12,7 +12,7 @@
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div id="welcome" class="modal">
         <div class="modal_content">
-            <p>Welcome, {{user.username}} !</p>
+            <p>Welcome, {username} !</p>
             <span class="close" onclick="closeModal()">Start journey</span>
         </div>
     </div>
@@ -26,7 +26,7 @@
             <input type="text" name="fquestion" placeholder="Finding something?"><br>
         </form>
         <div class="register">
-            <button type="button "class="log_out">LOG OUT</button>
+            <button type="button "class="log_out"><a href= "{% url 'forum-home' %}">LOG OUT</a></button>
             <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
         </div>
     </div>
@@ -44,8 +44,8 @@
 
     <nav class="features">
         <a href="{% url 'forum-main' %}"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
+        <a href="{% url 'forum-profile' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         <!--
-        <a href="profile.html"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
         <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
     -->
@@ -70,6 +70,33 @@
                         <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
                     {% endif %}
                     <hr>
+
+                    <form method="post" action="{% url 'like-post' post.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Like ({{ post.likes_count }})</button>
+                    </form>
+
+                    <div>
+                        <h4>Comment ({{ post.comments.count }})</h4>
+                
+                        {% for comment in post.comments.all %}
+                        <div>
+                            <strong>{{ comment.user.username }}:</strong>
+                            <span>{{ comment.text }}</span>
+                            <small>{{ comment.created_at }}</small>
+                        </div>
+                {% empty %}
+                    <p>No comment.</p>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add-comment' post.id %}">
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Write comment..." required>
+                    <button type="submit">Submit</button>
+                </form>
+                {% endif %}
+            </div>
                 </div>
             {% empty %}
                 <p>No posts now. Share your questions!</p>
@@ -79,102 +106,7 @@
         {% endif %}
     </div>
 
-    <script>
-        /*
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function deletePost(postId) {
-        if (confirm('Are you sure want to delete this post?')) {
-            fetch(`/post/${postId}/delete/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCSRFToken(),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Deleted successful.');
-                    location.reload();
-                } else {
-                    alert('Deleted failed：' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:',error);
-                alert('Delete failed. Please try again.');
-            });
-        }
-    }
-
-    function getCSRFToken() {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('csrftoken=') || cookie.startsWith('csrfmiddlewaretoken=')) {
-                cookieValue = decodeURIComponent(cookie.substring(cookie.indexOf('=') + 1));
-                break;
-            }
-        }
-    }
-    
-    if (!cookieValue) {
-        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
-        if (csrfInput) {
-            cookieValue = csrfInput.value;
-        }
-    }
-    
-    console.log('CSRF Token found:', cookieValue ? 'Yes' : 'No');
-    return cookieValue;
-}
-
-function deletePost(postId) {
-    if (confirm('Are you sure you want to delete this post?')) {
-        const csrfToken = getCSRFToken();
-        
-        if (!csrfToken) {
-            console.error('CSRF token not found');
-            alert('Security token missing. Please refresh the page and try again.');
-            return;
-        }
-        
-        fetch(`/post/${postId}/delete/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json',
-            },
-            credentials: 'same-origin', 
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                alert('Post deleted successfully.');
-                location.reload();
-            } else {
-                alert('Delete failed: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Delete failed: ' + error.message);
-        });
-    }
-}
-*/
+<script>
     window.onload = function() {
         document.getElementById('welcome').style.display = 'block';
     }
