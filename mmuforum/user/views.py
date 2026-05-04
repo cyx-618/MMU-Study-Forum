@@ -98,3 +98,13 @@ def feedback_list(request):
         'title': 'My Feedback'
     }
     return render(request, 'user/feedback_list.html', context)
+
+@login_required
+def view_profile(request, username):
+    user_profile = User_profile.objects.filter(user__username=username).first()
+    
+    context = {
+        'view_profile': user_profile,
+        'title': f"{user_profile.user.username}'s Profile"
+    }
+    return render(request, 'user/view_profile.html', context)

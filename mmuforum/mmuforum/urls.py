@@ -27,7 +27,7 @@ urlpatterns = [
     path('home/',include('home.urls')),
     path('main/', include('post.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='user/login.html'),name='forum-login'),
-    # path('logout/', auth_views.LogoutView.as_view(),name='forum-logout'),
+    path('logout/', auth_views.LogoutView.as_view(),name='forum-logout'),
     path('signup/',user_views.signup,name='forum-signup'),
 ]
 

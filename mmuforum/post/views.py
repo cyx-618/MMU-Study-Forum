@@ -8,16 +8,15 @@ from django.views.generic import (
     #DetailView, 
     CreateView, 
     #UpdateView, 
-    #DeleteView
-    )
-from post.models import Post, Like , Comment
+    DeleteView
+)
+from post.models import Post, Like, Comment
 from user.models import Feedback
 from django.urls import reverse
-
 # Create your views here.
 def main(request):
     context = {
-        'posts': Post.objects.all(),
+        'posts': Post.objects.all().prefetch_related('comments','likes'),
         'title':'Main Forum',
     }
     return render(request, 'post/dummy_main.html', context)

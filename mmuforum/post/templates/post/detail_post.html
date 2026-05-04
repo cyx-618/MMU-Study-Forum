@@ -1,0 +1,21 @@
+<article class="content-section">
+    <div class="post-header">
+        <h1>{{ post.title }}</h1>
+        <h2>By {{ post.author }}</h2>
+        <p>Category: {{ post.category }}</p>
+        <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
+        </div>
+
+        <div class="post-content">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post Image" class="img-fluid mb-3">
+            {% endif %}
+        </div>
+        
+        <a href = "{% url 'forum-main' %}" > Back to Forum </a><hr>
+
+        {% if post.author == user or user.is_staff %}
+            <a href = "{% url 'post-update' post.pk %}" > Edit Post </a><br><br>
+            <a href = "{% url 'post-delete' post.pk %}" > Delete Post </a>
+        {% endif %}
+</article>

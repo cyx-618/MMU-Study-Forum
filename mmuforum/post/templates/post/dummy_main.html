@@ -15,12 +15,21 @@
             <a href= "{% url 'post-create' %}">Create Post</a>
             <a href= "{% url 'submit-feedback' %}">Submit Feedback</a>
             <a href= "{% url 'feedback-list' %}">My Feedbacks</a>
-
+            <a href= "{% url 'view-profile' user.username %}">My Profile</a>
+            {% if user.is_authenticated %}
+                <form action = " {% url 'forum-logout' %} " method="post">
+                    {% csrf_token %}
+                    <button type="submit">Log Out</button>
+                </form>
+            {% endif %}
         </p>
 
         {% for post in posts %}
         <div>
-            <p>Title: {{ post.title }}</p>
+            <p>
+                <strong>Title:</strong>
+                <a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a>
+                </p>
             <p>Author: {{ post.author }}</p>
             <p>Major: {{ post.author.user_profile.major.major_name }}</p>
             <p>Content: {{ post.content }}</p>
@@ -59,5 +68,6 @@
         {% empty %}
             <p>No posts.</p>
         {% endfor %}
+
     </body>
 </html>
