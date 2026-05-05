@@ -5,9 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView, 
-    #DetailView, 
+    DetailView, 
     CreateView, 
-    #UpdateView, 
+    UpdateView, 
     DeleteView
 )
 from post.models import Post, Like, Comment
@@ -80,3 +80,27 @@ def add_comment(request, post_id):
             )
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = ['title', 'content', 'category', 'image']
+    template_name = 'post/update_post.html' 
+    
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.object.pk})
+
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    template_name = 'post/delete_post.html' 
+    
+    def get_success_url(self):
+        return reverse('main')
+    
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'post/detail_post.html' 
+    context_object_name = 'post' 

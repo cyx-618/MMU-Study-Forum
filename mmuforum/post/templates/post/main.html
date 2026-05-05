@@ -56,6 +56,21 @@
         {% if posts %}
             {% for post in posts %}
                 <div>
+                    <div>
+                        {% if user == post.author %}
+                            <div>
+                                <form method="post" action="{% url 'post-delete'}" onsubmit="return confirm('Are your sure want to delete this post?');">
+                                    {% csrf_token %}
+                                    <button type="button">Delete</button>
+                                </form>
+                                <span>
+                                    <a href="{% url 'post-update' post.pk %}">
+                                        <button type="button">Edit</button>
+                                    </a>
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
                     <p><strong>Title:</strong> {{ post.title }}</p>
                     <p><strong>Author:</strong> {{ post.author.username }}</p>
                     <p><strong>Major:</strong> 
@@ -69,9 +84,8 @@
                     {% if post.image %}
                         <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
                     {% endif %}
-                    <hr>
 
-                    <form method="post" action="{% url 'like-post' post.id %}">
+                    <form method="post" action="{% url 'like_post' post.id %}">
                         {% csrf_token %}
                         <button type="submit">Like ({{ post.likes_count }})</button>
                     </form>
@@ -96,7 +110,9 @@
                     <button type="submit">Submit</button>
                 </form>
                 {% endif %}
-            </div>
+
+                <hr>
+                    </div>
                 </div>
             {% empty %}
                 <p>No posts now. Share your questions!</p>

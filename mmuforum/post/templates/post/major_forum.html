@@ -6,6 +6,21 @@
         <h1>{{ major_name }} Forum</h1>
         {% for post in posts %}
         <div>
+            <div>
+                {% if user == post.author %}
+                    <div>
+                        <form method="post" action="{% url 'post-delete'}" onsubmit="return confirm('Are your sure want to delete this post?');">
+                            {% csrf_token %}
+                            <button type="button">Delete</button>
+                        </form>
+                        <span>
+                            <a href="{% url 'post-update' post.pk %}">
+                                <button type="button">Edit</button>
+                            </a>
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
             <p>Title: {{ post.title }}</p>
             <p>Author: {{ post.author }}</p>
             <p>Major: {{ post.author.user_profile.major.major_name }}</p>
