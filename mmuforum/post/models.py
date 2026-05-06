@@ -24,8 +24,8 @@ class Post (models.Model):
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
     pdf = models.FileField(upload_to='post_pdfs/', null=True, blank=True)
     video_file = models.FileField(upload_to='post_videos/', null=True, blank=True)
-
-    
+#yj
+    likes_count = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'Posts'
