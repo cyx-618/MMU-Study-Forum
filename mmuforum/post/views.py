@@ -54,21 +54,20 @@ class  PostListView(ListView):
 #class PostDetailView(DetailView):
     #model = Post
 
+#yj testing code
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    like = Like.objects.filter(user=request.user, post=post)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
     
-    if like.exists():
+    if not created:
         like.delete()
         post.likes_count -= 1
     else:
-        Like.objects.create(user=request.user, post=post)  # 添加点赞
         post.likes_count += 1
     
     post.save()
-    return redirect(f"{request.META.get('HTTP_REFERER', 'forum-main')}#post-{post_id}")
-    
+    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
 @login_required
 def add_comment(request, post_id):
@@ -83,7 +82,7 @@ def add_comment(request, post_id):
                 text=content
             )
 
-    return redirect(f"{request.META.get('HTTP_REFERER', 'forum-main')}#post-{post_id}")
+    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post

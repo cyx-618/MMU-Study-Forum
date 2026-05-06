@@ -1,6 +1,0 @@
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update Post</button>
-    <a class="btn btn-secondary" href="{% url 'post-detail' post.pk %}">Cancel</a>
-</form>
