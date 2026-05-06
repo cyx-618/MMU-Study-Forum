@@ -136,8 +136,8 @@ def edit_profile(request):
 def delete_profile(request):
     if request.method == 'POST':
         user = request.user
-        logout(request)
         user.delete()
+        logout(request)
         messages.success(request, 'Your account has been deleted!')
-        return redirect('forum-main')
+        return redirect('forum-home')
     return render(request, 'user/delete_profile.html')

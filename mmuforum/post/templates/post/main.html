@@ -43,7 +43,11 @@
 
     <nav class="features">
         <a href="{% url 'forum-main' %}"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
-        <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
+        {% if user.is_authenticated and user.username %}
+            <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
+        {% else %}
+            <a href="{% url 'login' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
+        {% endif %}
         <!--
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
         <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
