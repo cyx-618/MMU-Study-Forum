@@ -22,7 +22,7 @@ class Post (models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     date_posted = models.DateTimeField(default=timezone.now)
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
-
+ #yj
     likes_count = models.IntegerField(default=0)
 
     class Meta:

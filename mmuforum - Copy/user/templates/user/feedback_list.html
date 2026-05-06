@@ -1,0 +1,19 @@
+<h2>Feedbacks</h2>
+<hr>
+{% for feedback in feedbacks %}
+    <div>
+        <p>Subject: {{ feedback.subject }}</p>>
+        <p>Message: {{ feedback.message }}</p>
+        <p>Ticket number: {{feedback.id|add:1000 }}</p>
+
+        {% if feedback.admin_reply%}
+            <p>Admin reply: {{ feedback.admin_reply }}</p>
+        {% else %}
+            <p>No admin reply yet.</p>
+        {% endif %}
+    </div>
+    <hr>
+{% empty %}
+    <p>You have not submitted any feedback yet.</p>
+{% endfor %}
+<a href="{% url 'forum-main' %}">Back to Main</a>
