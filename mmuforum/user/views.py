@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 #from django.http import HttpResponse
 from django.contrib import messages
 from .form import (
@@ -9,6 +9,7 @@ from .form import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, logout
 from .models import User_profile, Feedback
+from post.models import Post
 # Create your views here.
 
 #view function
@@ -103,9 +104,12 @@ def feedback_list(request):
 @login_required
 def view_profile(request, username):
     user_profile = User_profile.objects.filter(user__username=username).first()
+    user_posts = Post.objects.filter(author=user_profile.user).order_by('-date_posted')
     
     context = {
         'view_profile': user_profile,
+        'user_posts': user_posts,
+        'user': user_profile.user,
         'title': f"{user_profile.user.username}'s Profile"
     }
     return render(request, 'user/view_profile.html', context)
