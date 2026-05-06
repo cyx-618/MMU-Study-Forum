@@ -21,18 +21,19 @@ def main(request):
         'posts': Post.objects.all().prefetch_related('comments','likes'),
         'title':'Main Forum',
     }
-    return render(request, 'post/dummy_main.html', context)
+    return render(request, 'post/main.html', context)
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'category','image']
+    fields = ['title', 'content', 'category','image', 'pdf', 'video_file']
     template_name = 'post/create_post.html' #change to create_post.html
     success_url = reverse_lazy('forum-main')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-    
+
+
 def major_post_list(request, major_name):
         posts = Post.objects.filter(author__user_profile__major__major_name=major_name).order_by('-date_posted').prefetch_related('comments','likes')
 
@@ -85,7 +86,7 @@ def add_comment(request, post_id):
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'category', 'image']
+    fields = ['title', 'content', 'category', 'image', 'pdf', 'video_file']
     template_name = 'post/update_post.html' 
     
     def form_valid(self, form):

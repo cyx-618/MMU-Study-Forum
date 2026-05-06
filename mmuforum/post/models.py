@@ -24,6 +24,7 @@ class Post (models.Model):
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
     pdf = models.FileField(upload_to='post_pdfs/', null=True, blank=True)
     video_file = models.FileField(upload_to='post_videos/', null=True, blank=True)
+    views_count = models.IntegerField(default=0)
 #yj
     likes_count = models.IntegerField(default=0)
 
@@ -35,16 +36,6 @@ class Post (models.Model):
     
     #def get_absolute_url(self):
         #return reverse('post-detail', kwargs={'pk': self.pk} )
-
-class Post_status (models.Model):
-    post = models.OneToOneField(Post, on_delete=models.CASCADE)
-    views_count = models.IntegerField(default=0)
-    likes_count = models.IntegerField(default=0)
-    #is_closed = models.BooleanField(default=False)
-
-    class Meta:
-        verbose_name_plural = 'Post_Statuses'
-
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
