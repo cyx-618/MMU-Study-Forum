@@ -21,19 +21,18 @@ def main(request):
         'posts': Post.objects.all().prefetch_related('comments','likes'),
         'title':'Main Forum',
     }
-    return render(request, 'post/main.html', context)
+    return render(request, 'post/dummy_main.html', context)
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'category','image', 'pdf', 'video_file']
+    fields = ['title', 'content', 'category','image']
     template_name = 'post/create_post.html' #change to create_post.html
     success_url = reverse_lazy('forum-main')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-
-
+    
 def major_post_list(request, major_name):
         posts = Post.objects.filter(author__user_profile__major__major_name=major_name).order_by('-date_posted').prefetch_related('comments','likes')
 
@@ -54,21 +53,20 @@ class  PostListView(ListView):
 #class PostDetailView(DetailView):
     #model = Post
 
+#yj testing code
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    like = Like.objects.filter(user=request.user, post=post)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
     
-    if like.exists():
+    if not created:
         like.delete()
         post.likes_count -= 1
     else:
-        Like.objects.create(user=request.user, post=post)  # 添加点赞
         post.likes_count += 1
     
     post.save()
-    return redirect(f"{request.META.get('HTTP_REFERER', 'forum-main')}#post-{post_id}")
-    
+    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
 @login_required
 def add_comment(request, post_id):
@@ -83,11 +81,11 @@ def add_comment(request, post_id):
                 text=content
             )
 
-    return redirect(f"{request.META.get('HTTP_REFERER', 'forum-main')}#post-{post_id}")
+    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'category', 'image', 'pdf', 'video_file']
+    fields = ['title', 'content', 'category', 'image']
     template_name = 'post/update_post.html' 
     
     def form_valid(self, form):
@@ -108,3 +106,5 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'post/detail_post.html' 
     context_object_name = 'post' 
+
+

@@ -1,0 +1,47 @@
+{% extends "home/base.html" %}
+{% load crispy_forms_tags %}
+<html>
+    {% block content %}
+    <head>
+        
+    </head>
+
+    <body>
+       <div >
+        <div>
+            <form method="POST">
+                {%csrf_token%}
+             <fieldset class="form-group">
+                <legend>Sign Up</legend>
+                <div>
+                {{ form|crispy }}
+                </div>
+                 <button name="CreateUser" type="submit">Register </button>
+             </fieldset>
+            </form>
+        </div>
+        <div class="button">
+            <button  ><a href= "{% url 'forum-login' %}">Back to Log In</a></button>
+            
+       </div>
+      
+    </body> 
+    
+    <!--<form>{% csrf_token %}</form>-->
+
+        <!--pop up message for sucessful signup/login-->
+
+    <!--
+    { if message in messages }
+            { for message in messages }
+                _alert/pop up message_
+                <div>
+                    _(name a class) for this alert message -{{ message.tag }}_
+                    {{ message }}
+                </div>
+            { end for }
+        { end if }    
+    -->    
+        
+    {% endblock content %}
+    </html>

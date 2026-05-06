@@ -43,11 +43,7 @@
 
     <nav class="features">
         <a href="{% url 'forum-main' %}"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
-        {% if user.is_authenticated and user.username %}
-            <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
-        {% else %}
-            <a href="{% url 'login' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
-        {% endif %}
+        <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         <!--
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
         <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
@@ -58,7 +54,7 @@
     <div class="post">
         {% if posts %}
             {% for post in posts %}
-                <div id="post-{{ post.id }}">
+                <div>
                     <p><strong>Title:</strong><a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
                     <p><strong>Author:</strong> {{ post.author.username }}</p>
                     <p><strong>Major:</strong> 
@@ -71,17 +67,6 @@
                     <p><strong>Content:</strong> {{ post.content }}</p>
                     {% if post.image %}
                         <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
-                    {% endif %}
-
-                    {% if post.pdf %}
-                        <p><a href="{{ post.pdf.url }}" target="_blank">View PDF</a></p>
-                    {% endif %}
-
-                    {% if post.video_file %}
-                        <video width="320" height="240" controls>
-                            <source src="{{ post.video_file.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
                     {% endif %}
 
                     <div>
