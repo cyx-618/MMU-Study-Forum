@@ -13,6 +13,8 @@ from django.views.generic import (
 from post.models import Post, Like, Comment
 from user.models import Feedback
 from django.urls import reverse
+from django.urls import reverse_lazy
+
 # Create your views here.
 def main(request):
     context = {
@@ -24,8 +26,8 @@ def main(request):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content', 'category','image']
-    template_name = 'post/create-post.html' #change to create-post.html
-    success_url = '/main/'
+    template_name = 'post/create_post.html' #change to create_post.html
+    success_url = reverse_lazy('forum-main')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -98,9 +100,11 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'post/delete_post.html' 
     
     def get_success_url(self):
-        return reverse('main')
+        return reverse('forum-main')
     
 class PostDetailView(DetailView):
     model = Post
     template_name = 'post/detail_post.html' 
     context_object_name = 'post' 
+
+

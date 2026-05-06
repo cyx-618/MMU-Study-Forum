@@ -9,10 +9,9 @@
     </head>
 
 <body>
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div id="welcome" class="modal">
         <div class="modal_content">
-            <p>Welcome, {username} !</p>
+            <p>Welcome, {{user.username}} !</p>
             <span class="close" onclick="closeModal()">Start journey</span>
         </div>
     </div>
@@ -32,14 +31,14 @@
     </div>
 
     <nav class="category">
-        <button><a href= "/main/forum/Computing">FCI</a></button>
-        <button><a href= "/main/forum/Multimedia">FCM</a></button>
-        <button><a href= "/main/forum/Management">FOM</a></button>
-        <button><a href= "/main/forum/Cinematic">FCA</a></button>
-        <button><a href= "/main/forum/Communication">FAC</a></button>
-        <button><a href= "/main/forum/Engineering">FAIE</a></button>
-        <button><a href= "/main/forum/Law">FOL</a></button>
-        <button><a href= "/main/forum/Business">FOB</a></button>
+        <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
+        <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
+        <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
+        <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
+        <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
+        <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
+        <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
+        <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
     </nav>
 
     <nav class="features">
@@ -56,22 +55,7 @@
         {% if posts %}
             {% for post in posts %}
                 <div>
-                    <div>
-                        {% if user == post.author %}
-                            <div>
-                                <form method="post" action="{% url 'post-delete'}" onsubmit="return confirm('Are your sure want to delete this post?');">
-                                    {% csrf_token %}
-                                    <button type="button">Delete</button>
-                                </form>
-                                <span>
-                                    <a href="{% url 'post-update' post.pk %}">
-                                        <button type="button">Edit</button>
-                                    </a>
-                                </span>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <p><strong>Title:</strong> {{ post.title }}</p>
+                    <p><strong>Title:</strong><a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
                     <p><strong>Author:</strong> {{ post.author.username }}</p>
                     <p><strong>Major:</strong> 
                         {% if post.author.user_profile and post.author.user_profile.major %}
@@ -84,6 +68,16 @@
                     {% if post.image %}
                         <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
                     {% endif %}
+
+                    <div>
+                        {% if user == post.author %}
+                            <div>
+                                <a href="{% url 'post-update' post.pk %}">
+                                <button type="button">Edit</button>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <form method="post" action="{% url 'like_post' post.id %}">
                         {% csrf_token %}
@@ -123,6 +117,7 @@
     </div>
 
 <script>
+
     window.onload = function() {
         document.getElementById('welcome').style.display = 'block';
     }
