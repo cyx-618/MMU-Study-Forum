@@ -54,7 +54,7 @@
     <div class="post">
         {% if posts %}
             {% for post in posts %}
-                <div id="post-{{ post.id }}">
+                <div>
                     <p><strong>Title:</strong><a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
                     <p><strong>Author:</strong> {{ post.author.username }}</p>
                     <p><strong>Major:</strong> 
