@@ -17,4 +17,6 @@ urlpatterns = [
     path('feedback/', views.submit_feedback, name='submit-feedback'),
     path('feedback/list/', views.feedback_list, name='feedback-list'),
     path('profile/<str:username>/', views.view_profile, name='view-profile'),
+    path('edit-profile/', views.edit_profile, name='edit-profile'),
+    path('delete-profile/', views.delete_profile, name='delete-profile'),
 ]

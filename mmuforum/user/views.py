@@ -7,7 +7,7 @@ from .form import (
     FeedbackForm
 )
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login as auth_login, logout
 from .models import User_profile, Feedback
 # Create your views here.
 
@@ -99,6 +99,7 @@ def feedback_list(request):
     }
     return render(request, 'user/feedback_list.html', context)
 
+
 @login_required
 def view_profile(request, username):
     user_profile = User_profile.objects.filter(user__username=username).first()
@@ -108,3 +109,31 @@ def view_profile(request, username):
         'title': f"{user_profile.user.username}'s Profile"
     }
     return render(request, 'user/view_profile.html', context)
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, request.FILES, instance=request.user.user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated!')
+            return redirect('view-profile', username=request.user.username)
+    else:
+        form = UserUpdateForm(instance=request.user.user_profile)
+    
+    context={
+        'title':'Edit Profile',
+        'form': form,
+    }
+    return render(request,'user/edit_profile.html',{'form': form})
+
+
+def delete_profile(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        messages.success(request, 'Your account has been deleted!')
+        return redirect('forum-main')
+    return render(request, 'user/delete_profile.html')

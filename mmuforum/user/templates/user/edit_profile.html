@@ -14,6 +14,6 @@
                 <button type="submit" class="btn btn-primary">Update Profile</button>
             </form>
         </div>
-        <button><a href="{% url 'view-profile' %}">Back to Profile</a></button>
+        <button><a href="{% url 'view-profile' user.username%}">Back to Profile</a></button>
     </body>
     {% endblock content %}

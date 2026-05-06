@@ -1,6 +1,10 @@
 <div>
     <h2>My Profile</h2>
-    <img src="{{ view_profile.profile_picture.url }}" alt="Profile Picture" style="max-width: 200px; max-height: 200px;">
+    {% if view_profile.profile_picture %}
+        <img src="{{ view_profile.profile_picture.url }}" alt="Profile Picture" style="max-width: 200px; max-height: 200px;">
+    {% else %}
+        <p>No profile picture.</p>
+    {% endif %} 
     <p>Username: {{ user.username }}</p>
     <p>Email: {{ user.email }}</p>
     <p>Faculty: {{ view_profile.major.major_name }}</p>
@@ -25,4 +29,7 @@
 </div>
 
 <button><a href="{% url 'forum-main' %}">Back to Home</a></button>
+<button><a href="{% url 'edit-profile' %}">Edit Profile</a></button>
+<button><a href="{% url 'delete-profile' %}">Delete Profile</a></button>
+
 

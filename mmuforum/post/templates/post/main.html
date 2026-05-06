@@ -69,6 +69,17 @@
                         <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
                     {% endif %}
 
+                    {% if post.pdf %}
+                        <p><a href="{{ post.pdf.url }}" target="_blank">View PDF</a></p>
+                    {% endif %}
+
+                    {% if post.video_file %}
+                        <video width="320" height="240" controls>
+                            <source src="{{ post.video_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+
                     <div>
                         {% if user == post.author %}
                             <div>
