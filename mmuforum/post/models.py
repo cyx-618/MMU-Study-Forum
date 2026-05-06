@@ -22,6 +22,8 @@ class Post (models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     date_posted = models.DateTimeField(default=timezone.now)
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    pdf = models.FileField(upload_to='post_pdfs/', null=True, blank=True)
+    video_file = models.FileField(upload_to='post_videos/', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Posts'

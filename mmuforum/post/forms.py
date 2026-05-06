@@ -5,7 +5,7 @@ from .models import Post
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'category', 'image']
+        fields = ['title', 'content', 'category', 'image', 'pdf', 'video_file']
         widgets = {
             'title': forms.TextInput(attrs={
                 'placeholder': 'Write your title here...',
