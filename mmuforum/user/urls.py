@@ -19,4 +19,5 @@ urlpatterns = [
     path('profile/<str:username>/', views.view_profile, name='view-profile'),
     path('edit-profile/', views.edit_profile, name='edit-profile'),
     path('delete-profile/', views.delete_profile, name='delete-profile'),
+    path('my-like/', views.my_like, name='my-like')
 ]

@@ -1,6 +1,10 @@
+from multiprocessing import context
+from urllib import request
+
 from django.shortcuts import get_object_or_404, render, redirect
 #from django.http import HttpResponse
 from django.contrib import messages
+
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -9,7 +13,7 @@ from .form import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, logout
 from .models import User_profile, Feedback
-from post.models import Post
+from post.models import Like, Post
 # Create your views here.
 
 #view function
@@ -141,3 +145,8 @@ def delete_profile(request):
         messages.success(request, 'Your account has been deleted!')
         return redirect('forum-home')
     return render(request, 'user/delete_profile.html')
+
+@login_required
+def my_like(request):
+    liked_posts=Post.objects.filter(likes__user=request.user)
+    return render(request,'user/my_like.html',{'liked_posts': liked_posts})
