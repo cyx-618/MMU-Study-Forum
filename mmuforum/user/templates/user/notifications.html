@@ -1,0 +1,32 @@
+{% extends "home/base.html" %}
+  {% block content %}
+   <h2>Notifications</h2>
+
+    {% for notification in notifications %}
+      <div class="notification">
+        <!-- notification for likes and comments only -->
+         {% if notification.notification_type==like %}
+         <p>
+            <strong>@{{ notification.sender.username }}</strong> liked your post: 
+                    <a href="{% url 'post-detail' notification.post.pk %}">"{{ notification.post.title|truncatechars:30 }}"</a>
+                    <br>
+                    <small class="text-muted">{{ notification.date|timesince }} ago</small>
+         </p>
+         {% elif notification.notification_type==comment %}
+         <p>
+            <strong>@{{ notification.sender.username }}</strong> commented on your post: 
+                    <a href="{% url 'post-detail' notification.post.pk %}">"{{ notification.post.title|truncatechars:30 }}"</a>
+                    <br>
+                    <i class="text-secondary">"{{ notification.text_preview|truncatechars:30 }}"</i>
+                    <small class="text-muted">{{ notification.date|timesince }} ago</small>
+         </p>
+         {% endif %}
+      </div>
+
+    <div>
+    {% empty %}
+        <p>No notifications yet.</p>
+    {% endfor %}
+    </div>
+    <button><a href="{% url 'forum-home' %}">Back to Home</a></button>
+  {% endblock content %}
