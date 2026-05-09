@@ -1,0 +1,69 @@
+{% extends "home/base.html" %}
+  {% block content %}
+
+  <h2>My Favourites Posts</h2>
+    
+    {% for post in liked_posts %}
+      <div class="like-post">
+        <p><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></p>
+        <p>Author: {{ post.author.username }}</p>
+        <p>Category: {{ post.category }}</p>
+        <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
+        <p><strong>Content:</strong> {{ post.content }}</p>
+        {% if post.image %}
+          <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px; max-height: 200px;">
+        {% endif %}
+        {% if post.pdf %}
+          <p><a href="{{ post.pdf.url }}" target="_blank">View PDF</a></p>
+          <a href="{{ post.pdf.url }}" download>Download PDF</a>
+        {% endif %}
+        {% if post.video_file %}
+          <video width="320" height="240" controls>
+            <source src="{{ post.video_file.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        {% endif %}
+       </div>
+        <div>
+            {% if user == post.author %}
+            <div>
+            <a href="{% url 'post-update' post.pk %}">
+            <button type="button">Edit</button>
+             </a>
+            </div>
+            {% endif %}
+        </div>
+         <form method="post" action="{% url 'like_post' post.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Like ({{ post.likes_count }})</button>
+                    </form>
+
+                    <div>
+                        <h4>Comment ({{ post.comments.count }})</h4>
+                
+                        {% for comment in post.comments.all %}
+                        <div>
+                            <strong>{{ comment.user.username }}:</strong>
+                            <span>{{ comment.text }}</span>
+                            <small>{{ comment.created_at }}</small>
+                        </div>
+                        {% empty %}
+                            <p>No comment.</p>
+                        {% endfor %}
+
+                    {% if user.is_authenticated %}
+                      <form method="post" action="{% url 'add-comment' post.id %}">
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Write comment..." required>
+                    <button type="submit">Submit</button>
+                </form>
+                {% endif %}
+      
+        {% empty %}
+          <p>You have not liked any posts yet.</p>
+        {% endfor %}
+
+<button><a href="{% url 'view-profile' username=request.user.username %}">Back to Profile</a></button>
+
+
+{% endblock content %}

@@ -25,7 +25,7 @@
             <input type="text" name="fquestion" placeholder="Finding something?"><br>
         </form>
         <div class="register">
-            <button type="button "class="log_out"><a href= "{% url 'forum-home' %}">LOG OUT</a></button>
+            <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
             <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
         </div>
     </div>
@@ -43,7 +43,11 @@
 
     <nav class="features">
         <a href="{% url 'forum-main' %}"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
-        <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
+        {% if user.is_authenticated and user.username %}
+            <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
+        {% else %}
+            <a href="{% url 'login' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
+        {% endif %}
         <!--
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
         <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
