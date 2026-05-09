@@ -178,7 +178,8 @@ def delete_profile(request):
         return redirect('forum-home')
     return render(request, 'user/delete_profile.html')
 
+
 @login_required
-def my_like(request):
+def favourite_posts(request):
     liked_posts=Post.objects.filter(likes__user=request.user)
-    return render(request,'user/my_like.html',{'liked_posts': liked_posts})
+    return render(request,'user/favourite_posts.html',{'liked_posts': liked_posts})

@@ -31,6 +31,8 @@ Admin's Response:
 
 Status: This issue has been mark as resolved.
 
+You can see the detail here: http://127.0.0.1:9000/user/feedback/list/
+
 Thank you for be part of MMU Forum!
 From MMU Forum Admin Team
             """
