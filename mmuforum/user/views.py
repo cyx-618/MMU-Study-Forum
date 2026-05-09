@@ -1,19 +1,20 @@
 from multiprocessing import context
 from urllib import request
-
 from django.shortcuts import get_object_or_404, render, redirect
-#from django.http import HttpResponse
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login, logout
+from .models import User_profile, Feedback
+from post.models import Like, Post
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.db.models import Q
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
     FeedbackForm
 )
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login as auth_login, logout
-from .models import User_profile, Feedback
-from post.models import Like, Post
 # Create your views here.
 
 #view function
@@ -82,6 +83,37 @@ def submit_feedback(request):
             feedback = form.save(commit=False)
             feedback.user = request.user
             feedback.save()
+
+            #send email
+            admin_and_staff = User.objects.filter(
+                Q(is_superuser=True) | Q(is_staff=True)
+            ).distinct()
+
+            recipient_list = [u.email for u in admin_and_staff if u.email]
+
+            if recipient_list:
+                feedback_subject = form.cleaned_data.get('subject', 'No Subject.')
+                feedback_message = form.cleaned_data.get('message', 'No message.')
+                email_body = f"""Hi Admin, Staff or Superuser,
+
+A new feedback has been submitted by {request.user.username}. Remember to reply them.
+Email: {request.user.email}
+Subject: {feedback_subject}
+Message: {feedback_message}
+
+From MMU Forum Admin System
+                """            
+                try:
+                    send_mail(
+                        subject = f'New Feedback from {request.user.username}',
+                        message = email_body,
+                        from_email = settings.EMAIL_HOST_USER,
+                        recipient_list = recipient_list,
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+
             messages.success(request, 'Your feedback has been submitted!')
             return redirect('feedback-list')
     
