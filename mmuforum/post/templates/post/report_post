@@ -7,18 +7,30 @@
             <p><a href="{% url 'forum-main' %}">--back to mainpage</a></p>
             <h1>Report Post</h1>
         </div>
+    </div>
 
-    <div class="report_post_card">
-        <div class="report_post_title">Repost reason:</div>
-        <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
+    <div class="post-preview">
+            <h3>{{ reported_post.title }}</h3>
+            <div class="post-meta">
+                <strong>Author:</strong> {{ reported_post.author.username }} |
+                <strong>Posted:</strong> {{ reported_post.date_posted|date:"Y-m-d H:i" }}
+            </div>
+            <p>{{ reported_post.content|linebreaks|truncatewords:50 }}</p>
+            {% if reported_post.image %}
+                <img src="{{ reported_post.image.url }}" alt="Post Image" style="max-width: 150px; margin-top: 10px;">
+            {% endif %}
+        </div>
+
+    <div class="report-form-card">
+        <div class="form-title">Report Details</div>
+            <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
                 
-                {{ form|crispy }}
-
-                <div>
-                    <button type="submit">Report</button>
-                    <button type="reset">Clear Form</button>
-                </div>
+            <div class="button-group">
+                <button type="submit" class="btn-submit">Submit Report</button>
+                <a href="{% url 'forum-main' %}" class="btn-cancel">Cancel</a>
+            </div>
             </form>
         </div>
 

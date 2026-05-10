@@ -22,7 +22,6 @@ class Post (models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     date_posted = models.DateTimeField(default=timezone.now)
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
-
     pdf = models.FileField(upload_to='post_pdfs/', null=True, blank=True)
     video_file = models.FileField(upload_to='post_videos/', null=True, blank=True)
     views_count = models.IntegerField(default=0)
@@ -36,7 +35,6 @@ class Post (models.Model):
     
     #def get_absolute_url(self):
         #return reverse('post-detail', kwargs={'pk': self.pk} )
-
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
@@ -55,3 +53,34 @@ class Comment (models.Model):
 
     class Meta:
         verbose_name_plural = 'Comments'
+
+class Report(models.Model):
+    REASON_CHOICES = [
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        ('hate_speech', 'Hate Speech'),
+        ('inappropriate', 'Inappropriate Content'),
+        ('copyright', 'Copyright Violation'),
+        ('other', 'Other'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('reviewed', 'Reviewed'),
+        ('dismissed', 'Dismissed'),
+    ]
+    
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='reports')
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports')
+    reason = models.CharField(max_length=20, choices=REASON_CHOICES)
+    description = models.TextField(max_length=500, blank=True, help_text="Additional details (optional)")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ['post', 'reporter']
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.reporter.username} reported {self.post.title} for {self.reason}"

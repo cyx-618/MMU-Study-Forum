@@ -15,6 +15,10 @@ from user.models import Feedback
 from django.urls import reverse
 from django.urls import reverse_lazy
 
+from django.contrib import messages
+from .models import Post, Report
+from .forms import ReportForm
+
 # Create your views here.
 def main(request):
     context = {
@@ -45,6 +49,35 @@ def major_post_list(request, major_name):
         #return render(request, 'post/major_forum.html', {'posts': posts, 'major_name': major_name})
         return render(request, 'post/major_forum.html', context)
 
+@login_required
+def report_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    existing_report = Report.objects.filter(post=post, reporter=request.user).first()
+    
+    if existing_report:
+        messages.warning(request, 'You have already reported this post.')
+        return redirect('forum-main')
+    
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.post = post
+            report.reporter = request.user
+            report.save()
+            messages.success(request, 'Thank you for your report. We will review it shortly.')
+            return redirect('forum-main')
+    else:
+        form = ReportForm()
+    
+    context = {
+        'form': form,
+        'post': post,
+        'reported_post': post,
+    }
+    return render(request, 'report_post.html', context)
+
 class  PostListView(ListView):
     model = Post
     template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
@@ -54,7 +87,7 @@ class  PostListView(ListView):
 #class PostDetailView(DetailView):
     #model = Post
 
-#yj testing code
+#yj
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -83,6 +116,7 @@ def add_comment(request, post_id):
             )
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
