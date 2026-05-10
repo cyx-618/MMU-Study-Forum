@@ -1,6 +1,4 @@
-{% extends "home/base.html" %}
-  {% block content %}
-   <h2>Notifications</h2>
+<h2>Notifications</h2>
 
     {% for notification in notifications %}
       <div class="notification">
@@ -29,4 +27,3 @@
     {% endfor %}
     </div>
     <button><a href="{% url 'forum-home' %}">Back to Home</a></button>
-  {% endblock content %}

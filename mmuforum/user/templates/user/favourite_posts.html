@@ -1,10 +1,7 @@
-{% extends "home/base.html" %}
-  {% block content %}
-
-  <h2>My Favourites Posts</h2>
+<h2>My Favourites Posts</h2>
     
     {% for post in liked_posts %}
-      <div class="like-post">
+      <div class="favorite-post">
         <p><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></p>
         <p>Author: {{ post.author.username }}</p>
         <p>Category: {{ post.category }}</p>
@@ -16,6 +13,7 @@
         {% if post.pdf %}
           <p><a href="{{ post.pdf.url }}" target="_blank">View PDF</a></p>
           <a href="{{ post.pdf.url }}" download>Download PDF</a>
+          <br>
         {% endif %}
         {% if post.video_file %}
           <video width="320" height="240" controls>
@@ -57,6 +55,7 @@
                     <input type="text" name="content" placeholder="Write comment..." required>
                     <button type="submit">Submit</button>
                 </form>
+                <hr>
                 {% endif %}
       
         {% empty %}
@@ -64,6 +63,3 @@
         {% endfor %}
 
 <button><a href="{% url 'view-profile' username=request.user.username %}">Back to Profile</a></button>
-
-
-{% endblock content %}

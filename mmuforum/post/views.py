@@ -84,8 +84,6 @@ class  PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-date_posted']
 
-#class PostDetailView(DetailView):
-    #model = Post
 
 #yj
 @login_required
@@ -107,12 +105,22 @@ def add_comment(request, post_id):
     if request.method == 'POST':
         post = get_object_or_404(Post, id=post_id)
         content = request.POST.get('content')
-        
+        parent_id = request.POST.get('parent_id')
+        parent_object = None
+
         if content:
+            if parent_id and parent_id.strip():
+                target_comment = Comment.objects.filter(id=parent_id).first()
+                if target_comment.parent_comment:
+                    parent_object = target_comment.parent_comment
+                else:
+                    parent_object = target_comment
+
             Comment.objects.create(
                 post=post,
                 user=request.user,
-                text=content
+                text=content,
+                parent_comment=parent_object
             )
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))

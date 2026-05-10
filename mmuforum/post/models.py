@@ -48,12 +48,22 @@ class Comment (models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(max_length=300)
     created_at = models.DateTimeField(default=timezone.now)
-    likes_count = models.IntegerField(default=0)
-    dislikes_count = models.IntegerField(default=0)
+
+    parent_comment = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    
+    likes_count = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='comment_likes', blank=True)
+    dislikes_count = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='comment_dislikes', blank=True)
 
     class Meta:
         verbose_name_plural = 'Comments'
 
+
+    def total_likes(self):
+        return self.likes_count.count()
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.text[:20]}"
+    
 class Report(models.Model):
     REASON_CHOICES = [
         ('spam', 'Spam'),
