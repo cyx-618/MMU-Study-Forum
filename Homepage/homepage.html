@@ -1,54 +1,84 @@
-{% extends "home/base.html" %}
-{% load static %}
-
-    <!--(nav link) href = "{% url 'forum-home' %}"-->
-
-    {% block content %}
+<html>
     <head>
-        <link rel="stylesheet" href=" {% static 'home/home.css' %} ">
-        <!--<title>MMU Study Forum</title>-->
-        <link rel="icon" type="image/png" href="{% static 'home/images/website-logo.png' %}">
+        <link rel="stylesheet" href="homepage.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
     </head>
-
     <body>
-       <div  class="homepage">
-            <div class="words">
-                <h3 class="title"><span class="mm">MM</span><span class="u">U</span><br>Study Forum</h3>
-                <p class="quote">Study smarter, not alone — log in and learn together.</p>
-            </div>
+       <div class="header">
 
-            <div class="register-col">
-                <h1><u>LOG IN</u></h1>
-                <img class="profile-icon" src="{% static 'home/images/profile.png' %}" alt="profile-icon">
-              <!--here need to open form.py to make css function-->
-                <form method="POST" action="{% url 'forum-login'%}"></form>
-                {% csrf_token %}
-                <input type="text" name="username" placeholder="Username">
-                <input type="password" name="password" placeholder="Password">
-                <p class="forgot-password"><u>Forgot your password?</u></p>
-                <button href="{%url 'forum-main'%}"class="log-in" >Log In</button><br>
-
-                <p class="no-account">Don't have an account? </p><br>
-                <a id="register" href="{% url 'forum-signup' %}">Sign Up</a>
-            </div>
+            <img class="logo" src="mmuforum\home\static\home\images\discussion logo.png" alt="logo">
+            <a class="log-in-btn" href="#">Log In</a>
+            <a class="sign-up-btn" href="#">Sign Up</a>
        </div>
-
-       <div class="about">
-            <div class="about-us">ABOUT US</div>
-                <p class="intro">MMU Study Forum is a web-based forum for student create post about academic
-                    and<br> study problem. Any user can comment to help solve the student problem. In this site you<br> can create
-                    posts,delete, and edit posts that you want. You can interact with other students<br>with comment and like 
-                    other posts. Feel free to write us email if you see any issues.<br>Report button is available for any inappropriate
-                    and offensive content.Thanks you!</p>
+       <div class="intro">
+           <h1 class="title">MMU Study Forum. </h1>
+              <p class="about-us">MMU Study Forum is a web-based forum for student create post about academic
+                    and study problem. Any user can comment to help solve the student problem. In this site you can create
+                    posts,delete, and edit posts that you want. You can interact with other students with comment and like 
+                    other posts. 
+              </p>
+             
+                <span><a class="explore-btn" href="#community-benefits">Explore Discussions</a></span>
+              <img class="siri-lab" src="image.png" alt="siri-lab">
+       </div>
+       <div  id="community-benefits" class="community-benefits">
+         <div class="benefits-intro">
+            <h2 class="benefits-title">The Power of Our Community</h2>
+            <p class="benefits-quote">
+                We believe that learning is collective journey.Here,we provide the tools and environment 
+                for every student to thrive.
+            </p>
+         </div>
+         <div class="benefits-section">
+            <div class="clm-knowledge">
+                <h3 class="clm-title-knowledge">Knowledge Sharing</h3>
+                <p class="benefits-decription">Access a vast repository of academic resources and 
+                    share your own knowledge with the community.
+                </p>
             </div>
+            <div class="clm-support">
+                <h3 class="clm-title-support">Peer Support</h3>
+                <p class="benefits-decription">Connect with supportive network of peers who understad your academic
+                    challenges and offer real-time help.
+                </p>
+            </div>
+            <div class="clm-academic">
+                <h3 class="clm-title-academic">Academic Growth</h3>
+                <p class="benefits-decription">Engage in deep discussions that challenge your perspective and accelerate your
+                    intellectual development.
+                </p>
+            </div>
+         </div>
+       </div>
+        <div class="functions">
+            <div class="function-intro">
+                <h2 class="function-title">Our Features</h2>
+                <p class="funtion-quote">
+                    Here are some of the key feature that make our forum a vibrant and engaging place for students to connect and learn together.
+                </p>
+                <!-- will be add on when the mainpain is created-->
+            </div>
+        </div>
+        <h1 class="learning">Ready to learn ?</h1>
     
-            <div class="footer">
+        <div class="footer">
                 <h2 class="email-us">Email Us :</h2>
                 <p class="email-add" ><a href="mailto:yap.qian.ning@student.mmu.edu.my">Yap.Qian.Ning@student.mmu.edu.my</a></p>
                 <p class="email-add"><a href="mailto:lim.yee.jing@student.mmu.edu.my">Lim.Yee.Jing@student.mmu.edu.my</a></p>
                 <p class="email-add"><a href="mailto:cheong.yi.xuan@student.mmu.edu.my">Cheong.Yi.Xuan@student.mmu.edu.my</a></p>
-            </div>
         </div>
+        <script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
     </body>
-    {% endblock content %}
 </html>
