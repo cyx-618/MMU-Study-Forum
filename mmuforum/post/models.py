@@ -60,21 +60,13 @@ class Report(models.Model):
         ('harassment', 'Harassment'),
         ('hate_speech', 'Hate Speech'),
         ('inappropriate', 'Inappropriate Content'),
-        ('copyright', 'Copyright Violation'),
         ('other', 'Other'),
-    ]
-
-    STATUS_CHOICES = [
-        ('pending', 'Pending Review'),
-        ('reviewed', 'Reviewed'),
-        ('dismissed', 'Dismissed'),
     ]
     
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='reports')
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports')
     reason = models.CharField(max_length=20, choices=REASON_CHOICES)
     description = models.TextField(max_length=500, blank=True, help_text="Additional details (optional)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

@@ -58,7 +58,7 @@
     <div class="post">
         {% if posts %}
             {% for post in posts %}
-                <div>
+                <div id="post-{{ post.id}}">
                     <p><strong>Title:</strong><a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
                     <p><strong>Author:</strong> {{ post.author.username }}</p>
                     <p><strong>Major:</strong> 
@@ -98,14 +98,12 @@
                         {% csrf_token %}
                         <button type="submit">Like ({{ post.likes_count }})</button>
                     </form>
-                </div>
 
-                {% if user.is_authenticated and user != post.author %}
-                <div style="margin-top: 10px;">
-                    <a href="{% url 'report-post' post.id %}" 
-                    onclick="return confirm('Are you sure you want to report this post?')">Report</a>
-                </div>
-                {% endif %}
+                    {% if user.is_authenticated and user != post.author %}
+                    <div>
+                        <a href="{% url 'report-post' post.id %}" >Report</a>
+                    </div>
+                    {% endif %}
 
                         <h4>Comment ({{ post.comments.count }})</h4>
                 
@@ -115,21 +113,19 @@
                             <span>{{ comment.text }}</span>
                             <small>{{ comment.created_at }}</small>
                         </div>
-                {% empty %}
-                    <p>No comment.</p>
-                {% endfor %}
+                        {% empty %}
+                            <p>No comment.</p>
+                        {% endfor %}
 
-                {% if user.is_authenticated %}
-                <form method="post" action="{% url 'add-comment' post.id %}">
-                    {% csrf_token %}
-                    <input type="text" name="content" placeholder="Write comment..." required>
-                    <button type="submit">Submit</button>
-                </form>
-                {% endif %}
-
-                <hr>
-                    </div>
+                        {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'add-comment' post.id %}">
+                            {% csrf_token %}
+                            <input type="text" name="content" placeholder="Write comment..." required>
+                            <button type="submit">Submit</button>
+                        </form>
+                        {% endif %}
                 </div>
+                <hr>
             {% empty %}
                 <p>No posts now. Share your questions!</p>
             {% endfor %}

@@ -76,7 +76,7 @@ def report_post(request, post_id):
         'post': post,
         'reported_post': post,
     }
-    return render(request, 'report_post.html', context)
+    return render(request, 'post/report_post.html', context)
 
 class  PostListView(ListView):
     model = Post

@@ -33,28 +33,6 @@
             </div>
             </form>
         </div>
-
-        <div>
-                {% for post in posts %}
-                    <div>
-                        <h4>{{ post.title }}</h4>
-                        <p><strong>Author:</strong> {{ post.author.username }}</p>
-                        <p><strong>Posted:</strong> {{ post.date_posted|date:"Y-m-d H:i" }}</p>
-                        <p>{{ post.content|linebreaks }}</p>
-                        {% if post.image %}
-                            <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
-                        {% endif %}
-                        <hr>
-                    </div>
-                {% empty %}
-                    
-                {% endfor %}
-
-        </div>
-    </div>
-      
-<script>
-
-</script>
+    
 </body>
 </html>
