@@ -27,6 +27,9 @@ class Post (models.Model):
     views_count = models.IntegerField(default=0)
     likes_count = models.IntegerField(default=0)
 
+    is_reported = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+
     class Meta:
         verbose_name_plural = 'Posts'
 
@@ -72,13 +75,20 @@ class Report(models.Model):
         ('inappropriate', 'Inappropriate Content'),
         ('other', 'Other'),
     ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('reviewed', 'Reviewed'),
+        ('dismissed', 'Dismissed'),
+    ]
     
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='reports')
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports')
     reason = models.CharField(max_length=20, choices=REASON_CHOICES)
-    description = models.TextField(max_length=500, blank=True, help_text="Additional details (optional)")
+    description = models.TextField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     
     class Meta:
         unique_together = ['post', 'reporter']

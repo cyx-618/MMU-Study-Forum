@@ -22,7 +22,8 @@ from .forms import ReportForm
 # Create your views here.
 def main(request):
     context = {
-        'posts': Post.objects.all().prefetch_related('comments','likes'),
+        #'posts': Post.objects.all().prefetch_related('comments','likes'),
+        'posts': Post.objects.filter(is_deleted=False).prefetch_related('comments','likes'),
         'title':'Main Forum',
     }
     return render(request, 'post/main.html', context)
@@ -39,7 +40,10 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 def major_post_list(request, major_name):
-        posts = Post.objects.filter(author__user_profile__major__major_name=major_name).order_by('-date_posted').prefetch_related('comments','likes')
+        posts = Post.objects.filter(
+            author__user_profile__major__major_name=major_name,
+        is_hidden=False
+    ).order_by('-date_posted').prefetch_related('comments', 'likes')
 
         context = {
             'posts': posts,
@@ -48,42 +52,6 @@ def major_post_list(request, major_name):
         }
         #return render(request, 'post/major_forum.html', {'posts': posts, 'major_name': major_name})
         return render(request, 'post/major_forum.html', context)
-
-@login_required
-def report_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    
-    existing_report = Report.objects.filter(post=post, reporter=request.user).first()
-    
-    if existing_report:
-        messages.warning(request, 'You have already reported this post.')
-        return redirect('forum-main')
-    
-    if request.method == 'POST':
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            report = form.save(commit=False)
-            report.post = post
-            report.reporter = request.user
-            report.save()
-            messages.success(request, 'Thank you for your report. We will review it shortly.')
-            return redirect('forum-main')
-    else:
-        form = ReportForm()
-    
-    context = {
-        'form': form,
-        'post': post,
-        'reported_post': post,
-    }
-    return render(request, 'post/report_post.html', context)
-
-class  PostListView(ListView):
-    model = Post
-    template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
-    context_object_name = 'posts'
-    ordering = ['-date_posted']
-
 
 #yj
 @login_required
@@ -124,6 +92,50 @@ def add_comment(request, post_id):
             )
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+
+@login_required
+def report_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    existing_report = Report.objects.filter(post=post, reporter=request.user).first()
+    
+    if existing_report:
+        messages.warning(request, 'You have already reported this post.')
+        return redirect('forum-main')
+    
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.post = post
+            report.reporter = request.user
+            report.save()
+
+            report_count = Report.objects.filter(post=post).count()
+            if report_count >= 1: 
+                post.is_reported = True
+                post.is_deleted = True
+                post.save()
+            messages.success(request, 'Thank you for your report. We will review it shortly.')
+            return redirect('forum-main')
+    else:
+        form = ReportForm()
+    
+    context = {
+        'form': form,
+        'post': post,
+        'reported_post': post,
+    }
+    return render(request, 'post/report_post.html', context)
+
+class  PostListView(ListView):
+    model = Post
+    template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
+    context_object_name = 'posts'
+    ordering = ['-date_posted']
+
+    def get_queryset(self):
+        return Post.objects.filter(is_deleted=False).order_by('-date_posted')
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
