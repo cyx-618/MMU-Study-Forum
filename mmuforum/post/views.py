@@ -18,6 +18,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Post, Report
 from .forms import ReportForm
+from django.db.models import Q
 
 # Create your views here.
 def main(request):
@@ -128,6 +129,30 @@ def report_post(request, post_id):
     }
     return render(request, 'post/report_post.html', context)
 
+def search_posts(request):
+    search_query = request.GET.get('q', '').strip()
+    posts = Post.objects.filter(is_deleted=False).order_by('-date_posted')
+    
+    if search_query:
+        posts = posts.filter(
+            Q(title__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(author__username__icontains=search_query)
+        ).distinct()
+    
+    major_name = request.GET.get('major', '')
+    if major_name:
+        posts = posts.filter(author__user_profile__major__major_name=major_name)
+    
+    context = {
+        'posts': posts,
+        'search_query': search_query,
+        'total_results': posts.count(),
+        'majors': ['FCI', 'FCM', 'FOM', 'FCA', 'FAC', 'FAIE', 'FOL', 'FOB'],  # 专业列表
+        'selected_major': major_name,
+    }
+    return render(request, 'post/search_results.html', context)
+
 class  PostListView(ListView):
     model = Post
     template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
@@ -135,8 +160,23 @@ class  PostListView(ListView):
     ordering = ['-date_posted']
 
     def get_queryset(self):
-        return Post.objects.filter(is_deleted=False).order_by('-date_posted')
+        queryset = Post.objects.filter(is_deleted=False).order_by('-date_posted')
 
+        search_query = self.request.GET.get('q', '').strip()
+        
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) |
+                Q(content__icontains=search_query) |
+                Q(author__username__icontains=search_query)
+            ).distinct()
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        return context
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
