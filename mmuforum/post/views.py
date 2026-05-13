@@ -175,8 +175,21 @@ class  PostListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['search_query'] = self.request.GET.get('q', '')
+        search_query= self.request.GET.get('q', '')
+        context['search_query'] = search_query
+        
+        if search_query:
+            total_queryset = Post.objects.filter(is_deleted=False).filter(
+                Q(title__icontains=search_query) |
+                Q(content__icontains=search_query) |
+                Q(author__username__icontains=search_query)
+            ).distinct()
+            context['total_results'] = total_queryset.count()
+        else:
+            context['total_results'] = None
+            
         return context
+
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post

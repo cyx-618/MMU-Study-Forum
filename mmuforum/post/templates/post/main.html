@@ -6,6 +6,7 @@
 
     <head>
         <title>MMU Study Forum</title>
+        <link href = "main.css" rel = "stylesheet">
         <style>
             .reply-form {
                 display: none;
@@ -33,20 +34,25 @@
 
         <form class="search_bar" method="get" action="{% url 'forum-main' %}">
             <link rel="icon" type="images/png" href="{% static 'post/mainpage-icon/search.png' %}">
-            <input type="text" name="q" placeholder="Finding something?" value="{{ search_query }}"><br>
+            <input type="text" name="q" placeholder="Finding something?" value="{{ search_query|default:'' }}"><br>
             <span>
                 <button type="submit">Search</button>
             </span>
         </form>
 
-        {% comment %}
         {% if search_query %}
         <div class="search-info">
-            <p>Search "{{ search_query }}" result：found {{ posts|length }} posts.</p>
-            <a href="{% url 'search-results' %}">Clear</a>
+            <p>Search "{{ search_query }}" result：found 
+                {% if total_results %}
+                    {{ total_results }}
+                {% else%}
+                    {{ posts|length }}
+                {% endif %}
+                posts.
+            </p>
+            <a href="{% url 'forum-main' %}">Clear</a>
         </div>
         {% endif %}
-        {% endcomment %}
 
         {% if search_query and posts|length == 0 %}
         <div class="no-results">
@@ -80,7 +86,6 @@
         {% endif %}
         <!--
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
-        <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
     -->
         <a href="{% url 'post-create' %}"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
     </nav>
