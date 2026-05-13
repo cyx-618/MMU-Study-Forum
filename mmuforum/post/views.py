@@ -43,13 +43,22 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 def major_post_list(request, major_name):
         posts = Post.objects.filter(
             author__user_profile__major__major_name=major_name,
-        is_hidden=False
+            is_deleted=False
     ).order_by('-date_posted').prefetch_related('comments', 'likes')
 
+        search_query = request.GET.get('q', '').strip()
+        if search_query:
+            posts = posts.filter(
+                Q(title__icontains=search_query) |
+                Q(content__icontains=search_query) |
+                Q(author__username__icontains=search_query)
+            ).distinct()
+    
         context = {
             'posts': posts,
             'major_name': major_name,
-            'title': f'{major_name} Forum'
+            'title': f'{major_name} Forum',
+            'search_query': search_query,
         }
         #return render(request, 'post/major_forum.html', {'posts': posts, 'major_name': major_name})
         return render(request, 'post/major_forum.html', context)
@@ -129,30 +138,6 @@ def report_post(request, post_id):
     }
     return render(request, 'post/report_post.html', context)
 
-def search_posts(request):
-    search_query = request.GET.get('q', '').strip()
-    posts = Post.objects.filter(is_deleted=False).order_by('-date_posted')
-    
-    if search_query:
-        posts = posts.filter(
-            Q(title__icontains=search_query) |
-            Q(content__icontains=search_query) |
-            Q(author__username__icontains=search_query)
-        ).distinct()
-    
-    major_name = request.GET.get('major', '')
-    if major_name:
-        posts = posts.filter(author__user_profile__major__major_name=major_name)
-    
-    context = {
-        'posts': posts,
-        'search_query': search_query,
-        'total_results': posts.count(),
-        'majors': ['FCI', 'FCM', 'FOM', 'FCA', 'FAC', 'FAIE', 'FOL', 'FOB'],  # 专业列表
-        'selected_major': major_name,
-    }
-    return render(request, 'post/search_results.html', context)
-
 class  PostListView(ListView):
     model = Post
     template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
@@ -161,7 +146,6 @@ class  PostListView(ListView):
 
     def get_queryset(self):
         queryset = Post.objects.filter(is_deleted=False).order_by('-date_posted')
-
         search_query = self.request.GET.get('q', '').strip()
         
         if search_query:
@@ -175,7 +159,7 @@ class  PostListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        search_query= self.request.GET.get('q', '')
+        search_query= getattr(self, 'search_query', self.request.GET.get('q', ''))
         context['search_query'] = search_query
         
         if search_query:
@@ -184,7 +168,9 @@ class  PostListView(ListView):
                 Q(content__icontains=search_query) |
                 Q(author__username__icontains=search_query)
             ).distinct()
-            context['total_results'] = total_queryset.count()
+            total_count = total_queryset.count()
+            context['total_results'] = total_count
+            print(f"Search query: '{search_query}', Total results: {total_count}")
         else:
             context['total_results'] = None
             
