@@ -17,6 +17,7 @@ urlpatterns = [
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('like/<int:post_id>/', views.like_post, name='like_post'),
     path('comment/<int:post_id>/', views.add_comment, name='add-comment'),
+    path('report/<int:post_id>/', views.report_post, name='report-post'),
 ]
 
 #<app>/<model>_<viewtype>.html

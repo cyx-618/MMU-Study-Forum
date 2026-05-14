@@ -15,10 +15,16 @@ from user.models import Feedback
 from django.urls import reverse
 from django.urls import reverse_lazy
 
+from django.contrib import messages
+from .models import Post, Report
+from .forms import ReportForm
+from django.db.models import Q
+
 # Create your views here.
 def main(request):
     context = {
-        'posts': Post.objects.all().prefetch_related('comments','likes'),
+        #'posts': Post.objects.all().prefetch_related('comments','likes'),
+        'posts': Post.objects.filter(is_deleted=False).prefetch_related('comments','likes'),
         'title':'Main Forum',
     }
     return render(request, 'post/main.html', context)
@@ -35,24 +41,29 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 def major_post_list(request, major_name):
-        posts = Post.objects.filter(author__user_profile__major__major_name=major_name).order_by('-date_posted').prefetch_related('comments','likes')
+        posts = Post.objects.filter(
+            author__user_profile__major__major_name=major_name,
+            is_deleted=False
+    ).order_by('-date_posted').prefetch_related('comments', 'likes')
 
+        search_query = request.GET.get('q', '').strip()
+        if search_query:
+            posts = posts.filter(
+                Q(title__icontains=search_query) |
+                Q(content__icontains=search_query) |
+                Q(author__username__icontains=search_query)
+            ).distinct()
+    
         context = {
             'posts': posts,
             'major_name': major_name,
-            'title': f'{major_name} Forum'
+            'title': f'{major_name} Forum',
+            'search_query': search_query,
         }
         #return render(request, 'post/major_forum.html', {'posts': posts, 'major_name': major_name})
         return render(request, 'post/major_forum.html', context)
 
-class  PostListView(ListView):
-    model = Post
-    template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
-    context_object_name = 'posts'
-    ordering = ['-date_posted']
-
-
-#yj testing code
+#yj
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -91,6 +102,80 @@ def add_comment(request, post_id):
             )
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+
+@login_required
+def report_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    existing_report = Report.objects.filter(post=post, reporter=request.user).first()
+    
+    if existing_report:
+        messages.warning(request, 'You have already reported this post.')
+        return redirect('forum-main')
+    
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.post = post
+            report.reporter = request.user
+            report.save()
+
+            report_count = Report.objects.filter(post=post).count()
+            if report_count >= 1: 
+                post.is_reported = True
+                post.is_deleted = True
+                post.save()
+            messages.success(request, 'Thank you for your report. We will review it shortly.')
+            return redirect('forum-main')
+    else:
+        form = ReportForm()
+    
+    context = {
+        'form': form,
+        'post': post,
+        'reported_post': post,
+    }
+    return render(request, 'post/report_post.html', context)
+
+class  PostListView(ListView):
+    model = Post
+    template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
+    context_object_name = 'posts'
+    ordering = ['-date_posted']
+
+    def get_queryset(self):
+        queryset = Post.objects.filter(is_deleted=False).order_by('-date_posted')
+        search_query = self.request.GET.get('q', '').strip()
+        
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) |
+                Q(content__icontains=search_query) |
+                Q(author__username__icontains=search_query)
+            ).distinct()
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        search_query= getattr(self, 'search_query', self.request.GET.get('q', ''))
+        context['search_query'] = search_query
+        
+        if search_query:
+            total_queryset = Post.objects.filter(is_deleted=False).filter(
+                Q(title__icontains=search_query) |
+                Q(content__icontains=search_query) |
+                Q(author__username__icontains=search_query)
+            ).distinct()
+            total_count = total_queryset.count()
+            context['total_results'] = total_count
+            print(f"Search query: '{search_query}', Total results: {total_count}")
+        else:
+            context['total_results'] = None
+            
+        return context
+
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post

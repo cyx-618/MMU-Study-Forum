@@ -21,6 +21,14 @@
                 <button type="submit">Like ({{ post.likes_count }})</button>
             </form>
 
+            {% if user.is_authenticated and user != post.author %}
+                <div>
+                    <span>
+                        <button type="submit"><a href="{% url 'report-post' post.id %}" >Report</a></button>
+                    </span>
+                </div>
+            {% endif %}
+
             <div>
                 <h4>Comment ({{ post.comments.count }})</h4>
                 

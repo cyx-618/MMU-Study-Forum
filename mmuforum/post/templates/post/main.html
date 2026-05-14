@@ -6,6 +6,9 @@
 
     <head>
         <title>MMU Study Forum</title>
+        <!--
+        <link href = "{% static 'post/main.css' %}" rel = "stylesheet">
+    -->
         <style>
             .reply-form {
                 display: none;
@@ -16,6 +19,9 @@
     </head>
 
 <body>
+
+    
+
     <div id="welcome" class="modal">
         <div class="modal_content">
             <p>Welcome, {{user.username}} !</p>
@@ -27,10 +33,35 @@
         <div class="title">
             <h1>MMU Study Forum</h1>
         </div>
-        <form class="search_bar">
-            <link rel="icon" type="images/png" href="{% static 'post/images/search.png' %}">
-            <input type="text" name="fquestion" placeholder="Finding something?"><br>
+
+        <form class="search_bar" method="get" action="{% url 'forum-main' %}">
+            <link rel="icon" type="images/png" href="{% static 'post/mainpage-icon/search.png' %}">
+            <input type="text" name="q" placeholder="Finding something?" value="{{ search_query|default:'' }}"><br>
+            <span>
+                <button type="submit">Search</button>
+            </span>
         </form>
+
+        {% if search_query %}
+        <div class="search-info">
+            <p>Search "{{ search_query }}" result：found 
+                {% if total_results %}
+                    {{ total_results }}
+                {% else%}
+                    {{ posts|length }}
+                {% endif %}
+                posts.
+            </p>
+            <a href="{% url 'forum-main' %}">Clear</a>
+        </div>
+        {% endif %}
+
+        {% if search_query and posts|length == 0 %}
+        <div class="no-results">
+            <p>No posts about "{{ search_query }}"</p>
+        </div>
+        {% endif %}
+
         <div class="register">
             <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
             <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
@@ -57,15 +88,24 @@
         {% endif %}
         <!--
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
-        <a href="favourite.html"><img src="{% static 'post/mainpage-icon/heart.png' %}" alt="Favourite"></a>
     -->
         <a href="{% url 'post-create' %}"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
     </nav>
 
     <div class="post">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% if posts %}
             {% for post in posts %}
-                <div>
+                <div id="post-{{ post.id}}">
                     <p><strong>Title:</strong><a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
                     <p><strong>Author:</strong> {{ post.author.username }}</p>
                     <p><strong>Major:</strong> 
@@ -106,7 +146,14 @@
                         <button type="submit">Like ({{ post.likes_count }})</button>
                     </form>
 
+                    {% if user.is_authenticated and user != post.author %}
                     <div>
+                        <span>
+                            <button type="submit"><a href="{% url 'report-post' post.id %}" >Report</a></button>
+                        </span>
+                    </div>
+                    {% endif %}
+
                         <h4>Comment ({{ post.comments.count }})</h4>
                 
                         {% for comment in post.comments.all %}
@@ -145,14 +192,15 @@
                             <p>No comment.</p>
                         {% endfor %}
 
-                        {% if user.is_authenticated %}
-                            <form method="post" action="{% url 'add-comment' post.id %}">
-                                {% csrf_token %}
-                                <input type="text" name="content" placeholder="Write comment..." required>
-                                <button type="submit">Submit</button>
-                            </form>
-                        {% endif %}
-                        <hr>
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add-comment' post.id %}">
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Write comment..." required>
+                    <button type="submit">Submit</button>
+                </form>
+                {% endif %}
+
+                <hr>
                     </div>
                 </div>
             {% empty %}

@@ -33,6 +33,13 @@
                 Your browser does not support the video tag.
             </video>
         {% endif %}
+        <div>
+        {% if post.author == user or user.is_staff %}
+            <button type="submit"><a href = "{% url 'post-update' post.pk %}" > Edit Post </a></button><br><br>
+            <button type="button"><a href = "{% url 'post-delete' post.pk %}" > Delete Post </a></button>
+        {% endif %}
+        <hr>
+    </div>
     </div>
     {% empty %}
         <p>No posts.</p>
