@@ -65,6 +65,7 @@
         <div class="register">
             <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
             <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
+            <button type="button" class="notification"><a href= "{% url 'user-notifications' %}">NOTIFICATION</a></button>
         </div>
     </div>
 
@@ -143,7 +144,7 @@
 
                     <form method="post" action="{% url 'like_post' post.id %}">
                         {% csrf_token %}
-                        <button type="submit">Like ({{ post.likes_count }})</button>
+                        <button type="submit">Like ({{ post.likes.count }})</button>
                     </form>
 
                     {% if user.is_authenticated and user != post.author %}
@@ -155,29 +156,44 @@
                     {% endif %}
 
                         <h4>Comment ({{ post.comments.count }})</h4>
-                
+
                         {% for comment in post.comments.all %}
                             {% if not comment.parent_comment %}
-                                <div class="comment-block">
+                                <div class="comment-block" style="margin-bottom: 20px;">
                                     <strong>{{ comment.user.username }}:</strong>
                                     <span>{{ comment.text }}</span>
-                                    <small>{{ comment.created_at }}</small>
+                                    <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
 
-                                    <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')">Reply</a>
-                                
-                                    <div style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 10px;">
+                                    <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
+                                        {% if user in comment.likes_count.all %}
+                                            <span style="color: red;">❤️</span>({{ comment.likes_count.count }})
+                                        {% else %}
+                                            <span>🤍</span>({{ comment.likes_count.count }})
+                                        {% endif %}
+                                    </a>
+
+                                    <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline;">Reply</a>
+
+                                    <div style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 10px; margin-top: 10px;">
                                         {% for reply in comment.replies.all %}
-                                            <div>
+                                            <div style="margin-bottom: 10px;">
                                                 <strong>{{ reply.user.username }}:</strong>
-                                                <span>reply to <strong>{{ comment.user.username }}</strong></span>
                                                 <span>{{ reply.text }}</span>
-                                                <small>{{ reply.created_at }}</small>
-
-                                                <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')">Reply</a>
+                                                <small style="color: gray;">{{ reply.created_at|timesince }} ago</small>
+                        
+                                                <a href="{% url 'like-comment' reply.id %}" style="text-decoration: none; color: inherit;">
+                                                    {% if user in reply.likes_count.all %}
+                                                        <span style="color: red;">❤️</span>({{ reply.likes_count.count }})
+                                                    {% else %}
+                                                        <span>🤍</span>({{ reply.likes_count.count }})
+                                                    {% endif %}
+                                                </a>
+                                                <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline; font-size: 0.9em;">Reply</a>
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <div id="reply-form-{{ comment.id }}" style="display:none; margin-left: 30px;">
+
+                                    <div id="reply-form-{{ comment.id }}" style="display:none; margin-left: 30px; margin-top: 10px;">
                                         <form method="post" action="{% url 'add-comment' post.id %}">
                                             {% csrf_token %}
                                             <input type="hidden" name="parent_id" value="{{ comment.id }}">
@@ -192,13 +208,13 @@
                             <p>No comment.</p>
                         {% endfor %}
 
-                {% if user.is_authenticated %}
-                <form method="post" action="{% url 'add-comment' post.id %}">
-                    {% csrf_token %}
-                    <input type="text" name="content" placeholder="Write comment..." required>
-                    <button type="submit">Submit</button>
-                </form>
-                {% endif %}
+                        {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'add-comment' post.id %}">
+                                {% csrf_token %}
+                                <input type="text" name="content" placeholder="Write comment..." required>
+                                <button type="submit">Submit</button>
+                            </form>
+                        {% endif %}
 
                 <hr>
                     </div>

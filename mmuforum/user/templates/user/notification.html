@@ -1,0 +1,43 @@
+<style>
+.notification {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.unread {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+.read{
+    background-color: #ffffff;
+}
+</style>
+
+<h2>Notification</h2>
+<div class="notification">
+    {% for notification in notifications %}
+        <div class="notification {% if not notification.is_read %}unread{% endif %}">
+            <p>
+                <strong>@{{ notification.sender.username }}</strong>
+                {{ notification.get_notification_type_display }}
+
+                {% if notification.post %}
+                    <a href= "{% url 'post-detail' notification.post.id %}">{{ notification.post.title|truncatechars:30 }}</a>
+                {% elif notification.feedback %}
+                    <a href= "{% url 'feedback-detail' notification.feedback.id %}">Feedback {{ notification.feedback.id }}</a>
+                {% endif %}
+
+                <br>
+                <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                <hr>
+            </p>
+        </div>
+        {% empty %}
+            <p>No notifications yet.</p>
+    {% endfor %}
+</div>
+
+<br>
+<button><a href="{% url 'forum-main' %}">Back to Home</a></button>

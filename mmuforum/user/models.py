@@ -30,3 +30,31 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"Feedback from {self.user.username}: {self.subject}"
+
+
+class Notification(models.Model):
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='actions')
+
+    TYPE_CHOICES = (
+        ('post_like', 'liked your post'),
+        ('post_comment', 'commented on your post'),
+        ('comment_reply', 'replied to your comment'),
+        ('comment_like', 'liked your comment'),
+        ('admin_reply', 'replied to your feedback'),
+        ('feedback_submitted', 'You have submitted a feedback.'),
+    )
+
+    notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    post = models.ForeignKey('post.Post', on_delete=models.CASCADE, null=True, blank=True)
+    feedback = models.ForeignKey('user.Feedback', on_delete=models.CASCADE, null=True, blank=True)
+
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        action = self.get_notification_type_display()
+        return f"{self.sender.username} {action} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"

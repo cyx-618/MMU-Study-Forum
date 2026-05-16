@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Feedback, Major, User_profile
+from .models import Feedback, Major, User_profile, Notification
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -7,6 +7,7 @@ from django.conf import settings
 
 admin.site.register(Major)
 admin.site.register(User_profile)
+admin.site.register(Notification)
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
@@ -15,6 +16,21 @@ class FeedbackAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if change and obj.is_resolved and obj.admin_reply:
+            notification_exists = Notification.objects.filter(
+                receiver=obj.user,
+                notification_type='admin_reply',
+                feedback=obj
+            ).exists()
+
+            if not notification_exists:
+                Notification.objects.create(
+                    receiver=obj.user,
+                    sender=request.user,
+                    notification_type='admin_reply',
+                    post=None,
+                    feedback=obj
+                    )
+                
             subject = f"Update on your feedback: {obj.subject}"
 
             email_body = f"""
@@ -49,3 +65,6 @@ From MMU Forum Admin Team
                 print(f"Error sending reply email: {e}")
 
         super().save_model(request, obj, form, change)
+
+
+

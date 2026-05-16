@@ -3,59 +3,57 @@
 
     {% block content %}
     <head>
-     <link rel="stylesheet" href="{% static 'home/home.css' %}">
-   <link rel="preconnect" href="https://fonts.googleapis.com">
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
-   </head>
+        <link rel="stylesheet" href="{% static 'home/home.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
+    </head>
     <body>
-      <body>
-       <div class="header">
-
+        <div class="header">
             <img class="logo" src="{% static 'home/images/discussion logo.png' %}" alt="logo">
             <a class="log-in-btn" href="{% url 'forum-login' %}">Log In</a>
             <a class="sign-up-btn" href="{% url 'forum-signup' %}">Sign Up</a>
-       </div>
-       <div class="intro">
-           <h1 class="title">MMU Study Forum. </h1>
-              <p class="about-us">MMU Study Forum is a web-based forum for student create post about academic
+        </div>
+        <div class="intro">
+            <h1 class="title">MMU Study Forum. </h1>
+            <p class="about-us">MMU Study Forum is a web-based forum for student create post about academic
                     and study problem. Any user can comment to help solve the student problem. In this site you can create
                     posts,delete, and edit posts that you want. You can interact with other students with comment and like 
                     other posts. 
-              </p>
+            </p>
              
-                <span><a class="explore-btn" href="#community-benefits">Explore Discussions</a></span>
-              <img class="siri-lab" src="{% static 'home/images/siri lab.jpg' %}" alt="siri-lab">
+            <span><a class="explore-btn" href="#community-benefits">Explore Discussions</a></span>
+            <img class="siri-lab" src="{% static 'home/images/siri lab.jpg' %}" alt="siri-lab">
        </div>
        <div  id="community-benefits" class="community-benefits">
-         <div class="benefits-intro">
-            <h2 class="benefits-title">The Power of Our Community</h2>
-            <p class="benefits-quote">
-                We believe that learning is collective journey.Here,we provide the tools and environment 
-                for every student to thrive.
-            </p>
-         </div>
-         <div class="benefits-section">
-            <div class="clm-knowledge">
-                <h3 class="clm-title-knowledge">Knowledge Sharing</h3>
-                <p class="benefits-decription">Access a vast repository of academic resources and 
+            <div class="benefits-intro">
+                <h2 class="benefits-title">The Power of Our Community</h2>
+                <p class="benefits-quote">
+                    We believe that learning is collective journey.Here,we provide the tools and environment 
+                    for every student to thrive.
+                </p>
+            </div>
+            <div class="benefits-section">
+                <div class="clm-knowledge">
+                    <h3 class="clm-title-knowledge">Knowledge Sharing</h3>
+                    <p class="benefits-decription">Access a vast repository of academic resources and 
                     share your own knowledge with the community.
-                </p>
-            </div>
-            <div class="clm-support">
-                <h3 class="clm-title-support">Peer Support</h3>
-                <p class="benefits-decription">Connect with supportive network of peers who understad your academic
+                    </p>
+                </div>
+                <div class="clm-support">
+                    <h3 class="clm-title-support">Peer Support</h3>
+                    <p class="benefits-decription">Connect with supportive network of peers who understad your academic
                     challenges and offer real-time help.
-                </p>
+                    </p>
+                </div>
+                <div class="clm-academic">
+                    <h3 class="clm-title-academic">Academic Growth</h3>
+                    <p class="benefits-decription">Engage in deep discussions that challenge your perspective and accelerate your
+                        intellectual development.
+                    </p>
+                </div>
             </div>
-            <div class="clm-academic">
-                <h3 class="clm-title-academic">Academic Growth</h3>
-                <p class="benefits-decription">Engage in deep discussions that challenge your perspective and accelerate your
-                    intellectual development.
-                </p>
-            </div>
-         </div>
-       </div>
+        </div>
         <div class="functions">
             <div class="function-intro">
                 <h2 class="function-title">Our Features</h2>
@@ -74,16 +72,15 @@
                 <p class="email-add"><a href="mailto:cheong.yi.xuan@student.mmu.edu.my">Cheong.Yi.Xuan@student.mmu.edu.my</a></p>
         </div>
         <script>
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-            }
-        });
-    });
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            });
 
-    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
-</script>
+            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        </script>
     </body>  
     {% endblock content %}
-</html>

@@ -11,7 +11,7 @@ from django.views.generic import (
     DeleteView
 )
 from post.models import Post, Like, Comment
-from user.models import Feedback
+from user.models import Feedback, Notification
 from django.urls import reverse
 from django.urls import reverse_lazy
 
@@ -71,10 +71,24 @@ def like_post(request, post_id):
     
     if not created:
         like.delete()
-        post.likes_count -= 1
     else:
-        post.likes_count += 1
-    
+        if post.author != request.user:
+            notification_exists = Notification.objects.filter(
+                receiver=post.author,
+                sender=request.user,
+                notification_type='post_like',
+                post=post,
+                is_read=False
+            ).exists()
+
+            if not notification_exists:
+                Notification.objects.create(
+                    receiver=post.author,
+                    sender=request.user,
+                    notification_type='post_like',
+                    post=post
+                )
+
     post.save()
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
@@ -100,6 +114,50 @@ def add_comment(request, post_id):
                 text=content,
                 parent_comment=parent_object
             )
+
+            if parent_object:
+                Notification.objects.create(
+                    receiver=parent_object.user,
+                    sender=request.user,
+                    notification_type='comment_reply',
+                    post=post
+                )
+
+            else:
+                if post.author != request.user:
+                    Notification.objects.create(
+                        receiver=post.author,
+                        sender=request.user,
+                        notification_type='post_comment',
+                        post=post
+                    )
+
+    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+
+@login_required
+def like_comment(request, comment_id):
+    comment=get_object_or_404(Comment, id=comment_id)
+    if comment.likes_count.filter(id=request.user.id).exists():
+        comment.likes_count.remove(request.user)
+    else:
+        comment.likes_count.add(request.user)
+
+        if comment.user != request.user:
+            notification_exists = Notification.objects.filter(
+                receiver=comment.user,
+                sender=request.user,
+                notification_type='comment_like',
+                post=comment.post,
+                is_read=False
+            ).exists()
+
+            if not notification_exists:
+                Notification.objects.create(
+                    receiver=comment.user,
+                    sender=request.user,
+                    notification_type='comment_like',
+                    post=comment.post
+                )
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 

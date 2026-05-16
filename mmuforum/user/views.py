@@ -4,12 +4,13 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, logout
-from .models import User_profile, Feedback
+from .models import Notification, User_profile, Feedback
 from post.models import Like, Post
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import HttpResponse
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -84,6 +85,14 @@ def submit_feedback(request):
             feedback.user = request.user
             feedback.save()
 
+            Notification.objects.create(
+                receiver=request.user,
+                sender=request.user,
+                notification_type='feedback_submitted',
+                feedback=feedback,
+                post=None
+            )
+
             #send email
             admin_and_staff = User.objects.filter(
                 Q(is_superuser=True) | Q(is_staff=True)
@@ -137,6 +146,20 @@ def feedback_list(request):
     return render(request, 'user/feedback_list.html', context)
 
 
+def feedback_detail(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    if not request.user.is_superuser and not request.user.is_staff and feedback.user != request.user:
+        messages.error(request, 'You do not have permission to view this feedback.')
+        return redirect('forum-list')
+    
+    context = {
+        'feedback': feedback,
+        'title': f'Feedback Detail - {feedback.subject}'
+    }
+
+    return render(request, 'user/feedback_detail.html', context)
+
+
 @login_required
 def view_profile(request, username):
     user_profile = User_profile.objects.filter(user__username=username).first()
@@ -183,3 +206,13 @@ def delete_profile(request):
 def favourite_posts(request):
     liked_posts=Post.objects.filter(likes__user=request.user)
     return render(request,'user/favourite_posts.html',{'liked_posts': liked_posts})
+
+
+@login_required
+def notifications(request):
+    notifications = request.user.notifications.all()
+
+    unread_notifications = notifications.filter(is_read=False)
+    unread_notifications.update(is_read=True)
+
+    return render(request, 'user/notification.html', {'notifications': notifications})

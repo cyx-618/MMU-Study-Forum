@@ -25,10 +25,11 @@ class Post (models.Model):
     pdf = models.FileField(upload_to='post_pdfs/', null=True, blank=True)
     video_file = models.FileField(upload_to='post_videos/', null=True, blank=True)
     views_count = models.IntegerField(default=0)
-    likes_count = models.IntegerField(default=0)
-
     is_reported = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+
+    def total_likes(self):
+        return self.likes.count()
 
     class Meta:
         verbose_name_plural = 'Posts'
@@ -51,9 +52,7 @@ class Comment (models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(max_length=300)
     created_at = models.DateTimeField(default=timezone.now)
-
     parent_comment = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
-    
     likes_count = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='comment_likes', blank=True)
     dislikes_count = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='comment_dislikes', blank=True)
 
