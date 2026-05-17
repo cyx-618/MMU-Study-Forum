@@ -11,6 +11,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -216,3 +218,5 @@ def notifications(request):
     unread_notifications.update(is_read=True)
 
     return render(request, 'user/notification.html', {'notifications': notifications})
+
+

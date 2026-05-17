@@ -20,6 +20,9 @@ from .models import Post, Report
 from .forms import ReportForm
 from django.db.models import Q
 
+from django.core.mail import send_mail
+from django.conf import settings
+
 # Create your views here.
 def main(request):
     context = {
@@ -89,6 +92,29 @@ def like_post(request, post_id):
                     post=post
                 )
 
+            if post.author.email:
+                subject = f"Someone liked your post: {post.title} on MMU Forum!"
+                current_site = request.build_absolute_uri('/')[:-1]
+                #post_url = f"{current_site}/post/{post.id}/"
+                email_body = f"""
+Hi {post.author.username},
+
+Great news! {request.user.username} just liked your post titled "{post.title}" on MMU Forum.
+
+You can view your post here: 
+
+From MMU Forum Team
+"""
+            try:
+                send_mail(
+                    subject, 
+                    email_body, 
+                    settings.EMAIL_HOST_USER,
+                    [post.author.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error sending email: {e}")
     post.save()
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
@@ -123,6 +149,31 @@ def add_comment(request, post_id):
                     post=post
                 )
 
+                if parent_object.user.email:
+                    subject = f"Someone replied to your comment on MMU Forum!"
+                    current_site = request.build_absolute_uri('/')[:-1]
+                    #post_url = f"{current_site}/post/{post.id}/"
+
+                    email_body = f"""
+Hi {parent_object.user.username},
+
+Great news! {request.user.username} just replied to your comment on the post titled "{post.title}" on MMU Forum.
+
+You can view the post here:
+
+From MMU Forum Team
+"""
+                try:
+                    send_mail(
+                        subject, 
+                        email_body, 
+                        settings.EMAIL_HOST_USER,
+                        [parent_object.user.email],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+
             else:
                 if post.author != request.user:
                     Notification.objects.create(
@@ -131,6 +182,31 @@ def add_comment(request, post_id):
                         notification_type='post_comment',
                         post=post
                     )
+                
+                if post.author.email:
+                    subject = f"New comment on your post: {post.title} on MMU Forum!"
+                    current_site = request.build_absolute_uri('/')[:-1]
+                    #post_url = f"{current_site}/post/{post.id}/"
+                    email_body = f"""
+Hi {post.author.username},
+
+Great news! {request.user.username} just commented on your post titled "{post.title}" on MMU Forum.
+
+You can view your post here:
+
+From MMU Forum Team
+                    """
+                try:
+                    send_mail(
+                        subject, 
+                        email_body, 
+                        settings.EMAIL_HOST_USER,
+                        [post.author.email],
+                        fail_silently=False,
+                    )
+
+                except Exception as e:
+                    print(f"Error sending email: {e}")
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
@@ -159,6 +235,31 @@ def like_comment(request, comment_id):
                     post=comment.post
                 )
 
+            if comment.user.email:
+                subject = f"Someone liked your comment on MMU Forum!"
+                current_site = request.build_absolute_uri('/')[:-1]
+                #post_url = f"{current_site}/post/{comment.post.id}/"
+
+                email_body = f"""
+Hi {comment.user.username},
+
+Great news! {request.user.username} just liked your comment on the post titled "{comment.post.title}" on MMU Forum.
+
+You can view the post here:
+
+From MMU Forum Team
+"""
+            try:
+                send_mail(
+                    subject, 
+                    email_body, 
+                    settings.EMAIL_HOST_USER,
+                    [comment.user.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error sending email: {e}")
+
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
 @login_required
@@ -179,11 +280,42 @@ def report_post(request, post_id):
             report.reporter = request.user
             report.save()
 
-            report_count = Report.objects.filter(post=post).count()
-            if report_count >= 1: 
-                post.is_reported = True
-                post.is_deleted = True
-                post.save()
+            post.is_reported = True
+            post.save()
+
+            admins = User.objects.filter(is_superuser=True)
+            admin_emails = [admin.email for admin in admins if admin.email]
+
+            if admin_emails:
+                subject = f"Post Reported: {post.title}"
+                current_site = request.build_absolute_uri('/')[:-1]
+                post_url = f"{current_site}/post/{post.id}/"
+                email_body = f"""
+Hi Admin,
+
+A post has been reported on MMU Forum.
+
+Details:
+Reporter: {request.user.username}
+Post Title: {post.title}
+Reason: {report.get_reason_display()}
+
+You can review the post here: 
+
+Best regards,
+MMU Forum System
+"""
+                try:
+                    send_mail(
+                        subject, 
+                        email_body, 
+                        settings.EMAIL_HOST_USER,
+                        admin_emails,
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+
             messages.success(request, 'Thank you for your report. We will review it shortly.')
             return redirect('forum-main')
     else:
@@ -196,14 +328,17 @@ def report_post(request, post_id):
     }
     return render(request, 'post/report_post.html', context)
 
-class  PostListView(ListView):
+class  PostListView(LoginRequiredMixin, ListView):
     model = Post
-    template_name = 'post/main.html' #<app>/<model>_<viewtype>.html
+    template_name = 'post/main.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
 
     def get_queryset(self):
-        queryset = Post.objects.filter(is_deleted=False).order_by('-date_posted')
+        queryset = Post.objects.filter(is_deleted=False)
+        reported_ids = Report.objects.filter(reporter=self.request.user).values_list('post_id', flat=True)
+        queryset = queryset.exclude(id__in=reported_ids).order_by('-date_posted')
+
         search_query = self.request.GET.get('q', '').strip()
         
         if search_query:
@@ -217,15 +352,17 @@ class  PostListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        search_query= getattr(self, 'search_query', self.request.GET.get('q', ''))
+        search_query= self.request.GET.get('q', '').strip()
         context['search_query'] = search_query
         
         if search_query:
-            total_queryset = Post.objects.filter(is_deleted=False).filter(
+            reported_ids = Report.objects.filter(reporter=self.request.user).values_list('post_id', flat=True)
+            total_queryset = Post.objects.filter(is_deleted=False).exclude(id__in=reported_ids).filter(
                 Q(title__icontains=search_query) |
                 Q(content__icontains=search_query) |
                 Q(author__username__icontains=search_query)
             ).distinct()
+
             total_count = total_queryset.count()
             context['total_results'] = total_count
             print(f"Search query: '{search_query}', Total results: {total_count}")
@@ -254,7 +391,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse('forum-main')
     
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'post/detail_post.html' 
     context_object_name = 'post' 

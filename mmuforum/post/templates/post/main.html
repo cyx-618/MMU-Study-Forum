@@ -85,7 +85,7 @@
         {% if user.is_authenticated and user.username %}
             <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         {% else %}
-            <a href="{% url 'login' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
+            <a href="{% url 'forum-login' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
         {% endif %}
         <!--
         <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
