@@ -20,8 +20,6 @@
 
 <body>
 
-    
-
     <div id="welcome" class="modal">
         <div class="modal_content">
             <p>Welcome, {{user.username}} !</p>
@@ -80,16 +78,10 @@
     </nav>
 
     <nav class="features">
-        <a href="{% url 'forum-main' %}"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
-        {% if user.is_authenticated and user.username %}
-            <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
-        {% else %}
-            <a href="{% url 'login' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
-        {% endif %}
-        <!--
-        <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
-    -->
-        <a href="{% url 'post-create' %}"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
+        <a href="{% url 'forum-main' %}"><img src="{% static 'post/images/home.png' %}" alt="Home"></a>
+        <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/images/user.png' %}" alt="Profile"></a>
+        <a href="notification.html"><img src="{% static 'post/images/bell.png' %}" alt="Notification"></a>
+        <a href="{% url 'post-create' %}"><img src="{% static 'post/images/add.png' %}" alt="Create"></a>
     </nav>
 
     <div class="post">

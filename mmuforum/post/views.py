@@ -71,11 +71,12 @@ def like_post(request, post_id):
     
     if not created:
         like.delete()
-        post.likes_count -= 1
+        if post.likes_count > 0:
+            post.likes_count -= 1
     else:
         post.likes_count += 1
     
-    post.save()
+    post.save(update_fields=['likes_count'])  
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
 @login_required
