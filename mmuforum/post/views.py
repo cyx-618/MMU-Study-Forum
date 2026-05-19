@@ -22,6 +22,7 @@ from django.db.models import Q
 
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import JsonResponse
 
 # Create your views here.
 def main(request):
@@ -69,12 +70,19 @@ def major_post_list(request, major_name):
 #yj
 @login_required
 def like_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request'},status=400)
+
+    post= get_object_or_404(Post, id=post_id)
     like, created = Like.objects.get_or_create(user=request.user, post=post)
-    
+
     if not created:
         like.delete()
+        liked= False
+
     else:
+        liked=True
+
         if post.author != request.user:
             notification_exists = Notification.objects.filter(
                 receiver=post.author,
@@ -105,18 +113,21 @@ You can view your post here:
 
 From MMU Forum Team
 """
-            try:
-                send_mail(
-                    subject, 
-                    email_body, 
-                    settings.EMAIL_HOST_USER,
-                    [post.author.email],
-                    fail_silently=False,
-                )
-            except Exception as e:
-                print(f"Error sending email: {e}")
-    post.save()
-    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+                try:
+                    send_mail(
+                        subject, 
+                        email_body, 
+                        settings.EMAIL_HOST_USER,
+                        [post.author.email],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+
+    return JsonResponse({
+        'liked': liked,
+        'count': post.likes.count()
+    })
 
 @login_required
 def add_comment(request, post_id):

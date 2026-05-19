@@ -61,6 +61,12 @@ def login (request):
     return render(request, 'user/signup.html', {'form': form})
 
 
+def dispatch_user(request):
+    if request.user.is_superuser or request.user.is_staff:
+        return redirect('admin-main')
+    else:
+        return redirect('forum-main')
+
 @login_required
 def profile(request):
     if request.method == 'POST':

@@ -142,9 +142,16 @@
                         {% endif %}
                     </div>
 
-                    <form method="post" action="{% url 'like_post' post.id %}">
+                    <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                         {% csrf_token %}
-                        <button type="submit">Like ({{ post.likes.count }})</button>
+                        <button type="button" class="action-buttons like-post">
+                            {% if user in post.likes.all %}
+                                <i class="fas fa-heart" style="color: #e74c3c;"></i>
+                            {% else %}
+                                <i class="far fa-heart"></i>
+                            {% endif %}
+                            <span class="likes-count">{{ post.likes.count }}</span>
+                        </button>
                     </form>
 
                     {% if user.is_authenticated and user != post.author %}
@@ -245,6 +252,46 @@
             x.style.display = 'none';
         }
     }
+
+    document.querySelectorAll('.like-post').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.like-form');
+            const postId = form.dataset.postId;
+            const url = form.action;
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            const icon = this.querySelector('i');
+            const countSpan = this.querySelector('span');
+
+            if (!countSpan) {
+                console.error('Error: .likes-count element not found');
+                return;
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#e74c3c';
+                    countSpan.innerText = data.count;
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '#6c757d';
+                    countSpan.innerText = data.count;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
 
 </script>
 </body>

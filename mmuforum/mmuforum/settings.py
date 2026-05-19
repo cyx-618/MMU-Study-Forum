@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'crispy_forms',
     'crispy_bootstrap5',
-    'post.apps.PostConfig'
+    'post.apps.PostConfig',
+    'admin_manager.apps.AdminManagerConfig',
 ]
 
 MIDDLEWARE = [
@@ -127,7 +128,7 @@ STATIC_URL = 'static/'
 #    BASE_DIR / "static",
 #]
 
-LOGIN_REDIRECT_URL = 'forum-main'
+LOGIN_REDIRECT_URL = 'dispatch-user'
 LOGOUT_REDIRECT_URL = 'forum-home'
 LOGIN_URL = 'forum-login'
 
