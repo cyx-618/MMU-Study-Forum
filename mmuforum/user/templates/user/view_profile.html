@@ -13,8 +13,10 @@
 <hr>
 <div>
     <h2><i>My Posts</i></h2>
+    <p>Total Posts: {{ user_posts_count }}</p>
     {% for post in user_posts %}
     <div>
+       
         <p>Title: {{ post.title }}</p>
         <p>Author: {{ post.author }}</p>
         <p>Major: {{ post.author.user_profile.major.major_name }}</p>

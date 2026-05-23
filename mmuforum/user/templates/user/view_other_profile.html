@@ -1,0 +1,136 @@
+{% extends "home/base.html" %}
+
+<html>
+
+<head>
+
+</head>
+{% block content %}
+<body>
+    <div>
+    {% if profile_user.user_profile.profile_picture %}
+        <img src="{{ profile_user.user_profile.profile_picture.url }}" alt="Profile Picture" style="max-width: 200px; max-height: 200px;">
+    {% else %}
+        <p>No profile picture.</p>
+    {% endif %}
+    <p>Username: {{ profile_user.username }}</p>
+    <p>Email: {{ profile_user.email }}</p>
+    <p>Faculty: {{ profile_user.user_profile.major.major_name }}</p>
+    <p>Bio: {{ profile_user.user_profile.bio }}</p>
+    </div>
+    <h2><i>{{ profile_user.username }}'s Posts</i></h2>
+    <p>Total Posts: {{ user_posts_count }}</p>
+     <div>
+        {% for post in user_posts %}
+        <p>Title:<a href="{% url 'post-detail' post.pk %}">  {{ post.title }}</a></p>
+        <p>Author:<a href="{% url 'view-other-profile' post.author.id %}"> {{ post.author }}</a></p>
+        <p>Major: {{ post.author.user_profile.major.major_name }}</p>
+        <p>Content: {{ post.content }}</p>
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px; max-height: 200px;">
+        {% endif %}
+
+        {% if post.pdf %}
+            <p><a href="{{ post.pdf.url }}" target="_blank">View PDF</a></p>
+        {% endif %}
+
+        {% if post.video_file %}
+            <video width="320" height="240" controls>
+                <source src="{{ post.video_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% endif %}
+         <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
+            {% csrf_token %}
+            <button type="button" class="action-buttons like-post">
+            {% if user in post.likes.all %}
+            <i class="fas fa-heart" style="color: #e74c3c;"></i>
+            {% else %}
+            <i class="far fa-heart"></i>
+            {% endif %}
+            <span class="likes-count">{{ post.likes.count }}</span>
+            </button>
+            </form>
+
+            {% if user.is_authenticated and user != post.author %}
+                    <div>
+                        <span>
+                            <button type="submit"><a href="{% url 'report-post' post.id %}" >Report</a></button>
+                        </span>
+                    </div>
+            {% endif %}
+
+            <h4>Comment ({{ post.comments.count }})</h4>
+
+                    {% for comment in post.comments.all %}
+                        {% if not comment.parent_comment %}
+                                <div class="comment-block" style="margin-bottom: 20px;">
+                                    <strong>{{ comment.user.username }}:</strong>
+                                    <span>{{ comment.text }}</span>
+                                    <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
+
+                                    <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
+                        {% if user in comment.likes_count.all %}
+                                            <span style="color: red;">❤️</span>({{ comment.likes_count.count }})
+                        {% else %}
+                                            <span>🤍</span>({{ comment.likes_count.count }})
+                        {% endif %}
+                                    </a>
+
+                                    <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline;">Reply</a>
+
+                                    <div style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 10px; margin-top: 10px;">
+                                        {% for reply in comment.replies.all %}
+                                            <div style="margin-bottom: 10px;">
+                                                <strong>{{ reply.user.username }}:</strong>
+                                                <span>{{ reply.text }}</span>
+                                                <small style="color: gray;">{{ reply.created_at|timesince }} ago</small>
+                        
+                                                <a href="{% url 'like-comment' reply.id %}" style="text-decoration: none; color: inherit;">
+                                                    {% if user in reply.likes_count.all %}
+                                                        <span style="color: red;">❤️</span>({{ reply.likes_count.count }})
+                                                    {% else %}
+                                                        <span>🤍</span>({{ reply.likes_count.count }})
+                                                    {% endif %}
+                                                </a>
+                                                <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline; font-size: 0.9em;">Reply</a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div id="reply-form-{{ comment.id }}" style="display:none; margin-left: 30px; margin-top: 10px;">
+                                        <form method="post" action="{% url 'add-comment' post.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                            <input type="text" name="content" placeholder="Reply to {{comment.user.username}} ..." required>
+                                            <button type="submit">Submit</button>
+                                            <button type="button" onclick="this.parentElement.style.display='none'">Cancel</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %} 
+                        {% empty %}
+                            <p>No comment.</p>
+                        {% endfor %}
+                         {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'add-comment' post.id %}">
+                                {% csrf_token %}
+                                <input type="text" name="content" placeholder="Write comment..." required>
+                                <button type="submit">Submit</button>
+                            </form>
+                        {% endif %}
+    <div>
+        {% if user.is_staff %}
+            <button type="submit"><a href = "{% url 'post-update' post.pk %}" > Edit Post </a></button><br><br>
+            <button type="button"><a href = "{% url 'post-delete' post.pk %}" > Delete Post </a></button>
+        {% endif %}
+  <div>
+    {% empty %}
+        <p>No posts.</p>
+    {% endfor %}
+  </div>
+  <button><a href="{% url 'forum-main' %}">Back to Home</a></button>
+
+</body>
+{% endblock content %}
+</html>
