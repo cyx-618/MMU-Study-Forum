@@ -1,47 +1,37 @@
 {% extends "home/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 <html>
     {% block content %}
     <head>
-        
+        <title>Sign Up</title>
+        <link rel="stylesheet" href="{% static 'user/signup.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     </head>
-
     <body>
        <div >
         <div>
+            <h2 class="sign-up-title">Sign Up</h2>
             <form method="POST">
                 {%csrf_token%}
              <fieldset class="form-group">
-                <legend>Sign Up</legend>
                 <div>
                 {{ form|crispy }}
                 </div>
-                 <button name="CreateUser" type="submit">Register </button>
+                 <button name="register-btn" type="submit">Register </button>
              </fieldset>
             </form>
         </div>
         <div class="button">
-            <button  ><a href= "{% url 'forum-login' %}">Back to Log In</a></button>
-            
+            <p>Alreday have an account?</p>
+            <a class="log-in-btn" href= "{% url 'forum-login' %}">Log In</a>
+            <a class="home-btn" href="{%url 'forum-home' %}">Home</a>
        </div>
       
-    </body> 
-    
-    <!--<form>{% csrf_token %}</form>-->
-
-        <!--pop up message for sucessful signup/login-->
-
-    <!--
-    { if message in messages }
-            { for message in messages }
-                _alert/pop up message_
-                <div>
-                    _(name a class) for this alert message -{{ message.tag }}_
-                    {{ message }}
-                </div>
-            { end for }
-        { end if }    
-    -->    
+    </body>   
         
     {% endblock content %}
-    </html>
+</html>

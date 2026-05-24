@@ -277,3 +277,127 @@ animation: revealFromRight linear both;
   margin-bottom:0px;
   font-weight:10px;
 }
+/*----------------------------------------------------------------------------------------------------------------------*/
+.functions{
+  width:inherit;
+  height:340px;
+  background-color:#D1DAD0;
+}
+.function-section{
+  display:flex;
+  width:inherit;
+  justify-content: space-evenly;
+  margin-top: 15px;
+  text-align: center;
+  animation:imageReveal both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 20%;
+}
+.search{
+  width:300px;
+  height: 200px;
+  background-color: #fefcf5;
+  padding:8px 10px;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px rgb(102, 139, 101);
+  flex-wrap:wrap;
+  overflow:hidden;
+ 
+}
+.search-title{
+  border-radius:5px;
+  background-color:#f2d2d8;
+  font-size:24px;
+  color:#1d4331;
+ font-family:"Merriweather", serif;
+ font-size:24px;
+ padding:10px;
+ 
+}
+.post-title{
+  color:#1d4331;
+  border-radius:5px;
+  background-color:#edefb6;
+   font-family:"Merriweather", serif;
+   padding:10px;
+
+ 
+}
+.post{
+  width:300px;
+  height:200px;
+  background-color: #fefcf5;
+  padding:10px 12px;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px rgb(102, 139, 101);
+  flex-wrap:wrap;
+  overflow:hidden;
+}
+.comment{
+  width:300px;
+  height:200px;
+  background-color: #fefcf5;
+  padding:8px 10px;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px rgb(102, 139, 101);
+  flex-wrap:wrap;
+  overflow:hidden;
+}
+.comment-title{
+  color:#1d4331;
+  border-radius:5px;
+  background-color:#ffbebe;
+   font-family:"Merriweather", serif;
+   padding:10px;
+}
+.function-title{
+  font-family:"Merriweather", serif;
+  color:#1d4331;
+  font-weight: 100px;
+  font-size:30px;
+  margin-bottom: 0;
+  margin-top:14px;
+  animation:imageReveal both;
+  animation-timeline: view(30% 10%);
+}
+.function-quote{
+  font-family:"Roboto Slab", serif;
+  font-size:16px;
+  color:#2F5F48;
+  font-weight: 450;
+  animation:imageReveal both;
+  animation-timeline: view(30% 10%);
+}
+.material-symbols-outlined{
+  display:block;
+  margin: 0 auto;
+  text-align: center;
+  box-shadow:0px 0px 5px rgb(151, 151, 151);
+  border-radius: 50% ;
+  margin-top:10px;
+  padding:7px;
+  font-size:34px;
+  color:brown;
+}
+
+.function-description{
+  text-align: left;
+  font-family:"Roboto Slab", serif;
+  font-size:14px;
+  color:#2F5F48;
+  font-weight: 450;
+}
+@keyframes imageReveal {
+ from{
+  filter:saturate(0)contrast(2)brightness(.1)blur(3px);
+  opacity:0.75;
+  scale:.95;
+  translate: 0n 4rem;
+ }
+ to{
+  filter:none;
+  opacity:1;
+  scale:1;
+  translate:0 0;
+ }
+}
