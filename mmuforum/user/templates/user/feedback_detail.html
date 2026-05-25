@@ -1,0 +1,17 @@
+<div>
+    <h2>Feedback Detail</h2>
+    <p><strong>Subject:</strong> {{ feedback.subject }}</a></p>
+    <p><strong>Message:</strong> {{ feedback.message }}</p>
+    <p><strong>Submitted on:</strong> {{ feedback.created_at }}</p>
+</div>
+
+<div class="admin-reply">
+    <h4>Admin Reply</h4>
+    {% if feedback.admin_reply %}
+        <p>{{ feedback.admin_reply }}</p>
+    {% else %}
+        <p>No reply yet.</p>
+    {% endif %}
+</div>
+
+<button><a href="{% url 'feedback-list' %}">Back to Feedback List</a></button>

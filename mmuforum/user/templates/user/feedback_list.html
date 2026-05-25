@@ -2,7 +2,7 @@
 <hr>
 {% for feedback in feedbacks %}
     <div>
-        <p>Subject: {{ feedback.subject }}</p>>
+        <p>Subject: <a href="{% url 'feedback-detail' feedback.id %}">{{ feedback.subject }}</a></p>
         <p>Message: {{ feedback.message }}</p>
         <p>Ticket number: {{feedback.id|add:1000 }}</p>
 

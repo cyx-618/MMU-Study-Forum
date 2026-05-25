@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'crispy_forms',
     'crispy_bootstrap5',
-    'post.apps.PostConfig'
+    'post.apps.PostConfig',
+    'admin_manager.apps.AdminManagerConfig',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'user.middleware.MajorRequirementMiddleware', 
 ]
 
 ROOT_URLCONF = 'mmuforum.urls'
@@ -125,7 +128,7 @@ STATIC_URL = 'static/'
 #    BASE_DIR / "static",
 #]
 
-LOGIN_REDIRECT_URL = 'forum-main'
+LOGIN_REDIRECT_URL = 'dispatch-user'
 LOGOUT_REDIRECT_URL = 'forum-home'
 LOGIN_URL = 'forum-login'
 
