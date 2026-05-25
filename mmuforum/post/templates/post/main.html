@@ -100,7 +100,11 @@
             {% for post in posts %}
                 <div id="post-{{ post.id}}">
                     <p><strong>Title:</strong><a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
-                    <p><strong>Author:</strong> {{ post.author.username }}</p>
+                    {% if post.author == request.user %}
+                        <p><strong>Author:</strong><a href="{% url 'view-profile' post.author.username %}"> {{ post.author.username }} (You)</a></p>
+                    {% else %}
+                    <p><strong>Author:</strong><a href="{% url 'view-other-profile' post.author.id %}"> {{ post.author.username }}</a></p>
+                    {% endif %}
                     <p><strong>Major:</strong> 
                         {% if post.author.user_profile and post.author.user_profile.major %}
                             {{ post.author.user_profile.major.major_name }}

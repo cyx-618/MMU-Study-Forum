@@ -172,10 +172,18 @@ def feedback_detail(request, feedback_id):
 def view_profile(request, username):
     user_profile = User_profile.objects.filter(user__username=username).first()
     user_posts = Post.objects.filter(author=user_profile.user).order_by('-date_posted')
-    
+    user_posts_count = user_posts.count()
+
+  
+    if request.user.is_authenticated:
+        user_post_count = Post.objects.filter(author=request.user).count()
+    else:
+        user_post_count = 0
     context = {
         'view_profile': user_profile,
         'user_posts': user_posts,
+        'user_posts_count': user_posts_count,
+        'user_post_count': user_post_count,
         'user': user_profile.user,
         'title': f"{user_profile.user.username}'s Profile"
     }
@@ -225,4 +233,22 @@ def notifications(request):
 
     return render(request, 'user/notification.html', {'notifications': notifications})
 
+def view_other_profile(request,user_id):
+    profile_user = get_object_or_404(User, id=user_id)
+
+    if not profile_user.user_profile:
+        messages.error(request, 'User not found.')
+        return redirect('forum-main')
+
+    user_posts = Post.objects.filter(author=profile_user).order_by('-date_posted')
+    user_posts_count = user_posts.count()
+
+    context = {
+        'profile_user': profile_user,
+        'user_posts': user_posts,
+        'user_posts_count': user_posts_count,
+        'user': profile_user,
+        'title': f"{profile_user.username}'s Profile"
+    }
+    return render(request, 'user/view_other_profile.html', context)
 
