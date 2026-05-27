@@ -66,11 +66,12 @@ class Comment (models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.text[:20]}"
     
-class Report(models.Model):
+class ReportPost(models.Model):
     REASON_CHOICES = [
         ('spam', 'Spam'),
         ('harassment', 'Harassment'),
         ('hate_speech', 'Hate Speech'),
+        ('misinformation','Misinformation')
         ('inappropriate', 'Inappropriate Content'),
         ('other', 'Other'),
     ]
@@ -95,3 +96,34 @@ class Report(models.Model):
     
     def __str__(self):
         return f"{self.reporter.username} reported {self.post.title} for {self.reason}"
+    
+class ReportComment(models.Model):
+    REASON_CHOICES = [
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        ('hate_speech', 'Hate Speech'),
+        ('inappropriate', 'Inappropriate Content'),
+        ('other', 'Other'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('reviewed', 'Reviewed'),
+        ('dismissed', 'Dismissed'),
+    ]
+    
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='reports')
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports')
+    reason = models.CharField(max_length=20, choices=REASON_CHOICES)
+    description = models.TextField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    class Meta:
+        unique_together = ['post', 'reporter']
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.reporter.username} reported {self.post.title} for {self.reason}"
+
