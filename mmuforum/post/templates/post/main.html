@@ -173,9 +173,19 @@
                             {% for comment in post.comments.all %}
                                 {% if not comment.parent_comment %}
                                     <div class="comment-block" style="margin-bottom: 20px;">
-                                        <strong>{{ comment.user.username }}:</strong>
-                                        <span>{{ comment.text }}</span>
-                                        <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                            <div>
+                                                <strong>{{ comment.user.username }}:</strong>
+                                                <span>{{ comment.text }}</span>
+                                                <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
+                                            </div>
+
+                                            {% if user.is_authenticated and user != comment.user %}
+                                            <a href="{% url 'report-comment' comment.id %}" style="text-decoration: none; color: #999; font-size: 12px; margin-left: 10px;" title="Report this comment">
+                                                Report
+                                            </a>
+                                            {% endif %}
+                                        </div>
 
                                         <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
                                             {% if user in comment.likes_count.all %}

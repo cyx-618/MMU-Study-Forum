@@ -71,7 +71,6 @@ class ReportPost(models.Model):
         ('spam', 'Spam'),
         ('harassment', 'Harassment'),
         ('hate_speech', 'Hate Speech'),
-        ('misinformation','Misinformation')
         ('inappropriate', 'Inappropriate Content'),
         ('other', 'Other'),
     ]
@@ -112,8 +111,8 @@ class ReportComment(models.Model):
         ('dismissed', 'Dismissed'),
     ]
     
-    comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='reports')
-    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports')
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='comment_reports')
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_reports')
     reason = models.CharField(max_length=20, choices=REASON_CHOICES)
     description = models.TextField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -121,9 +120,9 @@ class ReportComment(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     
     class Meta:
-        unique_together = ['post', 'reporter']
+        unique_together = ['comment', 'reporter']
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"{self.reporter.username} reported {self.post.title} for {self.reason}"
+        return f"{self.reporter.username} reported {self.comment.id} for {self.reason}"
 

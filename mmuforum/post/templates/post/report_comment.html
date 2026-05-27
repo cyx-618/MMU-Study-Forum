@@ -12,7 +12,7 @@
     <div class="comment-preview">
         <h3>{{ reported_post.title }}</h3>
         <div class="comment-meta">
-            <strong>Comment by</strong> {{ comment.author.username }} |
+            <strong>Comment by</strong> {{ comment.user.username }} |
             <strong>On post:</strong><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a> |
             <strong>Posted:</strong> {{ reported_post.date_posted|date:"Y-m-d H:i" }}
         </div>

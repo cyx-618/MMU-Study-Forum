@@ -16,8 +16,8 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 
 from django.contrib import messages
-from .models import Post, Report
-from .forms import ReportForm
+from .models import ReportComment, ReportPost
+from .forms import PostReportForm, CommentReportForm
 from django.db.models import Q
 
 from django.core.mail import send_mail
@@ -276,14 +276,14 @@ From MMU Forum Team
 def report_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     
-    existing_report = Report.objects.filter(post=post, reporter=request.user).first()
+    existing_report = ReportPost.objects.filter(post=post, reporter=request.user).first()
     
     if existing_report:
         messages.warning(request, 'You have already reported this post.')
         return redirect('forum-main')
     
     if request.method == 'POST':
-        form = ReportForm(request.POST)
+        form = PostReportForm(request.POST)
         if form.is_valid():
             report = form.save(commit=False)
             report.post = post
@@ -329,7 +329,7 @@ MMU Forum System
             messages.success(request, 'Thank you for your report. We will review it shortly.')
             return redirect('forum-main')
     else:
-        form = ReportForm()
+        form = PostReportForm()
     
     context = {
         'form': form,
@@ -340,12 +340,13 @@ MMU Forum System
 
 @login_required
 def report_comment(request, comment_id):
-    post = get_object_or_404(Comment, id=comment_id)
+    comment = get_object_or_404(Comment, id=comment_id)
+    post = comment.post
     
     existing_report = ReportComment.objects.filter(comment=comment, reporter=request.user).first()
     
     if existing_report:
-        messages.warning(request, 'You have already reported this post.')
+        messages.warning(request, 'You have already reported this comment.')
         return redirect('forum-main')
     
     if comment.user == request.user:
@@ -359,9 +360,6 @@ def report_comment(request, comment_id):
             report.comment = comment
             report.reporter = request.user
             report.save()
-
-            post.is_reported = True
-            post.save()
 
             admins = User.objects.filter(is_superuser=True)
             admin_emails = [admin.email for admin in admins if admin.email]
@@ -406,7 +404,7 @@ MMU Forum System
         'form': form,
         'comment': comment,
         'reported_post': post,
-        'post':comment.post,
+        'post':post,
     }
     return render(request, 'post/report_comment.html', context)
 
@@ -421,7 +419,7 @@ class  PostListView(LoginRequiredMixin, ListView):
         search_query = self.request.GET.get('q','').strip()
 
         queryset = Post.objects.filter(is_deleted=False)
-        reported_ids = Report.objects.filter(reporter=self.request.user).values_list('post_id', flat=True)
+        reported_ids = ReportPost.objects.filter(reporter=self.request.user).values_list('post_id', flat=True)
         queryset = queryset.exclude(id__in=reported_ids).order_by('-date_posted')
 
         search_query = self.request.GET.get('q', '').strip()
@@ -453,7 +451,7 @@ class  PostListView(LoginRequiredMixin, ListView):
             context['users'] = users
 
         if search_query and search_type == 'posts':
-            reported_ids = Report.objects.filter(reporter=self.request.user).values_list('post_id', flat=True)
+            reported_ids = ReportPost.objects.filter(reporter=self.request.user).values_list('post_id', flat=True)
             total_queryset = Post.objects.filter(is_deleted=False).exclude(id__in=reported_ids).filter(
                 Q(title__icontains=search_query) |
                 Q(content__icontains=search_query)

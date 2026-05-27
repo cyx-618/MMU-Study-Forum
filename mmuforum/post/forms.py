@@ -1,7 +1,7 @@
 # post/forms.py
 from django import forms
 from .models import Post
-from .models import Report
+from .models import ReportPost, ReportComment
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -25,9 +25,9 @@ class PostForm(forms.ModelForm):
             'image': 'Image',
         }
 
-class ReportForm(forms.ModelForm):
+class PostReportForm(forms.ModelForm):
     class Meta:
-        model = Report
+        model = ReportPost
         fields = ['reason', 'description']
         widgets = {
             'reason': forms.Select(attrs={'class': 'form-control'}),
@@ -35,6 +35,23 @@ class ReportForm(forms.ModelForm):
                 'class': 'form-control',
                 'rows': 4,
                 'placeholder': 'Please provide more details about why you are reporting this post...'
+            }),
+        }
+        labels = {
+            'reason': 'Reason for Reporting',
+            'description': 'Additional Details (Optional)',
+        }
+
+class CommentReportForm(forms.ModelForm):
+    class Meta:
+        model = ReportComment
+        fields = ['reason', 'description']
+        widgets = {
+            'reason': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Please provide more details about why you are reporting this comment...'
             }),
         }
         labels = {
