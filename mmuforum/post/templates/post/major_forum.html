@@ -1,9 +1,64 @@
+{% load static %}
 <html>
     <head>
         <title>{{ major_name }} Forum</title>
+        <link rel="stylesheet" href="{% static 'post/major_forum.css' %}">
     </head>
     <body>
-        <h1>{{ major_name }} Forum</h1>
+        <nav class="top_bar" id="main-banner">
+            <div class="banner-top">
+                <h1>{{ major_name }} Forum</h1>
+        
+                <div class="search-bar">
+                    <form method="get" action="{% url 'forum-main' %}">
+                        <div class="search-wrapper">
+                            <select name="search_type" class="search-type-select">
+                                <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>Post</option>
+                                <option value="users" {% if search_type == 'users' %}selected{% endif %}>User</option>
+                            </select>
+                            <input type="text" name="q" placeholder="Finding something?" value="{{ search_query|default:'' }}"><br>
+                            <span>
+                                <button type="submit"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:30px; height:30px"></button>
+                            </span>
+                        </div>
+                    </form>
+
+                    {% if search_query %}
+                    <div class="search-info">
+                        <p>Search "{{ search_query }}" result：found 
+                            {% if search_type == 'users' %}
+                                {{ users|length }}
+                            {% else %}
+                                {% if total_results %}
+                                    {{ total_results }}
+                                {% else %}
+                                    {{ posts|length }}
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'forum-main' %}">Clear</a>
+                    </div>
+                    {% endif %}
+                    </div>
+
+                <div class="register">
+                    <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
+                    <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
+                </div>
+            </div>
+
+            <nav class="category-bar">
+                <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
+                <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
+                <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
+                <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
+                <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
+                <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
+                <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
+                <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
+            </nav>
+        </nav>
+        
         {% for post in posts %}
         <div>
             

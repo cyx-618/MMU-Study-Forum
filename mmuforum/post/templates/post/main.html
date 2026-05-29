@@ -6,21 +6,10 @@
 
     <head>
         <title>MMU Study Forum</title>
-        <!--
-        <link href = "{% static 'post/main.css' %}" rel = "stylesheet">
-    -->
-        <style>
-            .reply-form {
-                display: none;
-                margin-left: 40px;
-                margin-top: 10px;
-            }
-        </style>
+        <link rel="stylesheet" href="{% static 'post/mainpage.css' %}">
     </head>
 
 <body>
-
-    
 
     <div id="welcome" class="modal">
         <div class="modal_content">
@@ -29,164 +18,197 @@
         </div>
     </div>
     
-    <div class="top_bar">
-        <div class="title">
-            <h1>MMU Study Forum</h1>
-        </div>
+    <nav class="top_bar" id="main-banner">
+        <div class="banner-top">
+            <h3 class="title">MMU Forum</h3>
+        
+            <div class="search-bar">
+                <form method="get" action="{% url 'forum-main' %}">
+                    <div class="search-wrapper">
+                        <select name="search_type" class="search-type-select">
+                            <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>Post</option>
+                            <option value="users" {% if search_type == 'users' %}selected{% endif %}>User</option>
+                        </select>
+                        <input type="text" name="q" placeholder="Finding something?" value="{{ search_query|default:'' }}"><br>
+                        <span>
+                            <button type="submit"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:30px; height:30px"></button>
+                        </span>
+                    </div>
+                </form>
 
-        <form class="search_bar" method="get" action="{% url 'forum-main' %}">
-            <link rel="icon" type="images/png" href="{% static 'post/mainpage-icon/search.png' %}">
-            <input type="text" name="q" placeholder="Finding something?" value="{{ search_query|default:'' }}"><br>
-            <span>
-                <button type="submit">Search</button>
-            </span>
-        </form>
-
-        {% if search_query %}
-        <div class="search-info">
-            <p>Search "{{ search_query }}" result：found 
-                {% if total_results %}
-                    {{ total_results }}
-                {% else%}
-                    {{ posts|length }}
+                {% if search_query %}
+                <div class="search-info">
+                    <p>Search "{{ search_query }}" result：found 
+                        {% if search_type == 'users' %}
+                            {{ users|length }}
+                        {% else %}
+                            {% if total_results %}
+                                {{ total_results }}
+                            {% else %}
+                                {{ posts|length }}
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'forum-main' %}">Clear</a>
+                </div>
                 {% endif %}
-                posts.
-            </p>
-            <a href="{% url 'forum-main' %}">Clear</a>
-        </div>
-        {% endif %}
+            </div>
 
-        {% if search_query and posts|length == 0 %}
-        <div class="no-results">
-            <p>No posts about "{{ search_query }}"</p>
+            <div class="register">
+                <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
+                <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
+            </div>
         </div>
-        {% endif %}
 
-        <div class="register">
-            <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
-            <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
-            <button type="button" class="notification"><a href= "{% url 'user-notifications' %}">NOTIFICATION</a></button>
+        <nav class="category-bar">
+            <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
+            <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
+            <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
+            <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
+            <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
+            <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
+            <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
+            <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
+        </nav>
+    </nav>
+
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/home.png' %}" alt="Home">
+            </a>
+            {% if user.is_authenticated and user.username %}
+                <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+            {% else %}
+                <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+            {% endif %}
+            <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+            </a>
+            <a href="{% url 'post-create' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/add.png' %}" alt="Create">
+            </a>
         </div>
     </div>
 
-    <nav class="category">
-        <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
-        <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
-        <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
-        <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
-        <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
-        <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
-        <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
-        <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
-    </nav>
-
-    <nav class="features">
-        <a href="{% url 'forum-main' %}"><img src="{% static 'post/mainpage-icon/home.png' %}" alt="Home"></a>
-        {% if user.is_authenticated and user.username %}
-            <a href="{% url 'view-profile' user.username %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
-        {% else %}
-            <a href="{% url 'forum-login' %}"><img src="{% static 'post/mainpage-icon/user.png' %}" alt="Profile"></a>
-        {% endif %}
-        <!--
-        <a href="notification.html"><img src="{% static 'post/mainpage-icon/bell.png' %}" alt="Notification"></a>
-    -->
-        <a href="{% url 'post-create' %}"><img src="{% static 'post/mainpage-icon/add.png' %}" alt="Create"></a>
-    </nav>
-
-    <div class="post">
-        {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">
                 {{ message }}
             </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
 
-        {% if posts %}
-            {% for post in posts %}
-                <div id="post-{{ post.id}}">
-                    <p><strong>Title:</strong><a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
-                    {% if post.author == request.user %}
-                        <p><strong>Author:</strong><a href="{% url 'view-profile' post.author.username %}"> {{ post.author.username }} (You)</a></p>
-                    {% else %}
-                    <p><strong>Author:</strong><a href="{% url 'view-other-profile' post.author.id %}"> {{ post.author.username }}</a></p>
-                    {% endif %}
-                    <p><strong>Major:</strong> 
-                        {% if post.author.user_profile and post.author.user_profile.major %}
-                            {{ post.author.user_profile.major.major_name }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
-                    </p>
-                    <p><strong>Content:</strong> {{ post.content }}</p>
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
-                    {% endif %}
+        <div class="main-content">
+            <div class="content-container">
+                {% if search_type == 'posts' or not search_type %}
+                {% for post in posts%}
+                    <div class="post-card">
+                        <div class="post-header">
+                            {% if post.author.user_profile.profile_picture %}
+                                <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
+                            {% else %}
+                                <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
+                            {% endif %}
 
-                    {% if post.pdf %}
-                        <p><a href="{{ post.pdf.url }}" target="_blank">View PDF</a></p>
-                    {% endif %}
+                            <div class="author-info">
+                                <span class="author-username">{{ post.author.username }}</span>
+                                <span class="author-major">{{ post.author.user_profile.major}}</span>
+                            </div>
+                        </div>
 
-                    {% if post.video_file %}
-                        <video width="320" height="240" controls>
-                            <source src="{{ post.video_file.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    {% endif %}
+                        <div class="post-body">
+                            <h3 class="post-title">
+                                <a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a>
+                            </h3>
+                            <p class="post-content">{{ post.content }}</p>
+                        </div>
 
-                    <div>
-                        {% if user == post.author %}
-                            <div>
-                                <a href="{% url 'post-update' post.pk %}">
-                                <button type="button">Edit</button>
-                                </a>
+                        {% if post.image or post.video_file or post.pdf %}
+                            <div class="post-media">
+                                {% if post.image %}
+                                    <div class="media-container">
+                                        <img src="{{ post.image.url }}" alt="Post Image">
+                                    </div>
+                                {% endif %}
+                                {% if post.video_file %}
+                                    <div class="media-container">
+                                        <video controls>
+                                            <source src="{{ post.video_file.url }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                {% endif %}
+                                {% if post.pdf %}
+                                    <div class="media-container pdf-container">
+                                        <div class="pdf-info">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span class="pdf-name">
+                                                {{ post.pdf.name|cut:"posts/pdfs/"|cut:"post_pdfs/"|slice:"-30:" }}
+                                            </span>
+
+                                            <a href="{{ post.pdf.url }}" class="pdf-download" target="_blank">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endif %}
-                    </div>
+                        <br><hr>
 
-                    <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
-                        {% csrf_token %}
-                        <button type="button" class="action-buttons like-post">
-                            {% if user in post.likes.all %}
-                                <i class="fas fa-heart" style="color: #e74c3c;"></i>
-                            {% else %}
-                                <i class="far fa-heart"></i>
-                            {% endif %}
-                            <span class="likes-count">{{ post.likes.count }}</span>
-                        </button>
-                    </form>
-
-                    {% if user.is_authenticated and user != post.author %}
-                    <div>
-                        <span>
-                            <button type="submit"><a href="{% url 'report-post' post.id %}" >Report</a></button>
-                        </span>
-                    </div>
-                    {% endif %}
-
-                        <h4>Comment ({{ post.comments.count }})</h4>
-
-                        {% for comment in post.comments.all %}
-                            {% if not comment.parent_comment %}
-                                <div class="comment-block" style="margin-bottom: 20px;">
-                                    <strong>{{ comment.user.username }}:</strong>
-                                    <span>{{ comment.text }}</span>
-                                    <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
-
-                                    <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
-                                        {% if user in comment.likes_count.all %}
-                                            <span style="color: red;">❤️</span>({{ comment.likes_count.count }})
+                        <div class="post-footer">
+                            <div class="post-actions">
+                                <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
+                                    {% csrf_token %}
+                                    <button type="button" class="action-buttons like-post">
+                                        {% if user in post.likes.all %}
+                                            <i class="fas fa-heart" style="color: #e74c3c;"></i>
                                         {% else %}
-                                            <span>🤍</span>({{ comment.likes_count.count }})
+                                            <i class="far fa-heart"></i>
                                         {% endif %}
-                                    </a>
+                                        <span class="likes-count">{{ post.likes.count }}</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
 
-                                    <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline;">Reply</a>
+                            <h4>Comment ({{ post.comments.count }})</h4>
+                            {% for comment in post.comments.all %}
+                                {% if not comment.parent_comment %}
+                                    <div class="comment-block" style="margin-bottom: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                            <div>
+                                                <strong>{{ comment.user.username }}:</strong>
+                                                <span>{{ comment.text }}</span>
+                                                <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
+                                            </div>
 
-                                    <div style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 10px; margin-top: 10px;">
-                                        {% for reply in comment.replies.all %}
+                                            {% if user.is_authenticated and user != comment.user %}
+                                            <a href="{% url 'report-comment' comment.id %}" style="text-decoration: none; color: #999; font-size: 12px; margin-left: 10px;" title="Report this comment">
+                                                Report
+                                            </a>
+                                            {% endif %}
+                                        </div>
+
+                                        <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
+                                            {% if user in comment.likes_count.all %}
+                                                <span style="color: red;">❤️</span>({{ comment.likes_count.count }})
+                                            {% else %}
+                                                <span>🤍</span>({{ comment.likes_count.count }})
+                                            {% endif %}
+                                        </a>
+
+                                        <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline;">Reply</a>
+
+                                        <div style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 10px; margin-top: 10px;">
+                                            {% for reply in comment.replies.all %}
                                             <div style="margin-bottom: 10px;">
                                                 <strong>{{ reply.user.username }}:</strong>
                                                 <span>{{ reply.text }}</span>
@@ -201,48 +223,88 @@
                                                 </a>
                                                 <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline; font-size: 0.9em;">Reply</a>
                                             </div>
-                                        {% endfor %}
+                                            {% endfor %}
+                                        </div>
+
+                                        <div id="reply-form-{{ comment.id }}" style="display:none;">
+                                            <form method="post" action="{% url 'add-comment' post.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                <input type="text" name="content" placeholder="Reply to {{comment.user.username}} ..." required>
+                                                <button type="submit">Submit</button>
+                                                <button type="button" onclick="this.parentElement.style.display='none'">Cancel</button>
+                                            </form>
+                                        </div>
                                     </div>
+                                {% endif %} 
+                            {% empty %}
+                                <p>No comment.</p>
+                            {% endfor %}
 
-                                    <div id="reply-form-{{ comment.id }}" style="display:none; margin-left: 30px; margin-top: 10px;">
-                                        <form method="post" action="{% url 'add-comment' post.id %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                            <input type="text" name="content" placeholder="Reply to {{comment.user.username}} ..." required>
-                                            <button type="submit">Submit</button>
-                                            <button type="button" onclick="this.parentElement.style.display='none'">Cancel</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            {% endif %} 
-                        {% empty %}
-                            <p>No comment.</p>
-                        {% endfor %}
-
-                        {% if user.is_authenticated %}
-                            <form method="post" action="{% url 'add-comment' post.id %}">
-                                {% csrf_token %}
-                                <input type="text" name="content" placeholder="Write comment..." required>
-                                <button type="submit">Submit</button>
-                            </form>
-                        {% endif %}
-
-                <hr>
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'add-comment' post.id %}">
+                                    {% csrf_token %}
+                                    <input type="text" name="content" placeholder="Write comment..." required>
+                                    <button type="submit">Submit</button>
+                                </form>
+                            {% endif %}
                     </div>
-                </div>
-            {% empty %}
-                <p>No posts now. Share your questions!</p>
-            {% endfor %}
-        {% else %}
-            <p>No posts now. Share your questions!</p>
-        {% endif %}
-    </div>
+            
+                {% empty %}
+                    {% if search_query %}
+                        <p id="no-post-warning">No posts about "{{ search_query }}". Try another words.</p>
+                        {% else %}
+                        <p id="no-post-warning">
+                            No posts available yet.<br>
+                            Feel free to write your post.
+                        </p>
+                    {% endif %}
+                {% endfor %}
+
+                {% elif search_type == 'users' %}
+                    {% for searched_user in users %}
+                        <div class="post-card" style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                {% if searched_user.user_profile.profile_picture %}
+                                <img src="{{ searched_user.user_profile.profile_picture.url }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                {% else %}
+                                <img src="{% static 'admin_manager/images/default_avatar.png' %}" style="width: 60px; height: 60px; border-radius: 50%;">
+                                {% endif %}
+                                <div>
+                                    <h3 style="margin: 0 0 5px 0;">
+                                        <a href="{% url 'view-profile' searched_user.username %}" style="text-decoration: none; color: #333;">
+                                            {{ searched_user.username }}
+                                        </a>
+                                    </h3>
+                                </div>
+                            </div>
+                            <a href="{% url 'view-profile' searched_user.username %}" class="action-buttons" style="padding: 8px 20px;">View Profile</a>
+                        </div>
+                        <hr>
+                        {% empty %}
+                            {% if search_query %}
+                                <p id="no-post-warning">
+                                User not found.
+                                </p>
+                            {% else %}
+                                <p id="no-post-warning">
+                                    No posts available yet.<br>
+                                    Feel free to write your post.
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+            </div>
+        </div>
+</body>
 
 <script>
 
     window.onload = function() {
+        if (!localStorage.getItem('welcomeShown')) {
         document.getElementById('welcome').style.display = 'block';
-    }
+        localStorage.setItem('welcomeShown', 'true');
+    }}
 
     function closeModal() {
         document.getElementById('welcome').style.display = 'none';
@@ -256,6 +318,20 @@
             x.style.display = 'none';
         }
     }
+
+    let lastScrollTop = 0;
+        const banner = document.getElementById('main-banner');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                banner.classList.add('banner-hidden');
+            } else {
+                banner.classList.remove('banner-hidden');
+            }
+            lastScrollTop= scrollTop;
+        });
 
     document.querySelectorAll('.like-post').forEach(button => {
         button.addEventListener('click', function() {
@@ -298,5 +374,4 @@
     });
 
 </script>
-</body>
 </html>
