@@ -1,56 +1,101 @@
-/*
+
 body{
-    margin: 0;
+
+     margin: 0;
     padding: 0;
-    animation: gradient 10s ease infinite;
-    background-size: 250%;
-} 
-@keyframes gradient {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
+  background-color: #FFFDF7;
 }
-*/
-body{
-    background-color:white;
+.form-text, .help-block, .text-muted {
+    font-size: 0.9rem !important; 
+    color: #353535 !important;   
+    margin-top: 5px !important; 
+     line-height: 1.4 !important;
+     text-align: left !important;
+     margin-left: 10% !important;
 }
-.register-btn{
-    border:1px solid black;
-   width:450px;
-   height:500px;
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+.alert-danger, 
+.non-field-errors,
+.errorlist.nonfield li {
+    color: red !important;
+    font-weight: bold;
+}
+.errorlist.nonfield li {
+    color: red !important;
+    font-weight: bold;
+}
+
+.errorlist li {
+    color: red !important;
+    font-weight: bold;
+}
+.errorlist, .invalid-feedback strong {
+    color: rgb(194, 5, 5) !important;
+    font-weight: bold;
+    font-size: 0.9rem !important;
+}
+.form-container{
+   width:400px;
+   height:450px;
    display:grid;
    text-align: center;
    border-radius: 50px;
    margin-left: auto;
    margin-right: auto;
-   margin-top: 100px;
+   margin-top: 20px;
    box-shadow:0px 0px 6px rgb(235, 235, 235);
    border: none;
-   background-color:rgb(247, 237, 226);
+   background-color:#D1DAD0;
    animation-name: slideUp;
    animation-duration: 1.30s;
-
+   overflow:hidden;
+  
 }
-.button{
-   display: flex;
-   justify-content: space-around;
-   align-items: center;
+
+.input-icon-wrapper {
+    position: relative;
+}
+.input-icon-wrapper .field-icon{
+    position: absolute;
+    left: 3%;           
+    top: 40%;
+    color: #225328;       
+    font-size: 1.3rem;
+    z-index: 9999 !important;        
+    pointer-events: none; 
+    margin-top: -0.65rem;
+    transform: none !important;
+}
+.password1 .field-icon {
+    margin-top: -40px; 
+    transform: none !important;
+   
 }
 .log-in-btn{
-    width:120px;
-    padding:10px 10px;
     cursor:pointer;
-    background-color: green;
-    color: white;
-    border-radius: 60px;
     border:none;
-    transition:box-shadow 0.2s ;
     font-weight: bold;
+    display:inline-block;
+    text-decoration: none;
+    color:#225328;
+    transition: text-decoration 0.2s;
+    
 }
-.log-in:hover{
-  box-shadow: 0px 2px 5px rgb(190, 190, 190);
+.log-in-btn:hover{
+    text-decoration:underline;
 }
-.register{
+.have-acc{
+     text-align: left;
+   margin-top:15px;
+   margin-left:3%;
+
+
+}
+.signup-btn{
     width:100px;
     background-color: rgb(151, 186, 255);
     color: rgb(23, 1, 74);
@@ -60,31 +105,39 @@ body{
     border:0.7px solid rgb(66, 66, 240);
     transition:box-shadow 0.2s;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: -2px;
+    display:flex;
+    justify-content:flex-end;
     font-weight: bold;
+    margin-left: auto;
+    margin-right: 10%;
+    margin-top:70px;
 
 }
 
-.register:hover{
+.signup-btn:hover{
      box-shadow: 0px 2px 5px rgb(190, 190, 190);
 }
 
-h2{
-  font-family: "Passion One", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  font-optical-sizing: auto;
+.sign-up-title{
+  font-family:"Calistoga", serif;
+  font-size:40px;
+  color:#2F5F48;
+  font-weight:100;
   text-align: center;
-  color: rgb(19, 46, 153);
-  font-size: 30px;
-  text-decoration-line: underline;
-  text-decoration-style: double;
+  margin-bottom: 0px;
 }
 
-@keyframes slideUp{
-    from{transform:translateY(100%)}
+.my-custom-input-class{
+    width: 75%;
+    margin: 10px auto;
+    display: block;
+    border:transparent;
+    background-color:inherit;
+    border-bottom: 1px solid #005b14;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+    font-family:"Merriweather", serif;
+    margin-top: 30px;
+  
+    
 }
-
