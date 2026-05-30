@@ -16,9 +16,9 @@ from django.urls import reverse
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
-    FeedbackForm
+    FeedbackForm,
+    LoginForm,
 )
-# Create your views here.
 
 #view function
 
@@ -52,14 +52,22 @@ def signup (request):
         form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
 
-def login (request):
+def login(request):
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return redirect('dispatch-user')
+    else:
+        form= LoginForm(request=request)
+
     context = {
-        'title':'Log In',
+        'title': 'Log In',
+        'form': form,
     }
 
-    form = UserRegisterForm()
-    return render(request, 'user/signup.html', {'form': form})
-
+    return render(request, 'user/login.html',context)
 
 def dispatch_user(request):
     if request.user.is_superuser or request.user.is_staff:

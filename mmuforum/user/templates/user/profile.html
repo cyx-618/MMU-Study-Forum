@@ -1,6 +1,6 @@
 {% extends "home/base.html" %}
 {% load crispy_forms_tags %}
-
+{% load static %}
 <html>
 {%block content%}
 
@@ -13,7 +13,7 @@
 
         <p>Username :{{user.username}}</p>
         <p>Email : {{user.email}} </p>
-        {{ form|crispy }}
+        {% crispy form %}
         <button type="submit" >Submit Profile Info</button>
     </form>
   </div>

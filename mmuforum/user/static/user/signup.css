@@ -14,23 +14,23 @@ body{
      margin-left: 10% !important;
 }
 .error-message {
-    color: red;
+    color: rgb(194,5,5) !important;
     font-weight: bold;
 }
 
 .alert-danger, 
 .non-field-errors,
 .errorlist.nonfield li {
-    color: red !important;
+    color: rgb(194,5,5) !important;
     font-weight: bold;
 }
 .errorlist.nonfield li {
-    color: red !important;
+    color:rgb(194,5,5) !important;
     font-weight: bold;
 }
 
 .errorlist li {
-    color: red !important;
+    color: rgb(194,5,5) !important;
     font-weight: bold;
 }
 .errorlist, .invalid-feedback strong {

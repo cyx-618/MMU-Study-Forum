@@ -1,0 +1,152 @@
+body{
+ margin: 0;
+padding: 0;
+  background-color: #FFFDF7;
+}
+.alert-danger,
+.non-field-errors,
+ul.errorlist,
+ul.errorlist li,
+.errorlist.nonfield li {
+  display: none !important;
+}
+
+.login-error-message {
+    width: 75%;
+    margin: 0 auto 15px auto;
+    text-align: left;
+    color: rgb(194, 5, 5) !important;
+    font-weight: bold;
+    font: size 0.7rem !important;
+     line-height: 1.4 !important;
+     text-align: left !important;
+     margin-left: 53px !important;
+    
+}
+
+.login-error-message p,
+ul.errorlist li {
+    margin: 5px 0 0 0 !important;
+    padding: 0 !important;
+}
+
+.errorlist,
+.invalid-feedback strong {
+    color: rgb(194, 5, 5) !important;
+    font-weight: bold;
+    list-style-type: none !important;
+    font-size: 0.9rem !important;
+}
+
+.form-group {
+    width: 400px;
+    min-height: 350px;
+    display: grid;
+    text-align: center;
+    border-radius: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    box-shadow: 0px 0px 6px rgb(235, 235, 235);
+    border: none;
+    background-color: #D1DAD0;
+    overflow: hidden;
+}
+
+
+.input-icon-wrapper {
+    position: relative;
+}
+.input-icon-wrapper .field-icon{
+    position: absolute;
+    left: 3%;           
+    top: 40%;
+    color: #225328;       
+    font-size: 1.3rem;
+    z-index: 9999 !important;        
+    pointer-events: none; 
+    margin-top: -0.65rem;
+    transform: none !important;
+}
+.my-custom-input-class{
+    width: 75%;
+    margin: 10px auto;
+    display: block;
+    border:transparent;
+    background-color:inherit;
+    border-bottom: 1px solid #005b14;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+    font-family:"Merriweather", serif;
+    margin-top: 30px;   
+}
+.login-title {
+    text-align: center;
+    color: #0a5c14;
+    font-family: "Merriweather", serif;
+    margin-bottom: 20px;
+    margin-top: 30px;
+    font-weight: 500px;
+    font-size:40px;
+
+}
+
+.form-group{
+    width:400px;
+   height:350px;
+   display:grid;
+   text-align: center;
+   border-radius: 50px;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: 20px;
+   box-shadow:0px 0px 6px rgb(235, 235, 235);
+   border: none;
+   background-color:#D1DAD0;
+   overflow:hidden;
+ 
+}
+.signup-link{
+  cursor:pointer;
+    border:none;
+    font-weight: bold;
+    display:inline-block;
+    text-decoration: none;
+    color:#225328;
+    transition: text-decoration 0.2s;
+}
+.signup-link:hover{
+    text-decoration:underline;
+}
+.login-btn{
+    width:70px;
+    height:40px;
+    background-color:#225328;
+    color:white;
+    border:none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    display:block;
+    margin-left:auto;
+    margin-right:45px;
+
+}
+.login-btn:hover{
+    box-shadow: 0px 0px 5px #929292;
+}
+.forgot-password{
+    margin-bottom:0px;
+    margin-left:3%;
+    margin-right:auto;
+    text-decoration: none;
+}
+.forgot-password:hover{
+    text-decoration:underline;
+}
+.no-acc{
+    margin-top:-30px;
+    margin-left:3%;
+    margin-right:auto;
+}

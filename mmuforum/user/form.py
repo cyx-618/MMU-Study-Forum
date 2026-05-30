@@ -5,6 +5,8 @@ from .models import Feedback, User_profile, Major
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field, Div, HTML
 from django.utils.safestring import mark_safe
+from django.contrib.auth.forms import AuthenticationForm
+
 
 class UserRegisterForm(UserCreationForm):
    email=forms.EmailField()
@@ -65,6 +67,36 @@ class UserRegisterForm(UserCreationForm):
            raise forms.ValidationError("The two password fields didn't match.")
         
         return cleaned_data
+   
+class LoginForm(AuthenticationForm):
+  def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+        self.error_messages['invalid_login'] = "Invalid username or password."
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.show_errors = False
+
+        self.fields['username'].label = ""
+        self.fields['password'].label = ""
+        self.fields['username'].help_text = ""
+        self.fields['password'].help_text = ""
+
+        self.helper.layout = Layout(
+            Div(
+                HTML('<i class="fa-solid fa-user field-icon"></i>'),
+                Field('username', placeholder='Username', css_class='my-custom-input-class'),
+                css_class='input-icon-wrapper'
+            ),
+            Div(
+                HTML('<i class="fa-solid fa-lock field-icon"></i>'),
+                Field('password', placeholder='Password', css_class='my-custom-input-class'),
+                css_class='input-icon-wrapper'
+            ),
+               
+        )
+
 class UserUpdateForm(forms.ModelForm):
    major= forms.ModelChoiceField(
        queryset=Major.objects.all(), 
