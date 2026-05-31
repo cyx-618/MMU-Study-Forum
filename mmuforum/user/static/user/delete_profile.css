@@ -1,0 +1,53 @@
+
+.delete-profile-container{
+  background-color:#EAEDE5;
+  margin-left:auto;
+  margin-right:auto;
+   margin-top:50px;
+   border:none;
+   width:45%;
+   margin-top:100px;
+   margin-bottom:auto;  
+   height:300px;
+   border-radius:10px;
+   box-shadow:0pc 0px 6px rgb(68, 77, 68);
+   display:flex;
+    flex-direction:column;
+
+}
+.btn{
+    display:inline-block;
+    border-radius:5px;
+    background-color:#2F5F48;
+    color:#EAEDE5;
+    border:none;
+    font-weight:bold;
+    text-decoration:none;
+    text-align:center;
+    transition:box-shadow 0.2s ease;
+    cursor:pointer;
+    padding:8px;
+    font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    margin-top:80px;
+    margin-left:40px;
+
+}
+.cancel.btn{
+    margin-left:270px;
+}
+
+.btn:hover{
+    box-shadow:0 0 5px rgba(76, 74, 74, 0.3);
+}
+.dlt-acc{
+    text-align:center;
+    font-size:20px;
+    width:80%;
+    margin-left:auto;
+    margin-right:auto;
+    font-weight:bold;
+    font-family:"Merriweather", serif;
+    margin-top:50px;
+    display:block;
+
+}

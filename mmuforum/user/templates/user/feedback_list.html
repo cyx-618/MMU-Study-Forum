@@ -1,19 +1,34 @@
-<h2>Feedbacks</h2>
-<hr>
-{% for feedback in feedbacks %}
-    <div>
-        <p>Subject: <a href="{% url 'feedback-detail' feedback.id %}">{{ feedback.subject }}</a></p>
-        <p>Message: {{ feedback.message }}</p>
-        <p>Ticket number: {{feedback.id|add:1000 }}</p>
+{% extends "home/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
 
-        {% if feedback.admin_reply%}
-            <p>Admin reply: {{ feedback.admin_reply }}</p>
-        {% else %}
-            <p>No admin reply yet.</p>
-        {% endif %}
-    </div>
-    <hr>
-{% empty %}
-    <p>You have not submitted any feedback yet.</p>
-{% endfor %}
-<a href="{% url 'forum-main' %}">Back to Main</a>
+<html>
+        {% block content %}
+        <head>
+    <title>My Feedbacks</title>
+    <link rel="stylesheet" href="{% static 'user/feedback_list.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+        </head>
+        <body>
+            <h2>Feedbacks</h2>
+            <hr>
+            {% for feedback in feedbacks %}
+                <div>
+                    <p>Subject: <a href="{% url 'feedback-detail' feedback.id %}">{{ feedback.subject }}</a></p>
+                    <p>Message: {{ feedback.message }}</p>
+                    <p>Ticket number: {{feedback.id|add:1000 }}</p>
+
+                    {% if feedback.admin_reply%}
+                        <p>Admin reply: {{ feedback.admin_reply }}</p>
+                    {% else %}
+                        <p>No admin reply yet.</p>
+                    {% endif %}
+                </div>
+                <hr>
+            {% empty %}
+                <p>You have not submitted any feedback yet.</p>
+            {% endfor %}
+            <a href="{% url 'forum-main' %}">Back to Main</a>
+       </body>
+{% endblock content %}
+</html>
