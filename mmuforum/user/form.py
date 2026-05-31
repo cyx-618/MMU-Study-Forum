@@ -111,6 +111,25 @@ class UserUpdateForm(forms.ModelForm):
           'bio':'Write your bio',
           'profile_picture':'Select Profile'
       }
+       
+   def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.fields['major'].label = ""
+        self.fields['bio'].label = ""
+        self.fields['profile_picture'].widget = forms.FileInput()
+        self.fields['profile_picture'].label = ""
+        self.fields['profile_picture'].help_text = ""
+        self.fields['bio'].help_text = ""
+       
+        self.helper.layout = Layout(
+            Field('major', css_class='major-select form-control'),
+            Field('bio', css_class='bio form-control', placeholder='Tell us about yourself!'),
+            Field('profile_picture', css_class='profile-picture form-control-file'),
+            Submit('submit', 'Update Profile', css_class='update-btn'),
+        )
+
 
 class FeedbackForm(forms.ModelForm):
     class Meta:
