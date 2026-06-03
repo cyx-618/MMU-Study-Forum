@@ -1,3 +1,7 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'post/update_post.css' %}?v={% now 'YmdHis' %}">
+</head>
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}

@@ -2,115 +2,345 @@
 <html>
     <head>
         <title>{{ major_name }} Forum</title>
-        <link rel="stylesheet" href="{% static 'post/major_forum.css' %}">
+        <link rel="stylesheet" href="{% static 'post/major_forum.css' %}?v={% now 'YmdHis' %}">
     </head>
+
     <body>
         <nav class="top_bar" id="main-banner">
             <div class="banner-top">
-                <h1>{{ major_name }} Forum</h1>
-        
-                <div class="search-bar">
-                    <form method="get" action="{% url 'forum-main' %}">
-                        <div class="search-wrapper">
-                            <select name="search_type" class="search-type-select">
-                                <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>Post</option>
-                                <option value="users" {% if search_type == 'users' %}selected{% endif %}>User</option>
-                            </select>
-                            <input type="text" name="q" placeholder="Finding something?" value="{{ search_query|default:'' }}"><br>
-                            <span>
-                                <button type="submit"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:30px; height:30px"></button>
-                            </span>
-                        </div>
-                    </form>
+                <a href= "{% url 'forum-main' %}"><img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px"></a>
+                <h3>{{ major_name }} Forum</h3>
 
-                    {% if search_query %}
-                    <div class="search-info">
-                        <p>Search "{{ search_query }}" result：found 
-                            {% if search_type == 'users' %}
-                                {{ users|length }}
+            <div class="search-bar">
+                <form method="get" action="{% url 'forum-main' %}">
+                    <div class="search-wrapper">
+                        <select name="search_type" class="search-type-select">
+                            <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>POST</option>
+                            <option value="users" {% if search_type == 'users' %}selected{% endif %}>USER</option>
+                        </select>
+                        <input type="text" name="q" placeholder="Search something here..." value="{{ search_query|default:'' }}"><br>
+                        <span>
+                            <button type="submit" style="border: none; background-color: #f1f6e5;"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:20px; height:20px;"></button>
+                        </span>
+                    </div>
+                </form>
+
+                {% if search_query %}
+                <div class="search-info">
+                    <p>Search "{{ search_query }}" result：found 
+                        {% if search_type == 'users' %}
+                            {{ users|length }}
+                        {% else %}
+                            {% if total_results %}
+                                {{ total_results }}
                             {% else %}
-                                {% if total_results %}
-                                    {{ total_results }}
-                                {% else %}
-                                    {{ posts|length }}
-                                {% endif %}
+                                {{ posts|length }}
                             {% endif %}
-                        </p>
-                        <a href="{% url 'forum-main' %}">Clear</a>
-                    </div>
-                    {% endif %}
-                    </div>
-
-                <div class="register">
-                    <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
-                    <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'forum-main' %}">Clear</a>
                 </div>
+                {% endif %}
             </div>
 
-            <nav class="category-bar">
-                <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
-                <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
-                <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
-                <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
-                <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
-                <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
-                <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
-                <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
-            </nav>
-        </nav>
-        
-        {% for post in posts %}
-        <div>
-            
-            <p>Title:<a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a></p>
-            <p>Author: {{ post.author }}</p>
-            <p>Major: {{ post.author.user_profile.major.major_name }}</p>
-            <p>Content: {{ post.content }}</p>
-
-            {% if post.image %}
-                <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px; max-height: 200px;">
-            {% endif %}
-
-            <form method="post" action="{% url 'like_post' post.id %}">
-                {% csrf_token %}
-                <button type="submit">Like ({{ post.likes_count }})</button>
-            </form>
-
-            {% if user.is_authenticated and user != post.author %}
-                <div>
-                    <span>
-                        <button type="submit"><a href="{% url 'report-post' post.id %}" >Report</a></button>
-                    </span>
-                </div>
-            {% endif %}
-
-            <div>
-                <h4>Comment ({{ post.comments.count }})</h4>
-                
-                {% for comment in post.comments.all %}
-                <div>
-                    <strong>{{ comment.user.username }}:</strong>
-                    <span>{{ comment.text }}</span>
-                    <small>{{ comment.created_at }}</small>
-                </div>
-                {% empty %}
-                    <p>No comment.</p>
-                {% endfor %}
-
-                {% if user.is_authenticated %}
-                <form method="post" action="{% url 'add-comment' post.id %}">
-                    {% csrf_token %}
-                    <input type="text" name="content" placeholder="Write comment..." required>
-                    <button type="submit">Submit</button>
-                </form>
-                {% endif %}
-
-                <hr>
+            <div class="register">
+                <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
+                <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
             </div>
         </div>
-        
-        {% empty %}
-            <p>No posts.</p>
+
+        <nav class="category-bar">
+            <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
+            <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
+            <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
+            <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
+            <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
+            <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
+            <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
+            <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
+        </nav>
+    </nav>
+
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/home.png' %}" alt="Home">
+            </a>
+            {% if user.is_authenticated and user.username %}
+                <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+            {% else %}
+                <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+            {% endif %}
+            <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+            </a>
+            <a href="{% url 'post-create' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/add.png' %}" alt="Create">
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
         {% endfor %}
-        <a href= "{% url 'forum-main' %}">Back to Main</a>
+    </div>
+    {% endif %}
+
+        <div class="main-content">
+            <div class="content-container">
+                {% if search_type == 'posts' or not search_type %}
+                {% for post in posts%}
+                    <div class="post-card">
+                        <div class="post-header">
+                            {% if post.author.user_profile.profile_picture %}
+                                <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
+                            {% else %}
+                                <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
+                            {% endif %}
+
+                            <div class="author-info">
+                                <span class="author-username">{{ post.author.username }}</span>
+                                <span class="author-major">{{ post.author.user_profile.major}}</span>
+                            </div>
+                        </div>
+
+                        <div class="post-body">
+                            <h3 class="post-title">
+                                <a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a>
+                            </h3>
+                            <p class="post-content">{{ post.content }}</p>
+                        </div>
+
+                        {% if post.image or post.video_file or post.pdf %}
+                            <div class="post-media">
+                                {% if post.image %}
+                                    <div class="media-container">
+                                        <img src="{{ post.image.url }}" alt="Post Image">
+                                    </div>
+                                {% endif %}
+                                {% if post.video_file %}
+                                    <div class="media-container">
+                                        <video controls>
+                                            <source src="{{ post.video_file.url }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                {% endif %}
+                                {% if post.pdf %}
+                                    <div class="media-container pdf-container">
+                                        <div class="pdf-info">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span class="pdf-name">
+                                                {{ post.pdf.name|cut:"posts/pdfs/"|cut:"post_pdfs/"|slice:"-30:" }}
+                                            </span>
+
+                                            <a href="{{ post.pdf.url }}" class="pdf-download" target="_blank">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <br><hr>
+
+                        <div class="post-footer">
+                            <div class="post-actions">
+                                <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
+                                    {% csrf_token %}
+                                    <button type="button" class="action-buttons like-post">
+                                        {% if user in post.likes.all %}
+                                            <i class="fas fa-heart" style="color: #e74c3c;"></i>
+                                        {% else %}
+                                            <i class="far fa-heart"></i>
+                                        {% endif %}
+                                        <span class="likes-count">{{ post.likes.count }}</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                            <h4><img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;"> Comment ({{ post.comments.count }})</h4>
+                            {% for comment in post.comments.all %}
+                                {% if not comment.parent_comment %}
+                                    <div class="comment-block" style="margin-bottom: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                            <div>
+                                                <strong>{{ comment.user.username }}:</strong>
+                                                <span>{{ comment.text }}</span>
+                                                <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
+                                            </div>
+
+                                            {% if user.is_authenticated and user != comment.user %}
+                                            <a href="{% url 'report-comment' comment.id %}" style="text-decoration: none; color: #999; font-size: 12px; margin-left: 10px;" title="Report this comment">
+                                                Report
+                                            </a>
+                                            {% endif %}
+                                        </div>
+
+                                        <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
+                                            {% if user in comment.likes_count.all %}
+                                                <span style="color: red;">❤️</span>({{ comment.likes_count.count }})
+                                            {% else %}
+                                                <span>🤍</span>({{ comment.likes_count.count }})
+                                            {% endif %}
+                                        </a>
+
+                                        <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline;">Reply</a>
+
+                                        <div style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 10px; margin-top: 10px;">
+                                            {% for reply in comment.replies.all %}
+                                            <div style="margin-bottom: 10px;">
+                                                <strong>{{ reply.user.username }}:</strong>
+                                                <span>{{ reply.text }}</span>
+                                                <small style="color: gray;">{{ reply.created_at|timesince }} ago</small>
+                        
+                                                <a href="{% url 'like-comment' reply.id %}" style="text-decoration: none; color: inherit;">
+                                                    {% if user in reply.likes_count.all %}
+                                                        <span style="color: red;">❤️</span>({{ reply.likes_count.count }})
+                                                    {% else %}
+                                                        <span>🤍</span>({{ reply.likes_count.count }})
+                                                    {% endif %}
+                                                </a>
+                                                <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline; font-size: 0.9em;">Reply</a>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+
+                                        <div id="reply-form-{{ comment.id }}" style="display:none;">
+                                            <form method="post" action="{% url 'add-comment' post.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                <input type="text" name="content" class="comment-area" placeholder="Reply to {{comment.user.username}} ..." required>
+                                                <button type="submit" class="submit-comment"><img src="{% static 'post/images/paper-plane.png' %}" alt="Send"></button>
+                                                <button type="button" class="submit-comment" onclick="this.parentElement.style.display='none'"><img src="{% static 'post/images/cancel.png' %}" alt="Cancel"></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %} 
+                            {% empty %}
+                                <p>No comment.</p>
+                            {% endfor %}
+
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'add-comment' post.id %}">
+                                    {% csrf_token %}
+                                    <input class="comment-area" type="text" name="content" placeholder="Write comment..." required>
+                                    <button class="submit-comment" type="submit"><img src="{% static 'post/images/paper-plane.png' %}" alt="Send"></button>
+                                </form>
+                            {% endif %}
+                    </div>
+            
+                {% empty %}
+                    {% if search_query %}
+                        <p id="no-post-warning">No posts about "{{ search_query }}". Try another words.</p>
+                        {% else %}
+                        <p id="no-post-warning">
+                            No posts available yet.<br>
+                            Feel free to write your post.
+                        </p>
+                    {% endif %}
+                {% endfor %}
+
+                {% elif search_type == 'users' %}
+                    {% for searched_user in users %}
+                        <div class="post-card" style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                {% if searched_user.user_profile.profile_picture %}
+                                <img src="{{ searched_user.user_profile.profile_picture.url }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                {% else %}
+                                <img src="{% static 'admin_manager/images/default_avatar.png' %}" style="width: 60px; height: 60px; border-radius: 50%;">
+                                {% endif %}
+                                <div>
+                                    <h3 style="margin: 0 0 5px 0;">
+                                        <a href="{% url 'view-profile' searched_user.username %}" style="text-decoration: none; color: #333;">
+                                            {{ searched_user.username }}
+                                        </a>
+                                    </h3>
+                                </div>
+                            </div>
+                            <a href="{% url 'view-profile' searched_user.username %}" class="action-buttons" style="padding: 8px 20px;">View Profile</a>
+                        </div>
+                        <hr>
+                        {% empty %}
+                            {% if search_query %}
+                                <p id="no-post-warning">
+                                User not found.
+                                </p>
+                            {% else %}
+                                <p id="no-post-warning">
+                                    No posts available yet.<br>
+                                    Feel free to write your post.
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+            </div>
+        </div>
+    </body>
+
+<script>
+    let lastScrollTop = 0;
+        const banner = document.getElementById('main-banner');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                banner.classList.add('banner-hidden');
+            } else {
+                banner.classList.remove('banner-hidden');
+            }
+            lastScrollTop= scrollTop;
+        });
+
+    document.querySelectorAll('.like-post').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.like-form');
+            const postId = form.dataset.postId;
+            const url = form.action;
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            const icon = this.querySelector('i');
+            const countSpan = this.querySelector('span');
+
+            if (!countSpan) {
+                console.error('Error: .likes-count element not found');
+                return;
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#e74c3c';
+                    countSpan.innerText = data.count;
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '#6c757d';
+                    countSpan.innerText = data.count;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+       
 </html>

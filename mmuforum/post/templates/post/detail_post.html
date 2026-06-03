@@ -1,3 +1,12 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Post Detail</title>
+    <link rel="stylesheet" href="{% static 'post/detail_post.css' %}?v={% now 'YmdHis' %}">
+</head>
+
 <article class="content-section">
     <div>
         {% if post.author == user or user.is_staff %}
@@ -68,3 +77,4 @@
 
         
 </article>
+</html>
