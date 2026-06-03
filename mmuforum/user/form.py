@@ -135,11 +135,13 @@ class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['subject', 'message']
-        widgets = {
-            'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter the subject of your feedback'}),
-            'message': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter your feedback here', 'rows': 5}),
-        }
-        labels = {
-            'subject': 'Subject',
-            'message': 'Message',
-        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('subject',label="Subject",css_class='subject form-contol'),
+            Field('message', label="Message", css_class='message form-control '),
+            Submit('submit', 'Submit', css_class='submit-btn'),
+        )

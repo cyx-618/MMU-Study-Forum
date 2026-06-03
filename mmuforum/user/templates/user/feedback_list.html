@@ -5,30 +5,39 @@
 <html>
         {% block content %}
         <head>
-    <title>My Feedbacks</title>
+    <title>Feedbacks List</title>
     <link rel="stylesheet" href="{% static 'user/feedback_list.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         </head>
         <body>
-            <h2>Feedbacks</h2>
-            <hr>
+            <div class="feedback-container">
+            <h2 class="feedback-title">Feedbacks List</h2>
+             <a class="back-btn" href="{% url 'forum-main' %}">Back to Main</a>
+            </div>
+            <div class="feedback-list">
             {% for feedback in feedbacks %}
-                <div>
-                    <p>Subject: <a href="{% url 'feedback-detail' feedback.id %}">{{ feedback.subject }}</a></p>
-                    <p>Message: {{ feedback.message }}</p>
-                    <p>Ticket number: {{feedback.id|add:1000 }}</p>
-
+                <div class="container">
+                    <p><span class="bold">Subject:</span> <a href="{% url 'feedback-detail' feedback.id %}">{{ feedback.subject }}</a></p>
+                    <p><span class="bold">Message:</span> {{ feedback.message }}</p>
+                    <p><span class="bold">Ticket number:</span> {{feedback.id|add:1000 }}</p>
+                    <hr>
+                <div class="admin-reply">
                     {% if feedback.admin_reply%}
-                        <p>Admin reply: {{ feedback.admin_reply }}</p>
+                        <p><span class="bold">Admin reply:</span> {{ feedback.admin_reply }}</p>
                     {% else %}
-                        <p>No admin reply yet.</p>
+                        <p class="bold">No admin reply yet.</p>
                     {% endif %}
                 </div>
-                <hr>
+                </div>
+                
             {% empty %}
-                <p>You have not submitted any feedback yet.</p>
+                <p class="bold">You have not submitted any feedback yet.</p>
             {% endfor %}
-            <a href="{% url 'forum-main' %}">Back to Main</a>
+            </div>
        </body>
 {% endblock content %}
 </html>
