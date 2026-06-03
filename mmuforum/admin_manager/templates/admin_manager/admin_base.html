@@ -1,0 +1,92 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>{% block title %}{% endblock title %}</title>
+        <link rel="stylesheet" href="{% static 'admin_manager/admin.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Titan+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Kedebideri:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
+    </head>
+
+    <body>
+        <nav class="admin-banner" id="main-banner">
+            <div class="banner-top">
+                <div class="logo-area">
+                    <a href="{% url 'admin-main' %}" class="logo-link">
+                        <img src="{% static 'admin_manager/images/MMU-logo.png' %}" alt="Main">
+                        MMU Forum
+                    </a>
+                </div>
+
+                <div class="search-container">
+                    <form action="#" method="GET">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" name="q" placeholder="Search users or posts...">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="banner-actions">
+                    <a href="#" class="logout-item" title="Log Out">
+                        <img src="{% static 'admin_manager/images/logout.png'%}" alt="Logout">
+                    </a>
+                </div>
+            </div>
+
+            <div class="category-bar">
+                <button><a href= "#">FCI</a></button>
+                <button><a href= "#">FCM</a></button>
+                <button><a href= "#">FOM</a></button>
+                <button><a href= "#">FCA</a></button>
+                <button><a href= "#">FAC</a></button>
+                <button><a href= "#">FAIE</a></button>
+                <button><a href= "#">FOL</a></button>
+                <button><a href= "#">FOB</a></button>
+            </div>
+        </nav>
+
+        <div class="sidebar">
+            <div class="sidebar-menu">
+                <a href="#" class="sidebar-item" alt="Create" title="Create Post/Announcement">
+                    <i class="fas fa-plus-circle"></i>
+                </a>
+                <a href="#" class="sidebar-item" alt="Notification" title="Notification">
+                    <i class="fas fa-bell"></i>
+                </a>
+                <a href="#" class="sidebar-item" alt="Admin Panel" title="Admin Panel">
+                    <i class="fas fa-user-shield"></i>
+                </a>
+                <a href="#" class="sidebar-item" alt="Profile" title="Profile">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </body>
+
+    <script>
+        var lastScrollTop = 0;
+        var banner = document.getElementById('main-banner');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                banner.classList.add('banner-hidden');
+            } else {
+                banner.classList.remove('banner-hidden');
+            }
+            lastScrollTop= scrollTop;
+        });
+    </script>
+</html>

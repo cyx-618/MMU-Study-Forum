@@ -1,209 +1,166 @@
+{% extends 'admin_manager/admin_base.html' %}
 {% load static %}
 
-<html>
-    <head>
-        <title>Admin Dashboard</title>
-        <link rel="stylesheet" href="{% static 'admin_manager/admin.css' %}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Titan+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Kedebideri:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
-    </head>
+{% block title %} MMU Forum - Admin Mainpage {% endblock title %}
 
-    <body>
-        <nav class="admin-banner" id="main-banner">
-            <div class="banner-top">
-                <div class="logo-area">
-                    <a href="{% url 'admin-main' %}" class="logo-link">
-                        <img src="{% static 'admin_manager/images/MMU-logo.png' %}" alt="Main">
-                        MMU Forum
-                    </a>
-                </div>
+{% block content %}
 
-                <div class="search-container">
-                    <form action="#" method="GET">
-                        <div class="search-wrapper">
-                            <i class="fas fa-search"></i>
-                            <input type="text" name="q" placeholder="Search users or posts...">
-                        </div>
-                    </form>
-                </div>
+{% for post in posts%}
+    <div class="post-card">
+        <div class="post-header">
+            {% if post.author.user_profile.profile_picture %}
+                <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
+            {% else %}
+                <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
+            {% endif %}
 
-                <div class="banner-actions">
-                    <a href="#" class="logout-item" title="Log Out">
-                        <img src="{% static 'admin_manager/images/logout.png'%}" alt="Logout">
-                    </a>
-                </div>
-            </div>
-
-            <div class="category-bar">
-                <button><a href= "#">FCI</a></button>
-                <button><a href= "#">FCM</a></button>
-                <button><a href= "#">FOM</a></button>
-                <button><a href= "#">FCA</a></button>
-                <button><a href= "#">FAC</a></button>
-                <button><a href= "#">FAIE</a></button>
-                <button><a href= "#">FOL</a></button>
-                <button><a href= "#">FOB</a></button>
-            </div>
-        </nav>
-
-        <div class="sidebar">
-            <div class="sidebar-menu">
-                <a href="#" class="sidebar-item" alt="Create" title="Create Post/Announcement">
-                    <i class="fas fa-plus-circle"></i>
-                </a>
-                <a href="#" class="sidebar-item" alt="Notification" title="Notification">
-                    <i class="fas fa-bell"></i>
-                </a>
-                <a href="#" class="sidebar-item" alt="Admin Panel" title="Admin Panel">
-                    <i class="fas fa-user-shield"></i>
-                </a>
-                <a href="#" class="sidebar-item" alt="Profile" title="Profile">
-                    <i class="fas fa-user-circle"></i>
-                </a>
+            <div class="author-info">
+                <span class="author-username">{{ post.author.username }}</span>
+                <span class="author-major">{{ post.author.user_profile.major}}</span>
             </div>
         </div>
-        
-        <div class="main-content">
-            <div class="content-container">
-                {% for post in posts%}
-                    <div class="post-card">
-                        <div class="post-header">
-                            {% if post.author.user_profile.profile_picture %}
-                                <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
-                            {% else %}
-                                <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
-                            {% endif %}
 
-                            <div class="author-info">
-                                <span class="author-username">{{ post.author.username }}</span>
-                                <span class="author-major">{{ post.author.user_profile.major}}</span>
-                            </div>
-                        </div>
+        <div class="post-body">
+            <h3 class="post-title">
+                <a href="{% url 'admin-post-detail' post.pk %}"> {{ post.title }} </a>
+            </h3>
+            <p class="post-content">{{ post.content }}</p>
+        </div>
 
-                        <div class="post-body">
-                            <h3 class="post-title">
-                                <a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a>
-                            </h3>
-                            <p class="post-content">{{ post.content }}</p>
-                        </div>
+        {% if post.image or post.video_file or post.pdf %}
+            <div class="post-media">
+                {% if post.image %}
+                    <div class="media-container">
+                        <img src="{{ post.image.url }}" alt="Post Image">
+                    </div>
+                {% endif %}
+                {% if post.video_file %}
+                    <div class="media-container">
+                        <video controls>
+                            <source src="{{ post.video_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                {% endif %}
+                {% if post.pdf %}
+                    <div class="media-container pdf-container">
+                        <div class="pdf-info">
+                            <i class="fas fa-file-pdf"></i>
+                            <span class="pdf-name">
+                                {{ post.pdf.name|cut:"posts/pdfs/"|cut:"post_pdfs/"|slice:"-30:" }}
+                            </span>
 
-                        {% if post.image or post.video_file or post.pdf %}
-                            <div class="post-media">
-                                {% if post.image %}
-                                    <div class="media-container">
-                                        <img src="{{ post.image.url }}" alt="Post Image">
-                                    </div>
-                                {% endif %}
-                                {% if post.video_file %}
-                                    <div class="media-container">
-                                        <video controls>
-                                            <source src="{{ post.video_file.url }}" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                {% endif %}
-                                {% if post.pdf %}
-                                    <div class="media-container pdf-container">
-                                        <div class="pdf-info">
-                                            <i class="fas fa-file-pdf"></i>
-                                            <span class="pdf-name">
-                                                {{ post.pdf.name|cut:"posts/pdfs/"|cut:"post_pdfs/"|slice:"-30:" }}
-                                            </span>
-
-                                            <a href="{{ post.pdf.url }}" class="pdf-download" target="_blank">
-                                                <i class="fas fa-arrow-down"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                        <br><hr>
-                        
-                        <div class="post-footer">
-                            <div class="post-actions">
-                                <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
-                                    {% csrf_token %}
-                                    <button type="button" class="action-buttons like-post">
-                                        {% if user in post.likes.all %}
-                                            <i class="fas fa-heart" style="color: #e74c3c;"></i>
-                                        {% else %}
-                                            <i class="far fa-heart"></i>
-                                        {% endif %}
-                                        <span class="likes-count">{{ post.likes.count }}</span>
-                                    </button>
-                                </form>
-                            </div>
+                            <a href="{{ post.pdf.url }}" class="pdf-download" target="_blank">
+                                <i class="fas fa-arrow-down"></i>
+                            </a>
                         </div>
                     </div>
-                {% empty %}
-                    <p id="no-post-warning">
-                        No posts available yet.<br>
-                        Feel free to write your post.
-                    </p>
-                {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
+        <br><hr>
+                        
+        <div class="post-footer">
+            <div class="post-actions">
+                <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
+                    {% csrf_token %}
+                    <button type="button" class="action-buttons like-post">
+                        {% if user in post.likes.all %}
+                            <i class="fas fa-heart" style="color: #e74c3c;"></i>
+                        {% else %}
+                            <i class="far fa-heart"></i>
+                        {% endif %}
+                        <span class="likes-count">{{ post.likes.count }}</span>
+                    </button>
+                </form>
+
+                <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button">
+                    <i class="far fa-comment"></i>
+                    <span>{{ post.comments.count }}</span>
+                </a>
+
+                <div class="manage-post">
+                    <button class="manage-button">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="manage-dropdown">
+                        <a href="#"><i class="fas fa-thumbtack"></i> Pin Post</a>
+                        <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                        <a href="#"><i class="fas fa-trash"></i> Delete</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </body>
+    </div>
+{% empty %}
+    <p id="no-post-warning">
+        No posts available yet.<br>
+        Feel free to write your post.
+    </p>
+{% endfor %}
 
-    <script>
-        let lastScrollTop = 0;
-        const banner = document.getElementById('main-banner');
+<script>
+    //like-post-no-refresh
+    document.querySelectorAll('.like-post').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.like-form');
+            const postId = form.dataset.postId;
+            const url = form.action;
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            const icon = this.querySelector('i');
+            const countSpan = this.querySelector('span');
 
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                banner.classList.add('banner-hidden');
-            } else {
-                banner.classList.remove('banner-hidden');
+            if (!countSpan) {
+                console.error('Error: .likes-count element not found');
+                return;
             }
-            lastScrollTop= scrollTop;
-        });
 
-
-        //like-post-no-refresh
-        document.querySelectorAll('.like-post').forEach(button => {
-            button.addEventListener('click', function() {
-                const form = this.closest('.like-form');
-                const postId = form.dataset.postId;
-                const url = form.action;
-                const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
-                const icon = this.querySelector('i');
-                const countSpan = this.querySelector('span');
-
-                if (!countSpan) {
-                    console.error('Error: .likes-count element not found');
-                    return;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#e74c3c';
+                    countSpan.innerText = data.count;
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '#6c757d';
+                    countSpan.innerText = data.count;
                 }
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.liked) {
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                        icon.style.color = '#e74c3c';
-                        countSpan.innerText = data.count;
-                    } else {
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                        icon.style.color = '#6c757d';
-                        countSpan.innerText = data.count;
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            });
+            })
+            .catch(error => console.error('Error:', error));
         });
-    </script>
-</html>
+    });
+
+    //manage-post dropdown
+    document.querySelectorAll('.manage-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = this.nextElementSibling;
+
+            document.querySelectorAll('.manage-dropdown').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        });
+    });
+
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.manage-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    });
+</script>
+{% endblock %}
