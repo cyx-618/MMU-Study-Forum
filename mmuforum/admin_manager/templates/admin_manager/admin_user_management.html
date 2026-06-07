@@ -1,0 +1,100 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - User Management {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Data Visualization
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="#" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="#" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
+                <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-users"></i> Users Management</h3>
+            <a href="{% url 'add-user' %}" class="um-add-user"><i class="fas fa-plus"></i>Add User</a>
+            <button class="um-delete-selected"><i class="fas fa-trash"></i>Delete</button>
+        </div>
+
+        <div class="user-table-container">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th class="checkbox-column">
+                            <input type="checkbox" id="selectAll">
+                        </th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Staff Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users%}
+                        <tr>
+                            <td class="checkbox-column">
+                                <input type="checkbox" class="user-checkbox" value="{{ user.id }}">
+                            </td>
+                            <td>
+                                <a href="{% url 'view-profile' user.id %}" class="username-link">
+                                    {{ user.username }}
+                                </a>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.is_staff %}
+                                    <span class="staff-yes">✓</span>
+                                {% else %}
+                                    <span class="staff-no">✘</span>
+                                {% endif %}
+                            </td>
+                            <td class="um-action-btn">
+                                <a href="{% url 'edit-user' user.id %}" class="um-edit-btn">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'delete-user-confirmation' user.id %}" class="um-delete-btn">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-row">No users found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript for "Select All" functionality
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.user-checkbox');
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        });
+    }
+</script>
+{% endblock content %}

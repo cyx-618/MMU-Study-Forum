@@ -1,0 +1,38 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - Edit User {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Data Visualization
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="#" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="#" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
+                <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-edit"></i> Edit User</h3>
+        </div>
+
+        
+    </div>
+</div>
+{% endblock content %}
