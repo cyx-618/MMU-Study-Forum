@@ -33,12 +33,93 @@
         </div>
 
         <div class="confirmation-box">
+            {% if users %}
+            <h4>Are you sure you want to delete the following <strong>{{ users|length }}</strong> user(s)?</h4>
+            <ul class="user-list">
+                {% for user in users %}
+                <li><strong>{{ user.username }}</strong> ({{ user.email|default:"no email" }})</li>
+                {% endfor %}
+            </ul>
+            <form method="post" action="{% url 'batch-delete-execute'%}">
+                {% csrf_token %}
+                <input type="hidden" name="ids"
+                    value="{% for user in users %}{{ user.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                <button type="submit" class="btn-danger">Yes, Delete All</button>
+                <a href="{% url 'user-management' %}" class="btn-cancel">Cancel</a>
+            </form>
+            {% else %}
             <h4>Are you sure you want to delete the user <strong>"{{ user.username }}"</strong>?</h4>
             <p>This action cannot be undone. All data associated with this user will be permanently deleted.</p>
             <br>
             <a href="{% url 'delete-user-execute' user.id %}" class="btn-danger">Yes, Delete</a>
             <a href="{% url 'user-management' %}" class="btn-cancel">Cancel</a>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+    //like-post-no-refresh
+    document.querySelectorAll('.like-post').forEach(button => {
+        button.addEventListener('click', function () {
+            const form = this.closest('.like-form');
+            const postId = form.dataset.postId;
+            const url = form.action;
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            const icon = this.querySelector('i');
+            const countSpan = this.querySelector('span');
+
+            if (!countSpan) {
+                console.error('Error: .likes-count element not found');
+                return;
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.liked) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        icon.style.color = '#e74c3c';
+                        countSpan.innerText = data.count;
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        icon.style.color = '#6c757d';
+                        countSpan.innerText = data.count;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+
+    //manage-post dropdown
+    document.querySelectorAll('.manage-button').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const dropdown = this.nextElementSibling;
+
+            document.querySelectorAll('.manage-dropdown').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        });
+    });
+
+    document.addEventListener('click', function () {
+        document.querySelectorAll('.manage-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    });
+</script>
 {% endblock content %}

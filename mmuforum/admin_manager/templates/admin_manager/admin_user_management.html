@@ -31,7 +31,10 @@
         <div class="title-header">
             <h3><i class="fas fa-users"></i> Users Management</h3>
             <a href="{% url 'add-user' %}" class="um-add-user"><i class="fas fa-plus"></i>Add User</a>
-            <button class="um-delete-selected"><i class="fas fa-trash"></i>Delete</button>
+            <button id="batchDeleteBtn" class="um-delete-selected">
+                <i class="fas fa-trash"></i> Delete Selected
+            </button>
+            
         </div>
 
         <div class="user-table-container">
@@ -94,6 +97,24 @@
     if (selectAll) {
         selectAll.addEventListener('change', function() {
             checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        });
+    }
+
+    // Collect selected id to delete
+    const batchDeleteBtn = document.getElementById('batchDeleteBtn');
+
+    if (batchDeleteBtn) {
+        batchDeleteBtn.addEventListener('click', function(e) {
+            const selected = document.querySelectorAll('.user-checkbox:checked');
+        
+            if (selected.length === 0) {
+                alert('Please select at least one user.');
+                return;
+            }
+        
+            const userIds = Array.from(selected).map(cb => cb.value);
+
+            window.location.href = "{% url 'batch-delete-confirmation' %}?ids=" + userIds.join(',');
         });
     }
 </script>

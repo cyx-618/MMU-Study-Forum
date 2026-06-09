@@ -11,5 +11,8 @@ urlpatterns = [
     path('admin/panel/user-management/delete/<int:user_id>/', views.delete_user_confirmation, name='delete-user-confirmation'),
     path('admin/panel/user-management/delete/execute/<int:user_id>/', views.user_delete, name='delete-user-execute'),
     path('admin/panel/user-management/adduser/', views.add_user, name='add-user'),
-    path('admin/profile/<int:user_id>', views.view_profile, name='view-profile')
+    path('admin/profile/<int:user_id>', views.view_profile, name='view-profile'),
+    path('admin/profile/my', views.admin_profile, name='my-profile'),
+    path('admin/panel/user-management/delete/batch-confirm/', views.batch_delete_confirmation, name='batch-delete-confirmation'),
+    path('admin/panel/user-management/delete/batch-execute/', views.batch_delete_execute, name='batch-delete-execute'),
 ]

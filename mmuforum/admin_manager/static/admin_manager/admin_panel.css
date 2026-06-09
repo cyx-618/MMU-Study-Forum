@@ -168,17 +168,6 @@
     cursor: pointer;
 }
 
-.username-link {
-    color: black;
-    text-decoration: none;
-}
-
-.username-link:hover {
-    color: #2c5a2e;
-    text-decoration: underline;
-    font-weight: bold;
-}
-
 .staff-yes {
     color: #2c5a2e;
     font-weight: bold;
@@ -373,6 +362,134 @@
     text-align: center;
 }
 
-.alert {
-    color: red;
+/* admin_um_edit_user.html */
+.avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.current-avatar {
+    flex-shrink: 0;
+}
+
+.current-avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.default-avatar-small {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.default-avatar-small i {
+    font-size: 50px;
+    color: #adb5bd;
+}
+
+.upload-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: white;
+    color: #495057;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.upload-button:hover {
+    background-color: #dee2e6;
+}
+
+.upload-button i {
+    margin-right: 6px;
+}
+
+.upload-button input {
+    display: none;
+}
+
+.file-name {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 6px;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;  /* 允许用户垂直拖拽调整大小 */
+    background-color: white;
+    transition: all 0.2s;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #2c5a2e;
+    box-shadow: 0 0 0 3px rgba(44, 90, 46, 0.1);
+}
+
+.permissions-section {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.permission-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.permission-item:last-child {
+    margin-bottom: 0;
+}
+
+.permission-item input {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.permission-info {
+    flex: 1;
+}
+
+.permission-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.permission-desc {
+    font-size: 12px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.user-list {
+    margin: 16px 0;
+    padding-left: 24px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.user-list li {
+    margin: 6px 0;
 }
