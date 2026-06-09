@@ -1,4 +1,6 @@
 body{
+    margin: 0;
+    padding-top: 130px;
     background-color: #d2dfcd;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
@@ -21,7 +23,8 @@ body{
 
 .banner-top {
     height: 70px;
-    padding: 0 30px;
+    padding-left: 0;
+    padding-right: 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -32,12 +35,18 @@ body{
 
 .title{
     padding-left: 50px;
+    justify-content: center;
+}
+
+.title img{
+    padding-right: 10px;
 }
 
 .search-bar {
     flex: 1;
     max-width: 500px;
     margin: 0 20px;
+    margin-top: 18px;
     padding: 13px;
     min-width: 0;
 }

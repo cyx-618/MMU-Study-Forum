@@ -42,7 +42,7 @@
 
                 {% if search_query %}
                 <div class="search-info">
-                    <p>Search "{{ search_query }}" result：found 
+                    <p>Search "{{ search_query }}" result:found 
                         {% if search_type == 'users' %}
                             {{ users|length }}
                         {% else %}
@@ -183,7 +183,12 @@
                             </div>
                         </div>
 
-                            <h4><img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;"> Comment ({{ post.comments.count }})</h4>
+                            <h4>
+                                <a href="{% url 'post-detail' post.pk %}">
+                                    <img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;">
+                                </a>
+                                ({{ post.comments.count }})        
+                            </h4>
                             {% for comment in post.comments.all %}
                                 {% if not comment.parent_comment %}
                                     <div class="comment-block" style="margin-bottom: 20px;">
@@ -292,8 +297,7 @@
                                 </p>
                             {% else %}
                                 <p id="no-post-warning">
-                                    No posts available yet.<br>
-                                    Feel free to write your post.
+                                    User not found.<br>
                                 </p>
                             {% endif %}
                         {% endfor %}

@@ -1,4 +1,229 @@
-body{
+html, body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
     background-color: #d2dfcd;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+body{
+    padding-top: 100px;
+}
+
+.container {
+    width: 100%;
+}
+
+.header{
+    background-color: #90a07d;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    width: 100%;
+    height: 70px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.header img{
+    width: 20px;
+    height: 20px;
+    padding-right: 10px;
+}
+
+.sidebar {
+    background-color: #90a07d;
+    color: #333;
+    height: 100vh;
+    width: 70px;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 999;
+    border-right: 1px solid #e9ecef;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    padding-top: 130px;
+    gap: 8px;
+}
+
+.sidebar-icon {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    color: #555;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    justify-content: center;
+}
+
+.sidebar-icon img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.sidebar-icon:hover {
+    opacity: 0.5;
+}
+
+.post_form_card{
+    background-color: #f1f6e5;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 24px;
+    margin-left: 185px;
+    margin-right: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0.0.05);
+    max-width: 70%;
+}
+
+.post_form_title{
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c5a2e;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.post_form_card .form-group{
+    margin-bottom: 20px;
+}
+
+.post_form_card label{
+    font-weight: 600;
+    color: #2c5a2e;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.post_form_card input[type="text"],
+.post_form_card input[type="email"],
+.post_form_card input[type="password"],
+.post_form_card input[type="file"],
+.post_form_card textarea,
+.post_form_card select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 0.5px solid #2c5a2e;
+    border-radius: 8px;
+    background-color: #e4f1c7;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.post_form_card input:focus,
+.post_form_card textarea:focus,
+.post_form_card select:focus{
+    outline: none;
+    border-color: #90a07d;
+    box-shadow: 0 0 0 3px rgba(144, 150, 125, 0.2);
+}
+
+.post_form_card textarea{
+    min-height: 120px;
+    resize: vertical;
+}
+
+.post_form_card input[type="file"]{
+    background-color: #e4f1c7;
+    border: 1px dashed #90a07d;
+}
+
+.post_form_card .form-text,
+.post_form_card .help-block{
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.post_form_card .errorlist{
+    color: #dc3545;
+    font-size: 12px;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.post_form_card div:last-child{
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.post_form_card button[type="submit"]{
+    background-color: #4e6f46;
+    color:white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.post_form_card button[type="submit"]:hover{
+    background-color: #3d6036;
+    transform: translateY(-2px);
+}
+
+.post_form_card button[type="reset"]{
+    background-color: #90a07d;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.post_form_card button[type="reset"]:hover{
+    background-color: #6c7a5e;
+}
+
+.post_form_card input[type="checkbox"],
+.post_form_card input[type="radio"] {
+    width: auto;
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+.post_form_card .form-check-label {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.post_form_card + div > div {
+    background: #f1f6e5;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.post_form_card + div h4 {
+    color: #2c5a2e;
+    margin-bottom: 10px;
+}
+
+.post_form_card + div hr {
+    border-color: #c0cfb0;
 }

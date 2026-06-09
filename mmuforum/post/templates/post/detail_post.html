@@ -1,11 +1,70 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>Post Detail</title>
+        <link rel="stylesheet" href="{% static 'post/detail_post.css' %}?v={% now 'YmdHis' %}">
+    </head>
 
-<head>
-    <title>Post Detail</title>
-    <link rel="stylesheet" href="{% static 'post/detail_post.css' %}?v={% now 'YmdHis' %}">
-</head>
+    <body>
+        <nav class="top_bar" id="main-banner">
+        <div class="banner-top">
+            <h3 class="title">
+                <a href= "{% url 'forum-main' %}"><img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px"></a>
+                 {{ post.title }} 
+            </h3>
+            
+            <div class="register">
+                <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
+                <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
+            </div>
+        </div>
+
+        <nav class="category-bar">
+            <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
+            <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
+            <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
+            <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
+            <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
+            <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
+            <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
+            <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
+        </nav>
+    </nav>
+
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/home.png' %}" alt="Home">
+            </a>
+            {% if user.is_authenticated and user.username %}
+                <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+            {% else %}
+                <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+            {% endif %}
+            <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+            </a>
+            <a href="{% url 'post-create' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/add.png' %}" alt="Create">
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
 
 <article class="content-section">
     <div>
@@ -75,6 +134,5 @@
         
         <a href = "{% url 'forum-main' %}" > Back to Forum </a><hr>
 
-        
 </article>
 </html>

@@ -5,12 +5,14 @@
         <link rel="stylesheet" href="{% static 'post/major_forum.css' %}?v={% now 'YmdHis' %}">
     </head>
 
-    <body>
-        <nav class="top_bar" id="main-banner">
-            <div class="banner-top">
+<body>
+    <nav class="top_bar" id="main-banner">
+        <div class="banner-top">
+            <h3 class="title">
                 <a href= "{% url 'forum-main' %}"><img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px"></a>
-                <h3>{{ major_name }} Forum</h3>
-
+                {{ major_name }}
+            </h3>
+        
             <div class="search-bar">
                 <form method="get" action="{% url 'forum-main' %}">
                     <div class="search-wrapper">
@@ -168,7 +170,12 @@
                             </div>
                         </div>
 
-                            <h4><img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;"> Comment ({{ post.comments.count }})</h4>
+                            <h4>
+                                <a href="{% url 'post-detail' post.pk %}">
+                                    <img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;">
+                                </a>
+                                ({{ post.comments.count }})        
+                            </h4>
                             {% for comment in post.comments.all %}
                                 {% if not comment.parent_comment %}
                                     <div class="comment-block" style="margin-bottom: 20px;">
@@ -277,8 +284,7 @@
                                 </p>
                             {% else %}
                                 <p id="no-post-warning">
-                                    No posts available yet.<br>
-                                    Feel free to write your post.
+                                    User not found.<br>
                                 </p>
                             {% endif %}
                         {% endfor %}
@@ -341,6 +347,15 @@
             .catch(error => console.error('Error:', error));
         });
     });
+
+    function toggleReplyForm(commentId) {
+        var x = document.getElementById('reply-form-' + commentId);
+        if (x.style.display === 'none' || x.style.display === '') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }
+    }
 </script>
        
 </html>
