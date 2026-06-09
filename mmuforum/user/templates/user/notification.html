@@ -1,25 +1,25 @@
-<style>
-.notification {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
 
-.unread {
-    background-color: #f9f9f9;
-    font-weight: bold;
-}
+{% load static %}
+<html>
 
-.read{
-    background-color: #ffffff;
-}
-</style>
-
-<h2>Notification</h2>
-<div class="notification">
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'user/notification.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<div class="noti-head">
+<h2 class="noti-title">Notification</h2>
+<a class="back-btn" href="{% url 'forum-main' %}">Back to Home</a>
+</div>
+<div class="container">
     {% for notification in notifications %}
-        <div class="notification {% if not notification.is_read %}unread{% endif %}">
-            <p>
+        <div  class="notification-ctn" class="notification {% if not notification.is_read %}unread{% endif %}">
+            <p> 
+                <img  class="profile-pic" src="{{notification.sender.user_profile.profile_picture.url }}" alt="Profile Picture">
                 <strong>@{{ notification.sender.username }}</strong>
                 {{ notification.get_notification_type_display }}
 
@@ -29,15 +29,13 @@
                     <a href= "{% url 'feedback-detail' notification.feedback.id %}">Feedback {{ notification.feedback.id }}</a>
                 {% endif %}
 
-                <br>
                 <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
-                <hr>
             </p>
         </div>
         {% empty %}
             <p>No notifications yet.</p>
     {% endfor %}
 </div>
-
 <br>
-<button><a href="{% url 'forum-main' %}">Back to Home</a></button>
+</html>
+{% endblock %}

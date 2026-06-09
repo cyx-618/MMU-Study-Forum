@@ -3,7 +3,7 @@
 {% load static %}
 
 <html>
-        {% block content %}
+     {% block content %}
 <head>
     <title>Submit Feedback</title>
     <link rel="stylesheet" href="{% static 'user/feedback.css' %}">
@@ -14,14 +14,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <h2 class="feedback-title">Submit Feedback</h2>
+    
+    <div class="container">
+         <div class="btn">
+            <h2 class="feedback-title">Submit Feedback</h2>
+            <a class="view-fb-btn" href="{% url 'feedback-list' %}">View My Feedbacks</a>
+            <a class="back-btn" href="{% url 'forum-main' %}">Back to Main</a>
+  </div> 
     <form class="form-group" method="POST">
         {% csrf_token %}
         {% crispy form %}
-         <button class="submit-btn" type="submit">Submit</button>
     </form>
-    <a class="view-fb-btn" href="{% url 'feedback-list' %}">View My Feedbacks</a>
-<a class="back-btn" href="{% url 'forum-main' %}">Back to Main</a>
+    
+</div>
 </body>
 {% endblock content %}
 </html>
