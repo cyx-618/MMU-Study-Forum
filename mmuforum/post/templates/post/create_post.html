@@ -1,23 +1,50 @@
 {% load crispy_forms_tags %}
-
+{% load static %}
 <html>
+    <head>
+        <title>Create Post</title>
+        <link rel="stylesheet" href="{% static 'post/create_post.css' %}?v={% now 'YmdHis' %}">
+    </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <p><a href="{% url 'forum-main' %}">--back to mainpage</a></p>
-            <h1>Create Your Post</h1>
+            <a href= "{% url 'forum-main' %}"><img src="{% static 'post/images/exit.png' %}" alt="Exit"></a>Create Your Post
         </div>
 
-    <div class="post_form_card">
-        <div class="post_form_title">New Post</div>
-        <form method="POST" enctype="multipart/form-data">
+        <div class="sidebar">
+            <div class="sidebar-menu">
+                <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/home.png' %}" alt="Home">
+                </a>
+                {% if user.is_authenticated and user.username %}
+                    <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                        <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                    </a>
+                {% else %}
+                    <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                        <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                    </a>
+                {% endif %}
+                <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+                </a>
+                <a href="{% url 'post-create' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/add.png' %}" alt="Create">
+                </a>
+            </div>
+        </div>
+
+        <div class="post_form_card">
+            <div class="post_form_title">New Post</div>
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 
                 {{ form|crispy }}
 
                 <div>
                     <button type="submit">Post</button>
-                    <button type="reset">Clear Form</button>
+                    <button type="reset" onclick="return confirm('Are you sure you want to clear all form fields?');">Clear Form</button>
                 </div>
             </form>
         </div>
@@ -40,9 +67,6 @@
 
         </div>
     </div>
-      
-<script>
 
-</script>
 </body>
 </html>

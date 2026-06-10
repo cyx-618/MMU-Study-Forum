@@ -1,6 +1,9 @@
 {% load crispy_forms_tags %}
-
+{% load static%}
 <html>
+    <head>
+        <link rel="stylesheet" href="{% static 'post/report_post.css' %}?v={% now 'YmdHis' %}">
+    </head>
 <body>
     <div class="container">
         <div class="header">

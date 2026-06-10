@@ -6,7 +6,8 @@
 
     <head>
         <title>MMU Study Forum</title>
-        <link rel="stylesheet" href="{% static 'post/mainpage.css' %}">
+        <link rel="stylesheet" href="{% static 'post/main.css' %}?v={% now 'YmdHis' %}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
     </head>
 
 <body>
@@ -20,25 +21,28 @@
     
     <nav class="top_bar" id="main-banner">
         <div class="banner-top">
-            <h3 class="title">MMU Forum</h3>
+            <h2 class="title">
+                <img src="{% static 'post/images/website-logo.png' %}" alt="MMU Forum" style="width: 50px; height: 50px">
+                MMU Forum
+            </h2>
         
             <div class="search-bar">
                 <form method="get" action="{% url 'forum-main' %}">
                     <div class="search-wrapper">
                         <select name="search_type" class="search-type-select">
-                            <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>Post</option>
-                            <option value="users" {% if search_type == 'users' %}selected{% endif %}>User</option>
+                            <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>POST</option>
+                            <option value="users" {% if search_type == 'users' %}selected{% endif %}>USER</option>
                         </select>
-                        <input type="text" name="q" placeholder="Finding something?" value="{{ search_query|default:'' }}"><br>
+                        <input type="text" name="q" placeholder="Search something here..." value="{{ search_query|default:'' }}"><br>
                         <span>
-                            <button type="submit"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:30px; height:30px"></button>
+                            <button type="submit" style="border: none; background-color: #f1f6e5;"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:20px; height:20px;"></button>
                         </span>
                     </div>
                 </form>
 
                 {% if search_query %}
                 <div class="search-info">
-                    <p>Search "{{ search_query }}" result：found 
+                    <p>Search "{{ search_query }}" result:found 
                         {% if search_type == 'users' %}
                             {{ users|length }}
                         {% else %}
@@ -55,8 +59,8 @@
             </div>
 
             <div class="register">
-                <button type="button "class="log_out"><a href= "{% url 'forum-home' %}" onclick="return confirm('Are you sure you want to log out?')">LOG OUT</a></button>
-                <span><button type="button" class="feedback"><a href= "{% url 'submit-feedback' %}">SEND FEEDBACK</a></button></span>
+                <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
+                <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
             </div>
         </div>
 
@@ -120,6 +124,7 @@
                             <div class="author-info">
                                 <span class="author-username">{{ post.author.username }}</span>
                                 <span class="author-major">{{ post.author.user_profile.major}}</span>
+                                <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
                             </div>
                         </div>
 
@@ -179,7 +184,12 @@
                             </div>
                         </div>
 
-                            <h4>Comment ({{ post.comments.count }})</h4>
+                            <h4>
+                                <a href="{% url 'post-detail' post.pk %}">
+                                    <img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;">
+                                </a>
+                                ({{ post.comments.count }})        
+                            </h4>
                             {% for comment in post.comments.all %}
                                 {% if not comment.parent_comment %}
                                     <div class="comment-block" style="margin-bottom: 20px;">
@@ -230,9 +240,9 @@
                                             <form method="post" action="{% url 'add-comment' post.id %}">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                                <input type="text" name="content" placeholder="Reply to {{comment.user.username}} ..." required>
-                                                <button type="submit">Submit</button>
-                                                <button type="button" onclick="this.parentElement.style.display='none'">Cancel</button>
+                                                <input type="text" name="content" class="comment-area" placeholder="Reply to {{comment.user.username}} ..." required>
+                                                <button type="submit" class="submit-comment"><img src="{% static 'post/images/paper-plane.png' %}" alt="Send"></button>
+                                                <button type="button" class="submit-comment" onclick="this.parentElement.style.display='none'"><img src="{% static 'post/images/cancel.png' %}" alt="Cancel"></button>
                                             </form>
                                         </div>
                                     </div>
@@ -244,8 +254,8 @@
                             {% if user.is_authenticated %}
                                 <form method="post" action="{% url 'add-comment' post.id %}">
                                     {% csrf_token %}
-                                    <input type="text" name="content" placeholder="Write comment..." required>
-                                    <button type="submit">Submit</button>
+                                    <input class="comment-area" type="text" name="content" placeholder="Write comment..." required>
+                                    <button class="submit-comment" type="submit"><img src="{% static 'post/images/paper-plane.png' %}" alt="Send"></button>
                                 </form>
                             {% endif %}
                     </div>
@@ -288,8 +298,7 @@
                                 </p>
                             {% else %}
                                 <p id="no-post-warning">
-                                    No posts available yet.<br>
-                                    Feel free to write your post.
+                                    User not found.<br>
                                 </p>
                             {% endif %}
                         {% endfor %}
@@ -299,26 +308,6 @@
 </body>
 
 <script>
-
-    window.onload = function() {
-        if (!localStorage.getItem('welcomeShown')) {
-        document.getElementById('welcome').style.display = 'block';
-        localStorage.setItem('welcomeShown', 'true');
-    }}
-
-    function closeModal() {
-        document.getElementById('welcome').style.display = 'none';
-    }
-
-    function toggleReplyForm(commentId) {
-        var x = document.getElementById('reply-form-' + commentId);
-        if (x.style.display === 'none' || x.style.display === '') {
-            x.style.display = 'block';
-        } else {
-            x.style.display = 'none';
-        }
-    }
-
     let lastScrollTop = 0;
         const banner = document.getElementById('main-banner');
 
@@ -372,6 +361,25 @@
             .catch(error => console.error('Error:', error));
         });
     });
+
+    window.onload = function() {
+        if (!localStorage.getItem('welcomeShown')) {
+        document.getElementById('welcome').style.display = 'block';
+        localStorage.setItem('welcomeShown', 'true');
+    }}
+
+    function closeModal() {
+        document.getElementById('welcome').style.display = 'none';
+    }
+
+    function toggleReplyForm(commentId) {
+        var x = document.getElementById('reply-form-' + commentId);
+        if (x.style.display === 'none' || x.style.display === '') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }
+    }
 
 </script>
 </html>
