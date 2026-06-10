@@ -19,7 +19,9 @@
         {% endif %}
 
         <div class="author-info">
-            <span class="author-username">{{ post.author.username }}</span>
+            <a href="{% url 'view-profile' user.id %}" class="username-link">
+                <span class="author-username">{{ post.author.username }}</span>
+            </a>
             <span class="author-major">{{ post.author.user_profile.major}}</span>
         </div>
     </div>
@@ -269,6 +271,28 @@
     document.querySelectorAll('.comment-reply-button').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
+        });
+    });
+
+    //manage-post dropdown
+    document.querySelectorAll('.manage-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = this.nextElementSibling;
+
+            document.querySelectorAll('.manage-dropdown').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        });
+    });
+
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.manage-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
         });
     });
 </script>

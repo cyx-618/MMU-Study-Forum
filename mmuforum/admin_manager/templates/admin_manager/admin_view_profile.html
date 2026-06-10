@@ -1,0 +1,290 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - Post Detail {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_profile.css' %}">
+
+<div class="back-button">
+    <a href="{{ request.META.HTTP_REFERER|default:'user-management' }}">
+        <i class="fas fa-arrow-left"></i>Back
+    </a>
+</div>
+
+<div class="profile-card">
+    <div class="profile-header">
+        <div class="avatar">
+            {% if profile_user.user_profile.profile_picture %}
+                <img src="{{ profile_user.user_profile.profile_picture.url }}" alt="Profile Picture" class="avatar-img">
+            {% else %}
+                <p>No profile picture.</p>
+            {% endif %}
+        </div>
+
+        <div class="profile-info">
+            <h2>{{ profile_user.username }}</h2>
+            <p><i class="fas fa-envelope"></i> {{ profile_user.email }}</p>
+            <p><i class="fas fa-graduation-cap"></i>
+                {% if profile_user.user_profile.major %}
+                    {{ profile_user.user_profile.major.major_name }}
+                {% else %}
+                    No Major Specified
+                {% endif %}
+            </p>
+            <p><i class="fas fa-file-alt"></i> {{ post_count }} Posts </p>
+        </div>
+    </div>
+
+    <div class="profile-bio">
+        <h3><i class="fas fa-user"></i> Bio</h3>
+        <p>
+            {% if profile_user.user_profile.bio %}
+                {{ profile_user.user_profile.bio }}
+            {% else %}
+                No Bio
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="profile-tabs">
+    <button class="tab-btn active" id="postsTab" onclick="showPosts()">
+        <i class="fas fa-file-alt"></i> Posts
+    </button>
+
+    <button class="tab-btn" id="favoritesTab" onclick="showFavourites()">
+        <i class="fas fa-heart"></i> Favourites
+    </button>
+</div>
+
+<div id="postsContent" class="posts-container">
+    {% if posts %}
+        {% for post in posts %}
+            <div class="post-card">
+                <div class="post-header">
+                    {% if post.author.user_profile.profile_picture %}
+                        <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
+                    {% else %}
+                        <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
+                    {% endif %}
+
+                    <div class="author-info">
+                        <span class="author-username">{{ post.author.username }}</span>
+                        <span class="author-major">{{ post.author.user_profile.major}}</span>
+                    </div>
+                </div>
+
+                <div class="post-body">
+                    <h3 class="post-title">
+                        <a href="{% url 'admin-post-detail' post.pk %}"> {{ post.title }} </a>
+                    </h3>
+                    <p class="post-content">{{ post.content }}</p>
+
+                    {% if post.image or post.video_file or post.pdf %}
+                        <div class="post-media">
+                            {% if post.image %}
+                                <div class="media-container">
+                                    <img src="{{ post.image.url }}" alt="Post Image">
+                                </div>
+                            {% endif %}
+                            {% if post.video_file %}
+                                <div class="media-container">
+                                    <video controls>
+                                        <source src="{{ post.video_file.url }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            {% endif %}
+                            {% if post.pdf %}
+                                <div class="media-container pdf-container">
+                                    <div class="pdf-info">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span class="pdf-name">
+                                            {{ post.pdf.name|cut:"posts/pdfs/"|cut:"post_pdfs/"|slice:"-30:" }}
+                                        </span>
+
+                                        <a href="{{ post.pdf.url }}" class="pdf-download" target="_blank">
+                                            <i class="fas fa-arrow-down"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                <br><hr>
+
+                <div class="post-footer">
+                    <div class="post-actions">
+                        <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
+                            {% csrf_token %}
+                            <button type="button" class="action-buttons like-post">
+                                {% if user in post.likes.all %}
+                                    <i class="fas fa-heart" style="color: #e74c3c;"></i>
+                                {% else %}
+                                    <i class="far fa-heart"></i>
+                                {% endif %}
+                                <span class="likes-count">{{ post.likes.count }}</span>
+                            </button>
+                        </form>
+
+                        <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button">
+                            <i class="far fa-comment"></i>
+                            <span>{{ post.comments.count }}</span>
+                        </a>
+
+                        <div class="manage-post">
+                            <button class="manage-button">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="manage-dropdown">
+                                <a href="#"><i class="fas fa-thumbtack"></i> Pin Post</a>
+                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-post">
+            <p>No posts yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<div id="favouritesContent" class="posts-container" style="display: none;">
+    {% for post in liked_posts %}
+        <div class="post-card">
+            <div class="post-header">
+                {% if post.author.user_profile.profile_picture %}
+                    <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
+                {% else %}
+                    <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
+                {% endif %}
+
+                <div class="author-info">
+                    <span class="author-username">{{ post.author.username }}</span>
+                    <span class="author-major">{{ post.author.user_profile.major}}</span>
+                </div>
+            </div>
+
+            <div class="post-body">
+                <h3 class="post-title">
+                    <a href="{% url 'admin-post-detail' post.pk %}"> {{ post.title }} </a>
+                </h3>
+                <p class="post-content">{{ post.content }}</p>
+
+                {% if post.image or post.video_file or post.pdf %}
+                    <div class="post-media">
+                        {% if post.image %}
+                            <div class="media-container">
+                                <img src="{{ post.image.url }}" alt="Post Image">
+                            </div>
+                        {% endif %}
+                        {% if post.video_file %}
+                            <div class="media-container">
+                                <video controls>
+                                    <source src="{{ post.video_file.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        {% endif %}
+                        {% if post.pdf %}
+                            <div class="media-container pdf-container">
+                                <div class="pdf-info">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <span class="pdf-name">
+                                        {{ post.pdf.name|cut:"posts/pdfs/"|cut:"post_pdfs/"|slice:"-30:" }}
+                                    </span>
+
+                                    <a href="{{ post.pdf.url }}" class="pdf-download" target="_blank">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <br><hr>
+
+            <div class="post-footer">
+                <div class="post-actions">
+                    <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
+                        {% csrf_token %}
+                        <button type="button" class="action-buttons like-post">
+                            {% if user in post.likes.all %}
+                                <i class="fas fa-heart" style="color: #e74c3c;"></i>
+                            {% else %}
+                                <i class="far fa-heart"></i>
+                            {% endif %}
+                            <span class="likes-count">{{ post.likes.count }}</span>
+                        </button>
+                    </form>
+
+                    <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button">
+                        <i class="far fa-comment"></i>
+                        <span>{{ post.comments.count }}</span>
+                    </a>
+
+                    <div class="manage-post">
+                        <button class="manage-button">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="manage-dropdown">
+                            <a href="#"><i class="fas fa-thumbtack"></i> Pin Post</a>
+                            <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="#"><i class="fas fa-trash"></i> Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-post">
+            <p>User have not liked any post yet.</p>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    function showPosts() {
+        document.getElementById('postsContent').style.display = 'block';
+        document.getElementById('favouritesContent').style.display = 'none';
+        document.getElementById('postsTab').classList.add('active');
+        document.getElementById('favouritesTab').classList.remove('active');
+    }
+
+    function showFavourites() {
+        document.getElementById('postsContent').style.display = 'none';
+        document.getElementById('favouritesContent').style.display = 'block';
+        document.getElementById('postsTab').classList.remove('active');
+        document.getElementById('favouritesTab').classList.add('active');
+    }
+
+    //manage-post dropdown
+    document.querySelectorAll('.manage-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = this.nextElementSibling;
+
+            document.querySelectorAll('.manage-dropdown').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        });
+    });
+
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.manage-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    });
+</script>
+{% endblock content %}

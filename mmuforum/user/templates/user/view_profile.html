@@ -1,21 +1,33 @@
-<div>
-    <h2>My Profile</h2>
-    {% if view_profile.profile_picture %}
-        <img src="{{ view_profile.profile_picture.url }}" alt="Profile Picture" style="max-width: 200px; max-height: 200px;">
-    {% else %}
-        <p>No profile picture.</p>
-    {% endif %} 
-    <p>Username: {{ view_profile.user.username }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Faculty: {{ view_profile.major.major_name }}</p>
-    <p>Bio: {{ view_profile.bio }}</p>
+{% load static %}
+<html> 
+    {% block content %}
+    <head>
+        <title>My Profile</title>
+        <link rel="stylesheet" href="{% static 'user/view_profile.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </head>
+    <body>
+
+
+<div class="profile-ctn">
+    <h2 class="profile-title">My Profile</h2>
+    <img src="{{ view_profile.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
+    <p><span class="profile-label">Username:</span> {{ view_profile.user.username }}</p>
+    <p><span class="profile-label">Email:</span> {{ user.email }}</p>
+    <p><span class="profile-label">Faculty:</span> {{ view_profile.major.major_name }}</p>
+    <p><span class="profile-label">Bio:</span> {{ view_profile.bio }}</p>
 </div>
 <hr>
-<div>
-    <h2><i>My Posts</i></h2>
+<div class="post-ctn">
+    <h2 class="profile-title">My Posts</h2>
     <p>Total Posts: {{ user_posts_count }}</p>
     {% for post in user_posts %}
-    <div>
+</div>
+    <div class="post-block">
        
         <p>Title: {{ post.title }}</p>
         <p>Author: {{ post.author }}</p>
@@ -122,11 +134,10 @@
 
         <hr>
     </div>
-    </div>
+ </div>
     {% empty %}
-        <p>No posts.</p>
+        <p class="profile-label">No posts.</p>
     {% endfor %}
-</div>
 
 
 <button><a href="{% url 'favourite-posts' %}">My Favorite Posts</a></button>
@@ -134,4 +145,6 @@
 <button><a href="{% url 'edit-profile' %}">Edit Profile</a></button>
 <button><a href="{% url 'delete-profile' %}">Delete Profile</a></button>
 
-
+</body>
+{% endblock content %}
+</html>

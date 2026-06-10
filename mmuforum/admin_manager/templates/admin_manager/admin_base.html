@@ -17,6 +17,7 @@
                 <div class="logo-area">
                     <a href="{% url 'admin-main' %}" class="logo-link">
                         <img src="{% static 'admin_manager/images/MMU-logo.png' %}" alt="Main">
+                        <script src="{% static 'admin_manager/admin.js' %}"></script>
                         MMU Forum
                     </a>
                 </div>
@@ -51,16 +52,19 @@
 
         <div class="sidebar">
             <div class="sidebar-menu">
+                <a href="{% url 'admin-main' %}" class="sidebar-item" alt="Home" title="Mainpage">
+                    <i class="fa fa-home"></i>
+                </a>
                 <a href="#" class="sidebar-item" alt="Create" title="Create Post/Announcement">
                     <i class="fas fa-plus-circle"></i>
                 </a>
                 <a href="#" class="sidebar-item" alt="Notification" title="Notification">
                     <i class="fas fa-bell"></i>
                 </a>
-                <a href="#" class="sidebar-item" alt="Admin Panel" title="Admin Panel">
+                <a href="{% url 'admin-panel' %}" class="sidebar-item" alt="Admin Panel" title="Admin Panel">
                     <i class="fas fa-user-shield"></i>
                 </a>
-                <a href="#" class="sidebar-item" alt="Profile" title="Profile">
+                <a href="{% url 'my-profile'%}" class="sidebar-item" alt="Profile" title="Profile">
                     <i class="fas fa-user-circle"></i>
                 </a>
             </div>
@@ -68,25 +72,30 @@
 
         <div class="main-content">
             <div class="content-container">
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dimissible">
+                            <span class="alert-icon">
+                                {% if message.tags == 'success' %}
+                                    <i class="fas fa-check-circle"></i>
+                                {% elif message.tags == 'error' %}
+                                    <i class="fas fa-exclamation-circle"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle"></i>
+                                {% endif %}
+                            </span>
+                            <span class="alert-message">{{ message }}</span>
+                            <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
                 {% block content %}
                 {% endblock %}
             </div>
         </div>
     </body>
-
-    <script>
-        var lastScrollTop = 0;
-        var banner = document.getElementById('main-banner');
-
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                banner.classList.add('banner-hidden');
-            } else {
-                banner.classList.remove('banner-hidden');
-            }
-            lastScrollTop= scrollTop;
-        });
-    </script>
 </html>

@@ -1,0 +1,90 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - Add New User {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Data Visualization
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="#" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="#" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
+                <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-plus"></i> Add User</h3>
+        </div>
+        <br>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Username <span class="required">*</span></label>
+                <input type="text" name="username" value="{{ request.POST.username }}" placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" name="email" value="{{ request.POST.email }}" placeholder="user@student.mmu.edu.my" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter password" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password Confirmation</label>
+                <input type="password" name="password_confirm" placeholder="Confirm your password" required>
+            </div>
+
+            <div class="form-group">
+                <label>Major</label>
+                <select name="major" class="form-select" required>
+                    {% for major in majors %}
+                        <option value="{{ major.id }}">{{ major.major_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Staff status</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="is_staff" value="False" checked>Not staff
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="is_staff" value="True">Staff
+                    </label>
+                </div>
+                <p class="hint">Staff members can access the administration of this website.</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i> Create User
+                </button>
+                <a href="{% url 'user-management' %}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
