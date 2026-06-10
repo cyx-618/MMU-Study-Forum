@@ -66,77 +66,6 @@
     </div>
     {% endif %}
 
-
-<article class="content-section">
-    <div>
-        {% if post.author == user or user.is_staff %}
-            <button type="submit"><a href = "{% url 'post-update' post.pk %}" > Edit Post </a></button><br><br>
-            <button type="button"><a href = "{% url 'post-delete' post.pk %}" > Delete Post </a></button>
-        {% endif %}
-    </div>
-
-    <div class="post-header">
-        <h1>{{ post.title }}</h1>
-        <h2>By {{ post.author }}</h2>
-        <p>Category: {{ post.category }}</p>
-        <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
-        </div>
-
-        <div class="post-content">
-            {% if post.image %}
-                <img src="{{ post.image.url }}" alt="Post Image" class="img-fluid mb-3">
-            {% endif %}
-
-            {% if post.pdf %}
-                <p><a href="{{ post.pdf.url }}" target="_blank">View PDF</a></p>
-            {% endif %}
-
-            {% if post.video_file %}
-                <video width="320" height="240" controls>
-                    <source src="{{ post.video_file.url }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            {% endif %}
-        </div>
-
-                    <form method="post" action="{% url 'like_post' post.id %}">
-                    {% csrf_token %}
-                        <button type="submit">Like ({{ post.likes_count }})</button>
-                    </form>
-
-                    {% if user.is_authenticated and user != post.author %}
-                    <div>
-                        <span>
-                            <button type="submit"><a href="{% url 'report-post' post.id %}" >Report</a></button>
-                        </span>
-                    </div>
-                    {% endif %}
-
-                        <div>
-                        <h4>Comment ({{ post.comments.count }})</h4>
-                
-                        {% for comment in post.comments.all %}
-                        <div>
-                            <strong>{{ comment.user.username }}:</strong>
-                            <span>{{ comment.text }}</span>
-                            <small>{{ comment.created_at }}</small>
-                        </div>
-                {% empty %}
-                    <p>No comment.</p>
-                {% endfor %}
-
-                {% if user.is_authenticated %}
-                <form method="post" action="{% url 'add-comment' post.id %}">
-                    {% csrf_token %}
-                    <input type="text" name="content" placeholder="Write comment..." required>
-                    <button type="submit">Submit</button>
-                </form>
-                {% endif %}
-        
-        <a href = "{% url 'forum-main' %}" > Back to Forum </a><hr>
-
-</article>
-
 <div class="post-card">
     <div class="post-header">
         {% if post.author.user_profile.profile_picture %}
@@ -156,6 +85,7 @@
     <div class="post-body">
         <h3 class="post-title">{{ post.title }}</h3>
         <p class="post-content">{{ post.content }}</p>
+        <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
     </div>
 
     {% if post.image or post.video_file or post.pdf %}
@@ -221,7 +151,7 @@
                 </div>
                 {% else %}
                 <div class="manage-dropdown">
-                    <a href="{% url 'report-post' %}"><i class="fas fa-thumbtack"></i> Report</a>
+                    <a href="{% url 'report-post' post.pk %}"><i class="fas fa-thumbtack"></i> Report</a>
                 </div>
                 {% endif %}
             </div>
@@ -319,13 +249,13 @@
             <p class="no-comments">No comment yet. Be the first to comment!</p>
         {% endfor %}
 
-        <div class="comment-form">
-            <form method="post" action="{% url 'add-comment' post.id %}">
-                {% csrf_token %}
-                <textarea name="content" rows="3" placeholder="Write a comment..."></textarea>
-                <button type="submit">Post comment</button>
-            </form>
-        </div>
+        {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add-comment' post.id %}">
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Write comment..." required>
+                    <button type="submit">Submit</button>
+                </form>
+                {% endif %}
     </div>
 </div>
 </html>

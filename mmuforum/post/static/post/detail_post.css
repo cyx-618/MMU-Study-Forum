@@ -391,3 +391,11 @@ h4,
     text-align: center;
     color: black;
 }
+
+.comment-avatar {
+    height: 30px ;
+    width: 30px ;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
