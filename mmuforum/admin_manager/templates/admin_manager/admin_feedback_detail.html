@@ -1,0 +1,97 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - User Management {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+<link rel="stylesheet" href="{% static 'admin_manager/admin_feedback.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Data Visualization
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="#" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
+                <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-lightbulb"></i> Feedback Detail</h3>
+        </div>
+
+        <div class="feedback-card">
+            <div class="info-section">
+                <div class="section-title">
+                    <i class="fas fa-user"></i> From
+                    {% if feedback.is_resolved %}
+                        <span class="status-badge status-resolved">Resolved</span>
+                    {% else %}
+                        <span class="status-badge status-pending">Pending</span>
+                    {% endif %}
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>Username: </strong>{{ feedback.user.username }}</p>
+                    <p><strong>Subject: </strong>{{ feedback.subject }}</p>
+                    <p><strong>Date: </strong>{{ feedback.created_at|date:"Y-m-d H:i" }}</p>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="section-title">
+                    <i class="fas fa-envelope"></i> Message
+                </div>
+                <div class="message-box">
+                    {{ feedback.message|linebreaks }}
+                </div>
+            </div>
+
+            {% if feedback.admin_reply %}
+            <div class="info-section">
+                <div class="section-title">
+                    <i class="fas fa-reply"></i> Admin Reply
+                </div>
+                <div class="reply-box">
+                    {{ feedback.admin_reply|linebreaks }}
+                </div>
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Admin Reply</label>
+                    <textarea name="admin_reply" rows="5" placeholder="Write your reply here." class="reply-textarea">{{ feedback.admin_reply|default:'' }}</textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="is_resolved" {% if feedback.is_resolved %}checked{% endif %}>Mark As Resolved
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button-send">
+                        <i class="fas fa-paper-plane"></i>Send Reply
+                    </button>
+                    <a href="{% url 'feedback-center' %}" class="cancel-btn">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

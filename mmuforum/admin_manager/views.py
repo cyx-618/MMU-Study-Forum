@@ -2,9 +2,10 @@ from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from post.models import Post, Comment, Like
-from user.models import User, User_profile, Major
+from user.models import User, User_profile, Major, Feedback
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
+from django.utils import timezone
 
 # Create your views here.
 @user_passes_test(lambda u: u.is_superuser)
@@ -242,3 +243,29 @@ def batch_delete_execute(request):
             messages.error(request, 'No users selected.')
     
     return redirect('user-management')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def feedback_center(request):
+    feedbacks = Feedback.objects.all().order_by('created_at')
+    context = {
+        'feedbacks': feedbacks
+    }
+    return render(request, 'admin_manager/admin_feedback_center.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def feedback_detail(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+
+    if request.method == 'POST':
+        feedback.admin_reply = request.POST.get('admin_reply')
+        feedback.is_resolved = request.POST.get('is_resolved') == 'on'
+        feedback.save()
+        messages.success(request, 'Reply sent successfully.')
+        return redirect('feedback-center')
+    
+    context = {
+        'feedback': feedback
+    }
+    return render(request, 'admin_manager/admin_feedback_detail.html', context)

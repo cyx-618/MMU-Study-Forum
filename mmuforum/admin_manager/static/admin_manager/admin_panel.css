@@ -431,7 +431,7 @@
     border-radius: 12px;
     font-size: 14px;
     font-family: inherit;
-    resize: vertical;  /* 允许用户垂直拖拽调整大小 */
+    resize: vertical;
     background-color: white;
     transition: all 0.2s;
 }
@@ -493,3 +493,4 @@
 .user-list li {
     margin: 6px 0;
 }
+

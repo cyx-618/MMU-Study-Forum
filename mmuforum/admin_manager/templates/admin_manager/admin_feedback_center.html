@@ -1,0 +1,73 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - User Management {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+<link rel="stylesheet" href="{% static 'admin_manager/admin_feedback.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Data Visualization
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="#" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
+                <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-lightbulb"></i> Feedback Center</h3>
+        </div>
+
+        <div class="feedback-table-container">
+            <table class="feedback-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>User</th>
+                        <th>Subject</th>
+                        <th>Messages</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for feedback in feedbacks %}
+                    <tr class="{% if feedback.is_resolved %}resolved-row{% endif %}">
+                        <td>
+                            {% if feedback.is_resolved %}
+                            <span class="status-resolved"><i class="fas fa-check-circle"></i> Resolved</span>
+                            {% else %}
+                            <span class="status-pending"><i class="fas fa-clock"></i> Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ feedback.user.username }}</td>
+                        <td>{{ feedback.subject|truncatewords:5 }}</td>
+                        <td>{{ feedback.message|truncatewords:3 }}</td>
+                        <td>{{ feedback.created_at|date:"Y-m-d H:i" }}</td>
+                        <td><a href="{% url 'feedback-detail' feedback.id %}" class="reply-button"><i class="fas fa-reply"></i> Reply</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="empty-row">No Feedback yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
