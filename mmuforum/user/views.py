@@ -161,7 +161,7 @@ def feedback_list(request):
     }
     return render(request, 'user/feedback_list.html', context)
 
-
+@login_required
 def feedback_detail(request, feedback_id):
     feedback = get_object_or_404(Feedback, id=feedback_id)
     if not request.user.is_superuser and not request.user.is_staff and feedback.user != request.user:
@@ -215,7 +215,7 @@ def edit_profile(request):
     }
     return render(request,'user/edit_profile.html',{'form': form})
 
-
+@login_required
 def delete_profile(request):
     if request.method == 'POST':
         user = request.user
@@ -240,7 +240,8 @@ def notifications(request):
     unread_notifications.update(is_read=True)
 
     return render(request, 'user/notification.html', {'notifications': notifications})
-
+    
+@login_required
 def view_other_profile(request,user_id):
     profile_user = get_object_or_404(User, id=user_id)
 

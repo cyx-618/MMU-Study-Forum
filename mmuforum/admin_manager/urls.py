@@ -16,5 +16,5 @@ urlpatterns = [
     path('admin/panel/user-management/delete/batch-confirm/', views.batch_delete_confirmation, name='batch-delete-confirmation'),
     path('admin/panel/user-management/delete/batch-execute/', views.batch_delete_execute, name='batch-delete-execute'),
     path('admin/feedback/home/', views.feedback_center, name="feedback-center"),
-    path('admin/feedback/detail/<int:feedback_id>', views.feedback_detail, name="feedback-detail")
+    path('admin/feedback/detail/<int:feedback_id>', views.feedback_detail, name="admin-feedback-detail")
 ]
