@@ -2,7 +2,13 @@ html {
   scroll-behavior: smooth;
 }
 body{
+    padding-bottom: 20vh;
+     margin: 0;
+    padding-top: 130px;
     background-color:#d2dfcd;
+    margin-left: 80px;
+    margin-right: 10px;
+    
 }
 .user-sec{
     column-gap: 30px;
@@ -54,7 +60,7 @@ i{
     color:#2c5a2e
 }
 .manage-profile a:hover{
-   background-color:#d7f4e1
+   background-color:#d7f4e1;
 }
 .manage-profile .manage-pf-dd{
     display:none;
@@ -168,6 +174,7 @@ i{
     width:inherit;
     gap:20px;
     align-items: center;
+  
 
 }
 .post-card {

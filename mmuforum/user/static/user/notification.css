@@ -13,17 +13,21 @@
     background-color: #ffffff;
 }
 .profile-pic {
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     margin-right: 10px;
     vertical-align: middle;
     margin-right:2px;
+    box-shadow:0px 0px 4px rgb(150, 150, 150);
 }
 body{
-    background-color: #8ebe9b;
+    background-color: #d2dfcd;
     padding-bottom: 20vh;
+     margin: 0;
+    padding-top: 130px;
 }
+
 .notification-ctn{
     width: 80%;
     margin-left: auto;
@@ -31,7 +35,7 @@ body{
     margin-bottom: 25px;
   padding: 14px 16px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.45); 
+  background: rgba(226, 226, 226, 0.45); 
   backdrop-filter: blur(20px);           
   -webkit-backdrop-filter: blur(20px);   
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -40,6 +44,21 @@ body{
   animation:imageReveal both;
   animation-timeline: view(10% 5%);
   color: #000000;
+}
+.empty-ctn{
+     width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 25px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(226, 226, 226, 0.45); 
+  backdrop-filter: blur(20px);           
+  -webkit-backdrop-filter: blur(20px);   
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), 
+              inset 0 1px 1px rgba(255, 255, 255, 0.2);
+              font-size:18px;
 }
 @keyframes imageReveal {
  from{
@@ -57,14 +76,16 @@ body{
 }
 .noti-title{
   font-family:'Times New Roman', Times, serif;
-  color:#08452f;
+  color:#000000;
   font-weight: bold;
   font-size:38px;
   margin-bottom: 0;
-  margin-top:18px;
+  margin-top:0px;
 }
 .text-muted{
     color: #343333;
+   margin-left:85%;
+ 
 }
 .noti-head{
     display: flex;
@@ -76,15 +97,15 @@ body{
     padding:0px 0px;
     margin-top:0px;
 }
-.back-btn{
-    color:#08452f;
-    font-size:20px;
-    border-radius: 5px;
+.sender{
     text-decoration: none;
+    color:black;
     font-weight: bold;
-    margin-top:36px;
+    margin-left: 5px;
+    cursor:pointer;
+    font-size:18px;
+
 }
-.back-btn:hover {
-   text-decoration:underline;
-   
+.sender:hover{
+    text-decoration: underline;
 }

@@ -10,12 +10,15 @@
 </head>
 <body>
     <div class="delete-profile-container">
-    <p class="dlt-acc">Are you sure you want to delete your account? This action cannot be undone.</p>
-    <form method="post">
-        {% csrf_token %}
-        <button class="btn" type="submit">Yes, delete my account</button>
-        <a class="cancel btn" href="{% url 'view-profile' user.username %}">Cancel</a>
-    </form>
+      <p class="dlt-acc">Are you sure you want to delete your account? This action cannot be undone.</p>
+       <div class="btn-sec">
+        <form  method="post">
+            {% csrf_token %}
+            <button class="btn" type="submit">Yes, delete my account</button>
+            <a class="cancel btn" href="{% url 'view-profile' user.username %}">Cancel</a>
+            
+        </form>
+        </div>
     </div>
 </body>
  {% endblock content %}
