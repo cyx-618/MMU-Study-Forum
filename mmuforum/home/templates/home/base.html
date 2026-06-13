@@ -1,4 +1,5 @@
 <!--Anything same in different html files can put here-->
+{% load static %}
 <html>
     <head>
         {% if title %}
@@ -15,9 +16,93 @@
         <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Erica+One&family=Titan+One&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap" rel="stylesheet">
-        
+        <link rel="stylesheet" href="{% static 'home/base.css' %}?v={% now 'YmdHis' %}">
+        {% block extra_css %}{% endblock %}
     </head>
+
     <body>
+        <nav class="top_bar" id="main-banner">
+            <div class="banner-top">
+                {% block nav_title%}
+                <h2 class="title">
+                    <img src="{% static 'post/images/website-logo.png' %}" alt="MMU Forum" style="width: 50px; height: 50px">
+                    MMU Forum
+                </h2>
+                {% endblock %}
+
+                <div class="search-bar">
+                    <form method="get" action="{% url 'forum-main' %}">
+                        <div class="search-wrapper">
+                            <select name="search_type" class="search-type-select">
+                                <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>POST</option>
+                                <option value="users" {% if search_type == 'users' %}selected{% endif %}>USER</option>
+                            </select>
+                            <input type="text" name="q" placeholder="Search something here..." value="{{ search_query|default:'' }}"><br>
+                            <span>
+                                <button type="submit" style="border: none; background-color: #f1f6e5;"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:20px; height:20px;"></button>
+                            </span>
+                        </div>
+                    </form>
+
+                    {% if search_query %}
+                    <div class="search-info">
+                        <p>Search "{{ search_query }}" result:found 
+                            {% if search_type == 'users' %}
+                                {{ users|length }}
+                            {% else %}
+                                {% if total_results %}
+                                    {{ total_results }}
+                                {% else %}
+                                    {{ posts|length }}
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'forum-main' %}">Clear</a>
+                    </div>
+                    {% endif %}
+                </div>
+            
+                <div class="register">
+                    <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
+                    <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
+                </div>
+            </div>
+
+            <nav class="category-bar">
+                <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
+                <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
+                <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
+                <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
+                <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
+                <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
+                <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
+                <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
+            </nav>
+        </nav>
+
+        <div class="sidebar">
+            <div class="sidebar-menu">
+                <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/home.png' %}" alt="Home">
+                </a>
+                {% if user.is_authenticated and user.username %}
+                <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+                {% else %}
+                <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                </a>
+                {% endif %}
+                <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+                </a>
+                <a href="{% url 'post-create' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/add.png' %}" alt="Create">
+                </a>
+            </div>
+        </div>
+
         {% if messages %}
           {% for message in messages %}
            <div class="alert alert-{{message.tags}}">
@@ -25,7 +110,30 @@
            </div>
           {% endfor %}
         {%endif%}
-        {% block content %}{% endblock %}
 
-    </body>
+        <div class="main-content">
+            <div class="content-container">
+            {% block content %}{% endblock %}
+            </div>
+        </div>
+        
+<script>
+    let lastScrollTop = 0;
+        const banner = document.getElementById('main-banner');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                banner.classList.add('banner-hidden');
+            } else {
+                banner.classList.remove('banner-hidden');
+            }
+            lastScrollTop= scrollTop;
+        });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+
 </html>

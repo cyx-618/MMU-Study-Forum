@@ -1,113 +1,21 @@
+{% extends 'home\base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'post/main.css' %}?v={% now 'YmdHis' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
+    {% endblock %}
 
-<html>
+    {% block title %}MMU Study Forum{% endblock %}
 
-    <head>
-        <title>MMU Study Forum</title>
-        <link rel="stylesheet" href="{% static 'post/main.css' %}?v={% now 'YmdHis' %}">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
-    </head>
-
-<body>
-
+{% block content %}
     <div id="welcome" class="modal">
         <div class="modal_content">
             <p>Welcome, {{user.username}} !</p>
             <span class="close" onclick="closeModal()">Start journey</span>
         </div>
     </div>
-    
-    <nav class="top_bar" id="main-banner">
-        <div class="banner-top">
-            <h2 class="title">
-                <img src="{% static 'post/images/website-logo.png' %}" alt="MMU Forum" style="width: 50px; height: 50px">
-                MMU Forum
-            </h2>
-        
-            <div class="search-bar">
-                <form method="get" action="{% url 'forum-main' %}">
-                    <div class="search-wrapper">
-                        <select name="search_type" class="search-type-select">
-                            <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>POST</option>
-                            <option value="users" {% if search_type == 'users' %}selected{% endif %}>USER</option>
-                        </select>
-                        <input type="text" name="q" placeholder="Search something here..." value="{{ search_query|default:'' }}"><br>
-                        <span>
-                            <button type="submit" style="border: none; background-color: #f1f6e5;"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:20px; height:20px;"></button>
-                        </span>
-                    </div>
-                </form>
 
-                {% if search_query %}
-                <div class="search-info">
-                    <p>Search "{{ search_query }}" result:found 
-                        {% if search_type == 'users' %}
-                            {{ users|length }}
-                        {% else %}
-                            {% if total_results %}
-                                {{ total_results }}
-                            {% else %}
-                                {{ posts|length }}
-                            {% endif %}
-                        {% endif %}
-                    </p>
-                    <a href="{% url 'forum-main' %}">Clear</a>
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="register">
-                <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
-                <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
-            </div>
-        </div>
-
-        <nav class="category-bar">
-            <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
-            <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
-            <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
-            <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
-            <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
-            <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
-            <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
-            <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
-        </nav>
-    </nav>
-
-    <div class="sidebar">
-        <div class="sidebar-menu">
-            <a href="{% url 'forum-main' %}" class="sidebar-icon">
-                <img src="{% static 'post/images/home.png' %}" alt="Home">
-            </a>
-            {% if user.is_authenticated and user.username %}
-                <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
-                </a>
-            {% else %}
-                <a href="{% url 'forum-login' %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
-                </a>
-            {% endif %}
-            <a href="{% url 'user-notifications' %}" class="sidebar-icon">
-                <img src="{% static 'post/images/bell.png' %}" alt="Notification">
-            </a>
-            <a href="{% url 'post-create' %}" class="sidebar-icon">
-                <img src="{% static 'post/images/add.png' %}" alt="Create">
-            </a>
-        </div>
-    </div>
-
-    {% if messages %}
-    <div class="messages-container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
 
         <div class="main-content">
             <div class="content-container">
@@ -122,7 +30,9 @@
                             {% endif %}
 
                             <div class="author-info">
-                                <span class="author-username">{{ post.author.username }}</span>
+                                <a href="{% url 'view-profile' user.id %}" class="username-link">
+                                    <span class="author-username">{{ post.author.username }}</span>
+                                </a>
                                 <span class="author-major">{{ post.author.user_profile.major}}</span>
                                 <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
                             </div>
@@ -305,22 +215,10 @@
                     {% endif %}
             </div>
         </div>
-</body>
+{% endblock %}
 
+{% block extra_js %}
 <script>
-    let lastScrollTop = 0;
-        const banner = document.getElementById('main-banner');
-
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                banner.classList.add('banner-hidden');
-            } else {
-                banner.classList.remove('banner-hidden');
-            }
-            lastScrollTop= scrollTop;
-        });
 
     document.querySelectorAll('.like-post').forEach(button => {
         button.addEventListener('click', function() {
@@ -382,4 +280,4 @@
     }
 
 </script>
-</html>
+{% endblock %}
