@@ -177,10 +177,12 @@ def feedback_detail(request, feedback_id):
 
 
 @login_required
-def view_profile(request, username):
-    user_profile = User_profile.objects.filter(user__username=username).first()
-    user_posts = Post.objects.filter(author=user_profile.user).order_by('-date_posted')
-    user_posts_count = user_posts.count()
+def view_profile(request,username):
+    user=get_object_or_404(User, username=username)
+    user_profile = User_profile.objects.filter(user=user).first()
+    posts = Post.objects.filter(author=user).order_by('-date_posted')
+    post_count = posts.count()
+    liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
 
   
     if request.user.is_authenticated:
@@ -188,12 +190,11 @@ def view_profile(request, username):
     else:
         user_post_count = 0
     context = {
-        'view_profile': user_profile,
-        'user_posts': user_posts,
-        'user_posts_count': user_posts_count,
-        'user_post_count': user_post_count,
-        'user': user_profile.user,
-        'title': f"{user_profile.user.username}'s Profile"
+        'profile_user': user,
+        'user_profile': user_profile,
+        'posts': posts,
+        'post_count': post_count,
+        'liked_posts': liked_posts,
     }
     return render(request, 'user/view_profile.html', context)
 
@@ -224,12 +225,6 @@ def delete_profile(request):
         messages.success(request, 'Your account has been deleted!')
         return redirect('forum-home')
     return render(request, 'user/delete_profile.html')
-
-
-@login_required
-def favourite_posts(request):
-    liked_posts=Post.objects.filter(likes__user=request.user)
-    return render(request,'user/favourite_posts.html',{'liked_posts': liked_posts})
 
 
 @login_required
