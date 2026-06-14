@@ -33,6 +33,7 @@ def main(request):
     }
     return render(request, 'post/main.html', context)
 
+
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content', 'category','image', 'pdf', 'video_file']
@@ -66,6 +67,7 @@ def major_post_list(request, major_name):
         }
         #return render(request, 'post/major_forum.html', {'posts': posts, 'major_name': major_name})
         return render(request, 'post/major_forum.html', context)
+
 
 @login_required
 def like_post(request, post_id):
@@ -127,6 +129,7 @@ From MMU Forum Team
         'liked': liked,
         'count': post.likes.count()
     })
+
 
 @login_required
 def add_comment(request, post_id):
@@ -220,6 +223,7 @@ From MMU Forum Team
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
 
+
 @login_required
 def like_comment(request, comment_id):
     comment=get_object_or_404(Comment, id=comment_id)
@@ -271,6 +275,7 @@ From MMU Forum Team
                 print(f"Error sending email: {e}")
 
     return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+
 
 @login_required
 def report_post(request, post_id):
@@ -337,6 +342,7 @@ MMU Forum System
         'reported_post': post,
     }
     return render(request, 'post/report_post.html', context)
+
 
 @login_required
 def report_comment(request, comment_id):
@@ -408,6 +414,7 @@ MMU Forum System
     }
     return render(request, 'post/report_comment.html', context)
 
+
 class  PostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'post/main.html'
@@ -475,13 +482,15 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('post-detail', kwargs={'pk': self.object.pk})
 
+
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'post/delete_post.html' 
     
     def get_success_url(self):
         return reverse('forum-main')
-    
+
+
 class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'post/detail_post.html' 

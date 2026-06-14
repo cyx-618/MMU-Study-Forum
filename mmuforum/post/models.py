@@ -80,6 +80,13 @@ class ReportPost(models.Model):
         ('reviewed', 'Reviewed'),
         ('dismissed', 'Dismissed'),
     ]
+
+    RESOLUTION_CHOICES = [
+        ('approved_deleted', 'Approved - Content Deleted'),
+        ('aproved_warned', 'Approved - User Warned'),
+        ('approved_suspended', 'Approved - User Suspended'),
+        ('dismissed', 'Dismissed - No Action'),
+    ]
     
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='reports')
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports')
@@ -88,6 +95,9 @@ class ReportPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    resolution = models.CharField(max_length=50, choices= RESOLUTION_CHOICES, blank=True, null=True)
+    resolved_at = models.DateTimeField(blank=True, null=True)
     
     class Meta:
         unique_together = ['post', 'reporter']
@@ -110,6 +120,13 @@ class ReportComment(models.Model):
         ('reviewed', 'Reviewed'),
         ('dismissed', 'Dismissed'),
     ]
+
+    RESOLUTION_CHOICES = [
+        ('approved_deleted', 'Approved - Comment Deleted'),
+        ('approved_warned', 'Approved - User Warned'),
+        ('approved_suspended', 'Approved - User Suspended'),
+        ('dismissed', 'Dismissed - No Action'),
+    ]
     
     comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='comment_reports')
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_reports')
@@ -118,6 +135,9 @@ class ReportComment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    resolution = models.CharField(max_length=50, choices= RESOLUTION_CHOICES, blank=True, null=True)
+    resolved_at = models.DateTimeField(blank=True, null=True)
     
     class Meta:
         unique_together = ['comment', 'reporter']

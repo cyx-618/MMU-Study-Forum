@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
-from post.models import Post, Comment, Like
-from user.models import User, User_profile, Major, Feedback
+from post.models import Post, Comment, Like, ReportComment, ReportPost
+from user.models import User, User_profile, Major, Feedback, Notification
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
@@ -11,6 +11,9 @@ from django.utils import timezone
 @user_passes_test(lambda u: u.is_superuser)
 def admin_main(request):
     posts = Post.objects.all().order_by('-date_posted')
+
+    for post in posts:
+        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists
 
     context = {
         'posts': posts,
@@ -24,6 +27,27 @@ def admin_post_detail(request, post_id):
         'post': post,
     }
     return render(request, 'admin_manager/admin_post_detail.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    existing_like = Like.objects.filter(post=post, user=request.user).first()
+    
+    if existing_like:
+        existing_like.delete()
+        liked = False
+    else:
+        Like.objects.create(post=post, user=request.user)
+        liked = True
+
+    total_likes = Like.objects.filter(post=post).count()
+
+    return JsonResponse({
+        'liked': liked,
+        'count': total_likes
+    })
 
 @user_passes_test(lambda u: u.is_superuser)
 def like_comment(request, comment_id):
@@ -269,3 +293,95 @@ def feedback_detail(request, feedback_id):
         'feedback': feedback
     }
     return render(request, 'admin_manager/admin_feedback_detail.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def report_center(request):
+    post_reports = ReportPost.objects.all().order_by('-created_at')
+    comment_reports = ReportComment.objects.all().order_by('-created_at')
+
+    context= {
+        'post_reports': post_reports,
+        'comment_reports': comment_reports 
+    }
+    return render(request, 'admin_manager/admin_report_center.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def report_process(request, report_type, report_id):
+    if report_type == 'post':
+        report = get_object_or_404(ReportPost, id=report_id)
+    else:
+        report = get_object_or_404(ReportComment, id=report_id)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'delete':
+            if report_type == 'post':
+                report.post.delete()
+                offender = report.post.author
+            else:
+                report.comment.delete()
+                offender = report.comment.user
+
+            resolution = 'approved_deleted'
+            reporter_msg = f'Your report has been approved. The {report_type} has been deleted.'
+            offender_msg = f'Your {report_type} has been removed for violating guidelines.'
+            offender_notification_type = 'content_deleted'
+
+        elif action == 'warn':
+            offender = report.post.author if report_type == 'post' else report.comment.user
+            resolution = 'approved_warned'
+            reporter_msg = f'Your report has been approved. The user has been warned.'
+            offender_msg = f'You have received a warning for violating guidelines.'
+            offender_notification_type = 'content_warning'
+
+        elif action == 'suspend':
+            offender = report.post.author if report_type == 'post' else report.comment.user
+            offender.is_active = False
+            offender.save()
+            resolution = 'approved_suspended'
+            reporter_msg = f'Your report has been approved. The user has been suspended.'
+            offender_msg = f'Your account has been suspended for violating guidelines.'
+            offender_notification_type = 'account_suspended'
+
+        elif action == 'dismiss':
+            resolution = 'dismissed'
+            reporter_msg = f'Your report has been reviewed and dismissed as it does not violate guidelines.'
+            offender_msg = None
+            offender_notification_type = None
+        
+        else:
+            messages.error(request, 'Invalid action.')
+            return redirect('report-center')
+        
+        report.resolution = resolution
+        report.resolved_at = timezone.now()
+        report.status = 'reviewed'
+        report.save()
+
+        Notification.objects.create(
+            receiver=report.reporter,
+            sender=request.user,
+            notification_type='report_approved' if resolution != 'dismissed' else 'report_dismissed',
+            post= report.post if report_type == 'post' else None
+        )
+
+        if offender_msg:
+            Notification.objects.create(
+                receiver=offender,
+                sender=request.user,
+                notification_type=offender_notification_type,
+                post=report.post if report_type == 'post' else None
+            )
+        
+        messages.success(request, 'Report processed successfully.')
+        return redirect('report-center')
+    
+    context = {
+        'report': report,
+        'report_type': report_type,
+    }
+    
+    return render (request, 'admin_manager/admin_report_process.html', context)

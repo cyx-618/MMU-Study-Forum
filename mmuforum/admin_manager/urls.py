@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('admin/main', views.admin_main, name='admin-main'),
     path('admin/post/<int:post_id>/', views.admin_post_detail, name='admin-post-detail'),
+    path('admin/like/<int:post_id>/', views.admin_like_post, name='admin-like-post'),
     path('admin/like-comment/<int:comment_id>/', views.like_comment, name='like_comment'),
     path('admin/panel/', views.admin_panel, name='admin-panel'),
     path('admin/panel/user-management/', views.user_management, name='user-management'),
@@ -15,6 +16,8 @@ urlpatterns = [
     path('admin/profile/my', views.admin_profile, name='my-profile'),
     path('admin/panel/user-management/delete/batch-confirm/', views.batch_delete_confirmation, name='batch-delete-confirmation'),
     path('admin/panel/user-management/delete/batch-execute/', views.batch_delete_execute, name='batch-delete-execute'),
-    path('admin/feedback/home/', views.feedback_center, name="feedback-center"),
-    path('admin/feedback/detail/<int:feedback_id>', views.feedback_detail, name="admin-feedback-detail")
+    path('admin/panel/feedback/home/', views.feedback_center, name="feedback-center"),
+    path('admin/panel/feedback/detail/<int:feedback_id>', views.feedback_detail, name="admin-feedback-detail"),
+    path('admin/panel/report/home/', views.report_center, name='report-center'),
+    path('admin/panel/report/process/<str:report_type>/<int:report_id>/', views.report_process, name='report-process')
 ]

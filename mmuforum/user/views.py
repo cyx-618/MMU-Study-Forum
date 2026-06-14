@@ -52,6 +52,7 @@ def signup (request):
         form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
 
+
 def login(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -69,11 +70,13 @@ def login(request):
 
     return render(request, 'user/login.html',context)
 
+
 def dispatch_user(request):
     if request.user.is_superuser or request.user.is_staff:
         return redirect('admin-main')
     else:
         return redirect('forum-main')
+
 
 @login_required
 def profile(request):
@@ -161,6 +164,7 @@ def feedback_list(request):
     }
     return render(request, 'user/feedback_list.html', context)
 
+
 @login_required
 def feedback_detail(request, feedback_id):
     feedback = get_object_or_404(Feedback, id=feedback_id)
@@ -215,6 +219,7 @@ def edit_profile(request):
     }
     return render(request,'user/edit_profile.html',{'form': form})
 
+
 @login_required
 def delete_profile(request):
     if request.method == 'POST':
@@ -241,6 +246,7 @@ def notifications(request):
 
     return render(request, 'user/notification.html', {'notifications': notifications})
     
+
 @login_required
 def view_other_profile(request,user_id):
     profile_user = get_object_or_404(User, id=user_id)

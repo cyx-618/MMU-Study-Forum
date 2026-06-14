@@ -15,7 +15,7 @@
             {% endif %}
 
             <div class="author-info">
-                <a href="{% url 'view-profile' user.id %}" class="username-link">
+                <a href="{% url 'view-profile' post.author.id %}" class="username-link">
                     <span class="author-username">{{ post.author.username }}</span>
                 </a>
                 <span class="author-major">{{ post.author.user_profile.major}}</span>
@@ -64,10 +64,10 @@
                         
         <div class="post-footer">
             <div class="post-actions">
-                <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
+                <form method="post" action="{% url 'admin-like-post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                     {% csrf_token %}
                     <button type="button" class="action-buttons like-post">
-                        {% if user in post.likes.all %}
+                        {% if post.user_has_liked %}
                             <i class="fas fa-heart" style="color: #e74c3c;"></i>
                         {% else %}
                             <i class="far fa-heart"></i>
@@ -106,7 +106,6 @@
     document.querySelectorAll('.like-post').forEach(button => {
         button.addEventListener('click', function() {
             const form = this.closest('.like-form');
-            const postId = form.dataset.postId;
             const url = form.action;
             const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
             const icon = this.querySelector('i');

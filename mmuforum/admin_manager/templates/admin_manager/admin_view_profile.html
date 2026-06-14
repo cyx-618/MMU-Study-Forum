@@ -53,7 +53,7 @@
         <i class="fas fa-file-alt"></i> Posts
     </button>
 
-    <button class="tab-btn" id="favoritesTab" onclick="showFavourites()">
+    <button class="tab-btn" id="favouritesTab" onclick="showFavourites()">
         <i class="fas fa-heart"></i> Favourites
     </button>
 </div>
@@ -166,7 +166,9 @@
                 {% endif %}
 
                 <div class="author-info">
-                    <span class="author-username">{{ post.author.username }}</span>
+                    <a href="{% url 'view-profile' post.author.id %}" class="username-link">
+                        <span class="author-username">{{ post.author.username }}</span>
+                    </a>
                     <span class="author-major">{{ post.author.user_profile.major}}</span>
                 </div>
             </div>

@@ -1,0 +1,123 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - User Management {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+<link rel="stylesheet" href="{% static 'admin_manager/admin_report.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Data Visualization
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="{% url 'report-center' %}" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
+                <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-flag"></i> Report Detail</h3>
+        </div>
+
+        <div class="report-details">
+            <div class="detail-row">
+                <span class="detail-label">Reporter:</span>
+                <span class="detail-value">{{ report.reporter.username }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Offender:</span>
+                <span class="detail-value">
+                    {% if report_type == 'post' %}
+                        {{ report.post.author.username }}
+                    {% else %}
+                        {{ report.comment.user.username }}
+                    {% endif %}
+                </span>
+            </div>
+
+            {% if report_type == 'post' %}
+                <div class="detail-row">
+                    <span class="detail-label">Post Title:</span>
+                    <span class="detail-value">{{ report.post.title }}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Post Content:</span>
+                    <span class="detail-value">{{ report.post.content }}</span>
+                </div>
+            {% else %}
+                <div class="detail-row">
+                    <span class="detail-label">Comment Text:</span>
+                    <span class="detail-value">{{ report.comment.text }}</span>
+                </div>
+            {% endif %}
+
+            <div class="detail-row">
+                <span class="detail-label">Reason:</span>
+                <span class="detail-value">{{ report.get_reason_display }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Description</span>
+                <span class="detail-value">{{ report.description|default:'-' }}</span>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Resolution:</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="action" value="delete" required>
+                                <strong>Approved - Content Deleted</strong>
+                                <br>
+                                <p class="hint">Content violates guidelines, remove it.</p>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="action" value="warn">
+                                <strong>Approved - User Warned</strong>
+                                <br>
+                                <p class="hint">Warn the user for violating guidelines.</p>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="action" value="suspend">
+                                <strong>Approved - User Suspended</strong>
+                                <br>
+                                <p class="hint">Suspend the user. Unactivate or ban the user's account.</p>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="action" value="dismiss">
+                                <strong>Dismissed - No Action</strong>
+                                <br>
+                                <p class="hint">Report invalid, user dos not violate guidelines.</p>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Submit Resolution</button>
+                    <a href="{% url 'report-center' %}" class="cancel-btn">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
