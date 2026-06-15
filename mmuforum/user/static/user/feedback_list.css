@@ -126,3 +126,14 @@ a:hover{
 .alert-close:hover {
     opacity: 1;
 }
+.bold{
+     border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+      background-color:#EAEDE5;
+    box-shadow: 0px  0px 3px rgb(152, 152, 152);
+    border: 1px solid #e9ecef;
+    margin-left: 110px;
+    width:80%
+
+}

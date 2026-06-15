@@ -1,28 +1,39 @@
 {% load crispy_forms_tags %}
 {% load static %}
 <html>
-    <head></head>
+    <head>
+         <link rel="stylesheet" href="{% static 'user/pw_verify_otp.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    </head>
      {% block content %}
     <body>
-      <h2>Verify OTP & Reset Password</h2>
-
+      <h2 class="title">Verify OTP & Reset Password</h2>
+        <div class="ctn">
         <form method="post">
-               <p class="username"><span class="form-label">Username :</span> {{user.username}}</p>
+            <p class="username"><span class="form-label">Username :</span> {{username}}</p>
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Reset Password</button>
-        </form>
-        {% if messages %}
-            {% for message in messages %}<p>{{ message }}</p>{% endfor %}
-        {% endif %}
-        <p>Didn't receive the code or did it expire?</p>
-            <a href="{% url 'resend-otp' %}">Resend OTP</a>
+               {% if form.errors %}
+        <div class="form-error-container">
+            {% for error in form.non_field_errors %}
+                <p class="form-error-text"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</p>
+            {% endfor %}
 
-            {% if messages %}
-                {% for message in messages %}
-                    <p style="color: red;">{{ message }}</p>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p class="form-error-text"><strong>{{ field.label }}:</strong> {{ error }}</p>
                 {% endfor %}
-            {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+            {{ form.as_p }}
+            <button class="submit-btn" type="submit">Reset Password</button>
+        </form>
+             
+        </div>
     </body>
        {% endblock content %}
 </html>

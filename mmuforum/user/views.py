@@ -268,14 +268,15 @@ def forgot_password_view(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             user = User.objects.get(email=email)
-            
-            # Get or create OTP object for the user
+            request.session['reset_student_username'] = user.username
             otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
             otp_profile.generate_otp()
             
-            # Send Email
+        try:
+            user = User.objects.get(email=email)
+            student_username = user.username
             subject = "Your Password Reset OTP"
-            message = f"""Hi {request.user.username},
+            message = f"""Hi {student_username},
             \nYour OTP for resetting your password is: {otp_profile.otp}.
             \nIt is valid for 10 minutes.
             \nFrom MMU Forum Team
@@ -284,10 +285,11 @@ def forgot_password_view(request):
             
             send_mail(subject, message, from_email, [email])
             
-            # Store email in session to use in the next step
+           
             request.session['reset_email'] = email
-            messages.success(request, "An OTP has been sent to your student email.")
             return redirect('verify-otp')
+        except User.DoesNotExist:
+            pass
     else:
         form = RequestOTPForm()
     return render(request, 'user/forgot_password.html', {'form': form})
@@ -296,27 +298,27 @@ def verify_otp_view(request):
     email = request.session.get('reset_email')
     if not email:
         return redirect('forgot-password')
+    stored_username = request.session.get('reset_student_username', 'Student')
 
     if request.method == 'POST':
         form = ResetPasswordForm(request.POST)
         if form.is_valid():
             otp = form.cleaned_data['otp']
             new_password = form.cleaned_data['new_password']
-            
             user = User.objects.get(email=email)
+            
             try:
                 otp_profile = ProfileOTP.objects.get(user=user, otp=otp)
                 
                 if otp_profile.is_valid():
-                    # Set new password
                     user.set_password(new_password)
                     user.save()
-                    # Delete OTP so it can't be reused
                     otp_profile.delete()
                     del request.session['reset_email']
                     
                     messages.success(request, "Password reset successful! You can now log in.")
-                    return redirect('forum-login') # Replace with your login URL name
+                    request.session.pop('reset_student_username', None)
+                    return redirect('forum-login') 
                 else:
                     messages.error(request, "OTP has expired. Please request a new one.")
             except ProfileOTP.DoesNotExist:
@@ -324,10 +326,9 @@ def verify_otp_view(request):
     else:
         form = ResetPasswordForm()
         
-    return render(request, 'user/pw_verify_otp.html', {'form': form})
+    return render(request, 'user/pw_verify_otp.html', {'form': form,'username': stored_username})
 
 def resend_otp_view(request):
-    # Retrieve the email stored in the session from the first step
     email = request.session.get('reset_email')
     
     if not email:
@@ -337,10 +338,7 @@ def resend_otp_view(request):
     try:
         user = User.objects.get(email=email)
         
-        # Fetch existing profile or create one if it vanished
         otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
-        
-        # This overwrites the old OTP and resets the 'created_at' timestamp
         otp_profile.generate_otp()
         
         # Send the new email
