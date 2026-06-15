@@ -1,0 +1,28 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<html>
+    <head></head>
+     {% block content %}
+    <body>
+      <h2>Verify OTP & Reset Password</h2>
+
+        <form method="post">
+               <p class="username"><span class="form-label">Username :</span> {{user.username}}</p>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Reset Password</button>
+        </form>
+        {% if messages %}
+            {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+        {% endif %}
+        <p>Didn't receive the code or did it expire?</p>
+            <a href="{% url 'resend-otp' %}">Resend OTP</a>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="color: red;">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+    </body>
+       {% endblock content %}
+</html>

@@ -145,3 +145,30 @@ class FeedbackForm(forms.ModelForm):
             Field('message', label="Message", css_class='message form-control '),
             Submit('submit', 'Submit', css_class='submit-btn'),
         )
+
+class RequestOTPForm(forms.Form):
+    email = forms.EmailField(label="Student Email",
+            widget=forms.EmailInput(attrs={
+            'placeholder': 'Enter your student email...',
+            'class': 'my-custom-input-class'  
+        }))
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email.endswith('@student.mmu.edu.my'): 
+           raise forms.ValidationError("Please enter valid MMU email address")
+        
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError("No user found with this email address.")
+        return email
+    
+class ResetPasswordForm(forms.Form):
+    otp = forms.CharField(max_length=6, label="Enter 6-Digit OTP")
+    new_password = forms.CharField(widget=forms.PasswordInput, label="Enter New Password")
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirm New Password")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("new_password") != cleaned_data.get("confirm_password"):
+            raise forms.ValidationError("Passwords do not match.")
+        return cleaned_data

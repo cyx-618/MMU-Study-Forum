@@ -1,5 +1,9 @@
+import random
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
+
 
 # Create your models here.
 class Major (models.Model):
@@ -89,3 +93,17 @@ class Notification(models.Model):
         elif self.notification_type == 'account_suspended':
             return f"Your account has been suspended for violating guidelines."
         return "You have a new notification"
+
+class ProfileOTP(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        # OTP is valid for 10 minutes
+        return timezone.now() < self.created_at + timedelta(minutes=10)
+
+    def generate_otp(self):
+        self.otp = f"{random.randint(100000, 999999)}"
+        self.created_at = timezone.now()
+        self.save()
