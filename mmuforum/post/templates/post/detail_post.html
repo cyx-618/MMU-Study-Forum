@@ -85,7 +85,7 @@
                 </button>
             </form>
 
-            <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'})">
+            <a href="{% url 'post-detail' post.pk %}#comments" class="comment-button" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'})">
                 <i class="far fa-comment"></i>
                 <span>{{ post.comments.count }}</span>
             </a>
@@ -208,4 +208,30 @@
                 {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+//manage-post dropdown
+    document.querySelectorAll('.manage-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = this.nextElementSibling;
+
+            document.querySelectorAll('.manage-dropdown').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        });
+    });
+
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.manage-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    });
+</script>
 {% endblock %}

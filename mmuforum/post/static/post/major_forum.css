@@ -12,18 +12,17 @@ body{
 .main-content {
     padding: 20px;
     margin-top: 0px;
-    min-height: 100hv;
+    min-height: 100vh;
     margin-left: 70px;
 }
 
 .content-container {
     max-width: 1000px;
-    margin: 0 auto;
     padding: 0 15px;
 }
 
 .post-card {
-    max-width: 900px;
+    max-width: px;
     background: #f1f6e5;
     border-radius: 16px;
     padding: 20px;
@@ -271,4 +270,12 @@ h4,
 #no-post-warning {
     text-align: center;
     color: black;
+}
+
+.comment-avatar {
+    height: 30px ;
+    width: 30px ;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
 }

@@ -91,15 +91,15 @@
                                         <span class="likes-count">{{ post.likes.count }}</span>
                                     </button>
                                 </form>
+
+                                <a href="{% url 'post-detail' post.pk %}#comments">
+                                    <img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;">
+                                    <span> Comment ({{ post.comments.count }})</span> 
+                                </a>
+
                             </div>
                         </div>
-
-                            <h4>
-                                <a href="{% url 'post-detail' post.pk %}">
-                                    <img src="{% static 'post/images/comment.png' %}" alt="Comment" style="width: 20px; height: 20px;">
-                                </a>
-                                ({{ post.comments.count }})        
-                            </h4>
+                                      
                             {% for comment in post.comments.all %}
                                 {% if not comment.parent_comment %}
                                     <div class="comment-block" style="margin-bottom: 20px;">
