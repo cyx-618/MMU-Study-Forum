@@ -1,16 +1,28 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
-from post.models import Post, Comment, Like, ReportComment, ReportPost
+from post.models import Post, Comment, Like, ReportComment, ReportPost, Category
 from user.models import User, User_profile, Major, Feedback, Notification
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
+from django.db.models import Q
 
 # Create your views here.
 @user_passes_test(lambda u: u.is_superuser)
 def admin_main(request):
+    query = request.GET.get('q')
+    search_type = request.GET.get('type', 'post')
     posts = Post.objects.all().order_by('-date_posted')
+
+    if query:
+        if search_type == 'post':
+            posts = posts.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query)
+            )
+        elif search_type == 'user':
+            posts = posts.filter(author__username__icontains=query)
 
     for post in posts:
         post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists
@@ -271,7 +283,7 @@ def batch_delete_execute(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def feedback_center(request):
-    feedbacks = Feedback.objects.all().order_by('created_at')
+    feedbacks = Feedback.objects.all().order_by('-created_at')
     context = {
         'feedbacks': feedbacks
     }
@@ -286,8 +298,19 @@ def feedback_detail(request, feedback_id):
         feedback.admin_reply = request.POST.get('admin_reply')
         feedback.is_resolved = request.POST.get('is_resolved') == 'on'
         feedback.save()
+
+        Notification.objects.create(
+            receiver=feedback.user,
+            sender=request.user,
+            notification_type='admin_reply',
+            feedback=feedback,
+            post=None
+        )
+
         messages.success(request, 'Reply sent successfully.')
         return redirect('feedback-center')
+    
+    
     
     context = {
         'feedback': feedback
@@ -385,3 +408,41 @@ def report_process(request, report_type, report_id):
     }
     
     return render (request, 'admin_manager/admin_report_process.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_notifications(request):
+    notifications = request.user.notifications.all().order_by('-created_at')
+    
+    context = {
+        'notifications': notifications,
+    }
+    return render(request, 'admin_manager/admin_notification.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_major(request, major_name):
+    posts = Post.objects.filter(
+        author__user_profile__major__major_name=major_name
+    ).order_by('date_posted')
+
+    for post in posts:
+        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
+
+    context = {
+        'posts' : posts,
+        'selected_major' : major_name,
+    }
+    return render(request, 'admin_manager/admin_main.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_database_management(request):
+    majors = Major.objects.all().order_by('major_name')
+    categories = Category.objects.all().order_by('category')
+
+    context = {
+        'majors' : majors,
+        'categories': categories,
+    }
+    return render(request, 'admin_manager/admin_database_management.html', context)

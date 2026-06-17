@@ -119,6 +119,15 @@ def submit_feedback(request):
 
             recipient_list = [u.email for u in admin_and_staff if u.email]
 
+            for admin_user in admin_and_staff:
+                Notification.objects.create(
+                    receiver=admin_user,
+                    sender=request.user,
+                    notification_type='new_feedback',
+                    feedback=feedback,
+                    post=None
+                )
+
             if recipient_list:
                 feedback_subject = form.cleaned_data.get('subject', 'No Subject.')
                 feedback_message = form.cleaned_data.get('message', 'No message.')

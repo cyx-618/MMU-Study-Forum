@@ -1,0 +1,53 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - Notification {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_notification.css' %}">
+
+<div class="title-header">
+    <h3><i class="fas fa-bell"></i>Notification</h3>
+</div>
+
+<div class="notification-list">
+    {% for notification in notifications %}
+        <div class="notification-item">
+            <div class="profile-picture">
+                {% if notification.sender.user_profile.profile_picture %}
+                    <img src="{{ notification.sender.user_profile.profile_picture.url }}" alt="Profile">
+                {% else %}
+                    <i class="fas fa-user-circle"></i>
+                {% endif %} 
+            </div>
+
+            <div class="notification-content">
+                <div class="notification-message">
+                    <strong>{{ notification.sender.username }}</strong>
+                    {{ notification.get_message }}
+                    {% if notification.notification_type == 'new_report' and notification.content_object %}
+                        {% if notification.content_type.model == 'reportpost' %}
+                            <a href="{% url 'report-process' 'post' notification.object_id %}">View Report</a>
+                        {% elif notification.content_type.model == 'reportcomment' %}
+                            <a href="{% url 'report-process' 'comment' notification.object_id %}">View Report</a>
+                        {% endif %}
+                    {% elif notification.post %}
+                        <a href="{% url 'admin-post-detail' notification.post.id %}">{{ notification.post.title|truncatechars:30}}</a>
+                    {% elif notification.feedback %}
+                        <a href="{% url 'admin-feedback-detail' notification.feedback.id %}">Feedback #{{ notification.feedback.id }}</a>
+                    {% endif %}
+                </div>
+
+                <div class="notification-time">
+                    {{ notification.created_at|timesince }} ago
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-notification">
+            <i class="fas fa-bell-slash"></i>
+            <p>No notifications yet.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

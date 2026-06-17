@@ -301,6 +301,15 @@ def report_post(request, post_id):
             admins = User.objects.filter(is_superuser=True)
             admin_emails = [admin.email for admin in admins if admin.email]
 
+            for admin_user in admins:
+                Notification.objects.create(
+                    receiver=admin_user,
+                    sender=request.user,
+                    notification_type='new_report',
+                    content_object=report,
+                    post=None
+                )
+
             if admin_emails:
                 subject = f"Post Reported: {post.title}"
                 current_site = request.build_absolute_uri('/')[:-1]
@@ -369,6 +378,15 @@ def report_comment(request, comment_id):
 
             admins = User.objects.filter(is_superuser=True)
             admin_emails = [admin.email for admin in admins if admin.email]
+
+            for admin_user in admins:
+                Notification.objects.create(
+                    receiver=admin_user,
+                    sender=request.user,
+                    notification_type='new_report',
+                    content_object=report,
+                    post=None
+                )
 
             if admin_emails:
                 subject = f"Post Reported: {post.title}"

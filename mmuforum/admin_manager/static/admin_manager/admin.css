@@ -89,6 +89,23 @@ body {
     box-shadow: 0 1px 6px rgba(32,33,36,0.2);
 }
 
+.search-select {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 15px;
+    background: white;
+    color: #2c5a2e;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    margin-left: 10px;
+}
+
+.search-select:hover {
+    background: #e9ecef;
+}
+
 .banner-actions {
     display: flex;
     align-items: center;

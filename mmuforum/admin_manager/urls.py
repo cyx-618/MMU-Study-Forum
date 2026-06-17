@@ -19,5 +19,8 @@ urlpatterns = [
     path('admin/panel/feedback/home/', views.feedback_center, name="feedback-center"),
     path('admin/panel/feedback/detail/<int:feedback_id>', views.feedback_detail, name="admin-feedback-detail"),
     path('admin/panel/report/home/', views.report_center, name='report-center'),
-    path('admin/panel/report/process/<str:report_type>/<int:report_id>/', views.report_process, name='report-process')
+    path('admin/panel/report/process/<str:report_type>/<int:report_id>/', views.report_process, name='report-process'),
+    path('admin/notifications/', views.admin_notifications, name='admin-notifications'),
+    path('admin/main/<str:major_name>/', views.admin_major, name='admin-major'),
+    path('admin/panel/database/', views.admin_database_management, name='database-management')
 ]
