@@ -1,7 +1,11 @@
+import random
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+from datetime import timedelta
+
 
 # Create your models here.
 class Major (models.Model):
@@ -103,3 +107,17 @@ class Notification(models.Model):
         elif self.notification_type == 'new_report':
             return f"{self.sender.username} submitted a new report for post."
         return "You have a new notification"
+
+class ProfileOTP(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        # OTP is valid for 10 minutes
+        return timezone.now() < self.created_at + timedelta(minutes=10)
+
+    def generate_otp(self):
+        self.otp = f"{random.randint(100000, 999999)}"
+        self.created_at = timezone.now()
+        self.save()

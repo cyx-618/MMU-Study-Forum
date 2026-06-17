@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, logout
-from .models import Notification, User_profile, Feedback
+from .models import Notification, User_profile, Feedback, ProfileOTP
 from post.models import Like, Post
 from django.core.mail import send_mail
 from django.conf import settings
@@ -18,9 +18,9 @@ from .form import (
     UserUpdateForm,
     FeedbackForm,
     LoginForm,
+    RequestOTPForm, 
+    ResetPasswordForm
 )
-
-#view function
 
 def signup (request):
     context = {
@@ -271,3 +271,99 @@ def view_other_profile(request,user_id):
     }
     return render(request, 'user/view_other_profile.html', context)
 
+def forgot_password_view(request):
+    if request.method == 'POST':
+        form = RequestOTPForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = User.objects.get(email=email)
+            request.session['reset_student_username'] = user.username
+            otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
+            otp_profile.generate_otp()
+            
+        try:
+            user = User.objects.get(email=email)
+            student_username = user.username
+            subject = "Your Password Reset OTP"
+            message = f"""Hi {student_username},
+            \nYour OTP for resetting your password is: {otp_profile.otp}.
+            \nIt is valid for 10 minutes.
+            \nFrom MMU Forum Team
+            """
+            from_email = 'mmuforum3@gmail.com'
+            
+            send_mail(subject, message, from_email, [email])
+            
+           
+            request.session['reset_email'] = email
+            return redirect('verify-otp')
+        except User.DoesNotExist:
+            pass
+    else:
+        form = RequestOTPForm()
+    return render(request, 'user/forgot_password.html', {'form': form})
+
+def verify_otp_view(request):
+    email = request.session.get('reset_email')
+    if not email:
+        return redirect('forgot-password')
+    stored_username = request.session.get('reset_student_username', 'Student')
+
+    if request.method == 'POST':
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            otp = form.cleaned_data['otp']
+            new_password = form.cleaned_data['new_password']
+            user = User.objects.get(email=email)
+            
+            try:
+                otp_profile = ProfileOTP.objects.get(user=user, otp=otp)
+                
+                if otp_profile.is_valid():
+                    user.set_password(new_password)
+                    user.save()
+                    otp_profile.delete()
+                    del request.session['reset_email']
+                    
+                    messages.success(request, "Password reset successful! You can now log in.")
+                    request.session.pop('reset_student_username', None)
+                    return redirect('forum-login') 
+                else:
+                    messages.error(request, "OTP has expired. Please request a new one.")
+            except ProfileOTP.DoesNotExist:
+                messages.error(request, "Invalid OTP. Please try again.")
+    else:
+        form = ResetPasswordForm()
+        
+    return render(request, 'user/pw_verify_otp.html', {'form': form,'username': stored_username})
+
+def resend_otp_view(request):
+    email = request.session.get('reset_email')
+    
+    if not email:
+        messages.error(request, "Session expired. Please enter your email again.")
+        return redirect('forgot-password')
+
+    try:
+        user = User.objects.get(email=email)
+        
+        otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
+        otp_profile.generate_otp()
+        
+        # Send the new email
+        subject = "Your New Password Reset OTP"
+        message = f"""Hi {request.user.username} ,
+                   \nYour new OTP for resetting your password is: {otp_profile.otp}.
+                   \nIt is valid for 10 minutes.
+                   \nFrom MMU Forum Team
+                   """
+        from_email = 'mmuforum3@gmail.com'
+        
+        send_mail(subject, message, from_email, [email])
+        
+        messages.success(request, "A new OTP has been sent to your student email.")
+    except User.DoesNotExist:
+        messages.error(request, "An error occurred. Please try again.")
+        return redirect('forgot-password')
+
+    return redirect('verify-otp')

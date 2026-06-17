@@ -49,7 +49,7 @@ ul.errorlist li {
     margin-top: 20px;
     box-shadow: 0px 0px 6px rgb(235, 235, 235);
     border: none;
-    background-color: #D1DAD0;
+    background-color:#D1DAD0;
     overflow: hidden;
 }
 
@@ -144,6 +144,10 @@ ul.errorlist li {
 }
 .forgot-password:hover{
     text-decoration:underline;
+}
+.forgot-password:visited{
+    color:black;
+    text-decoration: none;
 }
 .no-acc{
     margin-top:-30px;
