@@ -1,6 +1,8 @@
 import random
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from datetime import timedelta
 
@@ -53,9 +55,17 @@ class Notification(models.Model):
         ('content_warning', 'Content Warning'),
         ('content_deleted', 'Content Deleted'),
         ('account_suspended', 'Account Suspended'),
+
+        ('new_feedback', 'submitted a new feedback'),
+        ('new_report', 'submitted a new report'),
     )
 
     notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
+
     post = models.ForeignKey('post.Post', on_delete=models.CASCADE, null=True, blank=True)
     feedback = models.ForeignKey('user.Feedback', on_delete=models.CASCADE, null=True, blank=True)
 
@@ -92,6 +102,10 @@ class Notification(models.Model):
             return f"Your content has been removed for violating guidelines."
         elif self.notification_type == 'account_suspended':
             return f"Your account has been suspended for violating guidelines."
+        elif self.notification_type == 'new_feedback':
+            return f"{self.sender.username} submitted a new feedback."
+        elif self.notification_type == 'new_report':
+            return f"{self.sender.username} submitted a new report for post."
         return "You have a new notification"
 
 class ProfileOTP(models.Model):

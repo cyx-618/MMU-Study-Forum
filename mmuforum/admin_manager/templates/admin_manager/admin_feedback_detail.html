@@ -1,7 +1,7 @@
 {% extends 'admin_manager/admin_base.html' %}
 {% load static %}
 
-{% block title %} MMU Forum - User Management {% endblock title %}
+{% block title %} MMU Forum - Feedback Detail {% endblock title %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
@@ -24,6 +24,9 @@
             </a>
             <a href="#" class="panel-item" alt="Announcements" title="Announcements">
                 <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+            <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management" title="Database Management">
+                <i class="fas fa-database"></i>Database Management
             </a>
         </div>
     </div>

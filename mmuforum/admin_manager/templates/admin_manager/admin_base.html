@@ -23,10 +23,15 @@
                 </div>
 
                 <div class="search-container">
-                    <form action="#" method="GET">
+                    <form action="{% url 'admin-main' %}" method="GET">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" name="q" placeholder="Search users or posts...">
+                            <input type="text" name="q" placeholder="Search..." value="{{ query }}">
+
+                            <select name="type" class="search-select">
+                                <option value="post" {% if search_type == 'post' or not search_type %}selected{% endif %}>Posts</option>
+                                <option value="user" {% if search_type == 'user' %}selected{% endif %}>Users</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -39,14 +44,14 @@
             </div>
 
             <div class="category-bar">
-                <button><a href= "#">FCI</a></button>
-                <button><a href= "#">FCM</a></button>
-                <button><a href= "#">FOM</a></button>
-                <button><a href= "#">FCA</a></button>
-                <button><a href= "#">FAC</a></button>
-                <button><a href= "#">FAIE</a></button>
-                <button><a href= "#">FOL</a></button>
-                <button><a href= "#">FOB</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of Computing and Informatics (FCI)' %}">FCI</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of Creative Multimedia (FCM)' %}">FCM</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of Management (FOM)' %}">FOM</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of Cinematic Arts (FCA)' %}">FCA</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of Applied Communication (FAC)' %}">FAC</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of AI % Engineering (FAIE)' %}">FAIE</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of Law (FOL)' %}">FOL</a></button>
+                <button><a href= "{% url 'admin-major' 'Faculty of Buisness (FOB)' %}">FOB</a></button>
             </div>
         </nav>
 
@@ -58,7 +63,7 @@
                 <a href="#" class="sidebar-item" alt="Create" title="Create Post/Announcement">
                     <i class="fas fa-plus-circle"></i>
                 </a>
-                <a href="#" class="sidebar-item" alt="Notification" title="Notification">
+                <a href="{% url 'admin-notifications' %}" class="sidebar-item" alt="Notification" title="Notification">
                     <i class="fas fa-bell"></i>
                 </a>
                 <a href="{% url 'admin-panel' %}" class="sidebar-item" alt="Admin Panel" title="Admin Panel">

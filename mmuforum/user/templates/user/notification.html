@@ -22,7 +22,7 @@
             <p> 
                 <img  class="profile-pic" src="{{notification.sender.user_profile.profile_picture.url }}" alt="Profile Picture">
                 <a class="sender" href="{% url 'view-profile' notification.sender.username %}">@{{ notification.sender.username }}</a>
-                {{ notification.get_notification_type_display }}
+                {{ notification.get_message }}
 
                 {% if notification.post %}
                     <a href= "{% url 'post-detail' notification.post.id %}">{{ notification.post.title|truncatechars:30 }}</a>
