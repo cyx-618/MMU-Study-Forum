@@ -1,0 +1,159 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - User Management {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+<link rel="stylesheet" href="{% static 'admin_manager/admin_report.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Data Visualization
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="{% url 'report-center' %}" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
+                <i class="fas fa-bullhorn"></i>Announcements
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-flag"></i> Report Center</h3>
+        </div>
+
+        <div class="report-tabs">
+            <button class="tab-btn active" id="tabPost" onclick="showPosts()">
+                <i class="fas fa-file-alt"></i> Post Reports
+            </button>
+
+            <button class="tab-btn" id="tabComment" onclick="showComments()">
+                <i class="fas fa-comment"></i> Comment Reports
+            </button>
+        </div>
+
+        <div id="postReports">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Reported Post</th>
+                        <th>Reporter</th>
+                        <th>Offender</th>
+                        <th>Reason</th>
+                        <th>Resolution</th>
+                        <th>Resolved At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in post_reports %}
+                    <tr class="{% if report.status == 'reviewed' or report.status == 'dismissed' %}resolved-row{% endif %}">
+                        <td>
+                            {% if report.status == 'pending' %}
+                                <span class="status-pending">Pending</span>
+                            {% elif report.status == 'reviewed' %}
+                                <span class="status-reviewed">Reviewed</span>
+                            {% else %}
+                                <span class="status-dismissed">Dismissed</span>
+                            {% endif %}
+                        </td>
+                        <td class="content-preview" title="{{ report.post.title }}">{{ report.post.title|truncatechars:20 }}</td>
+                        <td>{{ report.reporter.username }}</td>
+                        <td>{{ report.post.author.username }}</td>
+                        <td>{{ report.get_reason_display }}</td>
+                        <td>
+                            {% if report.resolution %}
+                                <span class="resolved-text">{{ report.get_resolution_display }}</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ report.resolved_at|date:"Y-m-d H:i"|default:"-" }}</td>
+                        <td>
+                            <a href="{% url 'report-process' 'post' report.id %}" class="btn-resolve">Resolve</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="empty-row">No Posts Reported</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="commentReports" style="display: none;">
+            <table class="report-table">
+                <thead>
+                    <th>Status</th>
+                    <th>Reported Comment</th>
+                    <th>Reporter</th>
+                    <th>Offender</th>
+                    <th>Reason</th>
+                    <th>Resolution</th>
+                    <th>Resolved At</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    {% for report in comment_reports %}
+                    <tr class="{% if report.status == 'reviewed' or report.status == 'dismissed' %}resolved-row{% endif %}">
+                        <td>
+                            {% if report.status == 'pending' %}
+                                <span class="status-pending">Pending</span>
+                            {% elif report.status == 'reviewed' %}
+                                <span class="status-reviewed">Reviewed</span>
+                            {% else %}
+                                <span class="status-dismissed">Dismissed</span>
+                            {% endif %}
+                        </td>
+                        <td class="content-preview" title="{{ report.comment.text }}">{{ report.comment.text|truncatechars:13 }}</td>
+                        <td>{{ report.reporter.username }}</td>
+                        <td>{{ report.comment.author.username }}</td>
+                        <td>{{ report.get_reason_display }}</td>
+                        <td>
+                            {% if report.resolution %}
+                                <span class="resolved-text">{{ report.get_resolution_display }}</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ report.resolved_at|date:"Y-m-d H:i"|default:"-" }}</td>
+                        <td>
+                            <a href="{% url 'report-process' 'comment' report.id %}" class="btn-resolve">Resolve</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="empty-row">No Comment Reported</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPosts() {
+        document.getElementById('postReports').style.display = 'block';
+        document.getElementById('commentReports').style.display = 'none';
+        document.getElementById('tabPost').classList.add('active');
+        document.getElementById('tabComment').classList.remove('active');
+    }
+
+    function showComments() {
+        document.getElementById('postReports').style.display = 'none';
+        document.getElementById('commentReports').style.display = 'block';
+        document.getElementById('tabPost').classList.remove('active');
+        document.getElementById('tabComment').classList.add('active');
+    }
+</script>
+{% endblock content %}

@@ -16,7 +16,7 @@
             <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
                 <i class="fas fa-users"></i>User Management
             </a>
-            <a href="#" class="panel-item" alt="Report Center" title="Report Center">
+            <a href="{% url 'report-center' %}" class="panel-item" alt="Report Center" title="Report Center">
                 <i class="fas fa-flag"></i>Report Center
             </a>
             <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
@@ -60,7 +60,7 @@
                         <td>{{ feedback.subject|truncatewords:5 }}</td>
                         <td>{{ feedback.message|truncatewords:3 }}</td>
                         <td>{{ feedback.created_at|date:"Y-m-d H:i" }}</td>
-                        <td><a href="{% url 'feedback-detail' feedback.id %}" class="reply-button"><i class="fas fa-reply"></i> Reply</a></td>
+                        <td><a href="{% url 'admin-feedback-detail' feedback.id %}" class="reply-button"><i class="fas fa-reply"></i> Reply</a></td>
                     </tr>
                     {% empty %}
                     <tr><td colspan="6" class="empty-row">No Feedback yet.</td></tr>

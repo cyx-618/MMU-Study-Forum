@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, logout
-from .models import Notification, User_profile, Feedback
+from .models import Notification, User_profile, Feedback, ProfileOTP
 from post.models import Like, Post
 from django.core.mail import send_mail
 from django.conf import settings
@@ -18,9 +18,9 @@ from .form import (
     UserUpdateForm,
     FeedbackForm,
     LoginForm,
+    RequestOTPForm, 
+    ResetPasswordForm
 )
-
-#view function
 
 def signup (request):
     context = {
@@ -52,6 +52,7 @@ def signup (request):
         form = UserRegisterForm()
     return render(request, 'user/signup.html', {'form': form})
 
+
 def login(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -69,11 +70,13 @@ def login(request):
 
     return render(request, 'user/login.html',context)
 
+
 def dispatch_user(request):
     if request.user.is_superuser or request.user.is_staff:
         return redirect('admin-main')
     else:
         return redirect('forum-main')
+
 
 @login_required
 def profile(request):
@@ -161,6 +164,7 @@ def feedback_list(request):
     }
     return render(request, 'user/feedback_list.html', context)
 
+
 @login_required
 def feedback_detail(request, feedback_id):
     feedback = get_object_or_404(Feedback, id=feedback_id)
@@ -177,10 +181,12 @@ def feedback_detail(request, feedback_id):
 
 
 @login_required
-def view_profile(request, username):
-    user_profile = User_profile.objects.filter(user__username=username).first()
-    user_posts = Post.objects.filter(author=user_profile.user).order_by('-date_posted')
-    user_posts_count = user_posts.count()
+def view_profile(request,username):
+    user=get_object_or_404(User, username=username)
+    user_profile = User_profile.objects.filter(user=user).first()
+    posts = Post.objects.filter(author=user).order_by('-date_posted')
+    post_count = posts.count()
+    liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
 
   
     if request.user.is_authenticated:
@@ -188,12 +194,11 @@ def view_profile(request, username):
     else:
         user_post_count = 0
     context = {
-        'view_profile': user_profile,
-        'user_posts': user_posts,
-        'user_posts_count': user_posts_count,
-        'user_post_count': user_post_count,
-        'user': user_profile.user,
-        'title': f"{user_profile.user.username}'s Profile"
+        'profile_user': user,
+        'user_profile': user_profile,
+        'posts': posts,
+        'post_count': post_count,
+        'liked_posts': liked_posts,
     }
     return render(request, 'user/view_profile.html', context)
 
@@ -215,6 +220,7 @@ def edit_profile(request):
     }
     return render(request,'user/edit_profile.html',{'form': form})
 
+
 @login_required
 def delete_profile(request):
     if request.method == 'POST':
@@ -227,12 +233,6 @@ def delete_profile(request):
 
 
 @login_required
-def favourite_posts(request):
-    liked_posts=Post.objects.filter(likes__user=request.user)
-    return render(request,'user/favourite_posts.html',{'liked_posts': liked_posts})
-
-
-@login_required
 def notifications(request):
     notifications = request.user.notifications.all()
 
@@ -241,6 +241,7 @@ def notifications(request):
 
     return render(request, 'user/notification.html', {'notifications': notifications})
     
+
 @login_required
 def view_other_profile(request,user_id):
     profile_user = get_object_or_404(User, id=user_id)
@@ -261,3 +262,99 @@ def view_other_profile(request,user_id):
     }
     return render(request, 'user/view_other_profile.html', context)
 
+def forgot_password_view(request):
+    if request.method == 'POST':
+        form = RequestOTPForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = User.objects.get(email=email)
+            request.session['reset_student_username'] = user.username
+            otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
+            otp_profile.generate_otp()
+            
+        try:
+            user = User.objects.get(email=email)
+            student_username = user.username
+            subject = "Your Password Reset OTP"
+            message = f"""Hi {student_username},
+            \nYour OTP for resetting your password is: {otp_profile.otp}.
+            \nIt is valid for 10 minutes.
+            \nFrom MMU Forum Team
+            """
+            from_email = 'mmuforum3@gmail.com'
+            
+            send_mail(subject, message, from_email, [email])
+            
+           
+            request.session['reset_email'] = email
+            return redirect('verify-otp')
+        except User.DoesNotExist:
+            pass
+    else:
+        form = RequestOTPForm()
+    return render(request, 'user/forgot_password.html', {'form': form})
+
+def verify_otp_view(request):
+    email = request.session.get('reset_email')
+    if not email:
+        return redirect('forgot-password')
+    stored_username = request.session.get('reset_student_username', 'Student')
+
+    if request.method == 'POST':
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            otp = form.cleaned_data['otp']
+            new_password = form.cleaned_data['new_password']
+            user = User.objects.get(email=email)
+            
+            try:
+                otp_profile = ProfileOTP.objects.get(user=user, otp=otp)
+                
+                if otp_profile.is_valid():
+                    user.set_password(new_password)
+                    user.save()
+                    otp_profile.delete()
+                    del request.session['reset_email']
+                    
+                    messages.success(request, "Password reset successful! You can now log in.")
+                    request.session.pop('reset_student_username', None)
+                    return redirect('forum-login') 
+                else:
+                    messages.error(request, "OTP has expired. Please request a new one.")
+            except ProfileOTP.DoesNotExist:
+                messages.error(request, "Invalid OTP. Please try again.")
+    else:
+        form = ResetPasswordForm()
+        
+    return render(request, 'user/pw_verify_otp.html', {'form': form,'username': stored_username})
+
+def resend_otp_view(request):
+    email = request.session.get('reset_email')
+    
+    if not email:
+        messages.error(request, "Session expired. Please enter your email again.")
+        return redirect('forgot-password')
+
+    try:
+        user = User.objects.get(email=email)
+        
+        otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
+        otp_profile.generate_otp()
+        
+        # Send the new email
+        subject = "Your New Password Reset OTP"
+        message = f"""Hi {request.user.username} ,
+                   \nYour new OTP for resetting your password is: {otp_profile.otp}.
+                   \nIt is valid for 10 minutes.
+                   \nFrom MMU Forum Team
+                   """
+        from_email = 'mmuforum3@gmail.com'
+        
+        send_mail(subject, message, from_email, [email])
+        
+        messages.success(request, "A new OTP has been sent to your student email.")
+    except User.DoesNotExist:
+        messages.error(request, "An error occurred. Please try again.")
+        return redirect('forgot-password')
+
+    return redirect('verify-otp')

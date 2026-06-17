@@ -2,9 +2,47 @@
 <head>
     <link rel="stylesheet" href="{% static 'post/update_post.css' %}?v={% now 'YmdHis' %}">
 </head>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update Post</button>
-    <a class="btn btn-secondary" href="{% url 'post-detail' post.pk %}">Cancel</a>
-</form>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <a href= "javascript:history.back()">
+                <img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px">
+            </a>
+            Update Post
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-menu">
+                <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/home.png' %}" alt="Home">
+                </a>
+                {% if user.is_authenticated and user.username %}
+                    <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                        <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                    </a>
+                {% else %}
+                    <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                        <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                    </a>
+                {% endif %}
+                <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+                </a>
+                <a href="{% url 'post-create' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/add.png' %}" alt="Create">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-form-card">
+        <div class="post-form-title">Post Detail</div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn-submit" type="submit">Update Post</button>
+        </form>
+    </div>
+
+</body>

@@ -11,10 +11,12 @@
     color:#EAEDE5;
     padding:10px 12px;
     margin-right:-14px;
+    display:hidden;
 }
 .back-btn:hover{
     text-decoration:underline;
     color:rgb(118, 165, 253);
+    display:hidden;
 }
 .feedback-container{
     display:flex;
@@ -26,7 +28,7 @@
 }
 
 body{
-    background-color:#446153;
+    background-color: #d2dfcd;
     font-family: "Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
 }
 .container{
@@ -50,7 +52,7 @@ a:hover{
     text-decoration:underline;
 }
 .feedback-title{
-    color: #f1fff3;
+    color: #000000;
     font-family: "Merriweather", serif;
     margin-top:15px;
     font-weight: bold;
@@ -61,4 +63,77 @@ a:hover{
     font-weight:bold;
     font-size:18px;
     font-family: "Noto Serif", serif;
+}
+
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    animation: slideIn 0.3s ease;
+    margin-left: 80px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-left: 4px solid #28a745;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+    color: #0c5460;
+}
+
+.alert-icon i {
+    font-size: 20px;
+}
+
+.alert-message {
+    flex: 1;
+    font-size: 14px;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.6;
+    font-size: 14px;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+.no-fb{
+     border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+      background-color:#EAEDE5;
+    box-shadow: 0px  0px 3px rgb(152, 152, 152);
+    border: 1px solid #e9ecef;
+    margin-left: 110px;
+    width:80%
+
 }

@@ -1,5 +1,9 @@
+import random
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
+
 
 # Create your models here.
 class Major (models.Model):
@@ -43,6 +47,12 @@ class Notification(models.Model):
         ('comment_like', 'liked your comment'),
         ('admin_reply', 'replied to your feedback'),
         ('feedback_submitted', 'You have submitted a feedback.'),
+        
+        ('report_approved', 'Report Approved'),
+        ('report_dismissed', 'Report Dismissed'),
+        ('content_warning', 'Content Warning'),
+        ('content_deleted', 'Content Deleted'),
+        ('account_suspended', 'Account Suspended'),
     )
 
     notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
@@ -58,3 +68,42 @@ class Notification(models.Model):
     def __str__(self):
         action = self.get_notification_type_display()
         return f"{self.sender.username} {action} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"
+    
+    def get_message(self):
+        if self.notification_type == 'post_like':
+            return f"{self.sender.username} liked your post"
+        elif self.notification_type == 'post_comment':
+            return f"{self.sender.username} commented on your post"
+        elif self.notification_type == 'comment_reply':
+            return f"{self.sender.username} replied to your comment"
+        elif self.notification_type == 'comment_like':
+            return f"{self.sender.username} liked your comment"
+        elif self.notification_type == 'admin_reply':
+            return f"Admin replied to your feedback"
+        elif self.notification_type == 'feedback_submitted':
+            return f"You have submitted a feedback"
+        elif self.notification_type == 'report_approved':
+            return f"Your report has been approved. The content has been removed."
+        elif self.notification_type == 'report_dismissed':
+            return f"Your report has been reviewed and dismissed."
+        elif self.notification_type == 'content_warning':
+            return f"You have received a warning for violating community guidelines."
+        elif self.notification_type == 'content_deleted':
+            return f"Your content has been removed for violating guidelines."
+        elif self.notification_type == 'account_suspended':
+            return f"Your account has been suspended for violating guidelines."
+        return "You have a new notification"
+
+class ProfileOTP(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        # OTP is valid for 10 minutes
+        return timezone.now() < self.created_at + timedelta(minutes=10)
+
+    def generate_otp(self):
+        self.otp = f"{random.randint(100000, 999999)}"
+        self.created_at = timezone.now()
+        self.save()

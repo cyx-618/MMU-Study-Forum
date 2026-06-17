@@ -19,7 +19,7 @@
         {% endif %}
 
         <div class="author-info">
-            <a href="{% url 'view-profile' user.id %}" class="username-link">
+            <a href="{% url 'view-profile' post.author.id %}" class="username-link">
                 <span class="author-username">{{ post.author.username }}</span>
             </a>
             <span class="author-major">{{ post.author.user_profile.major}}</span>

@@ -5,7 +5,9 @@
 
 {% block nav_title %}
 <h2 class="title">
-    <a href= "{% url 'forum-main' %}"><img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px"></a>
+    <a href= "javascript:history.back()">
+        <img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px">
+    </a>
     {{ post.title }} 
 </h2>
 {% endblock %}
@@ -31,7 +33,25 @@
             <span class="author-major">{{ post.author.user_profile.major}}</span>
             <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
         </div>
+
+        <div class="manage-post">
+            <button class="manage-button">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            {% if post.author == user or user.is_staff %}
+            <div class="manage-dropdown">
+                <a href="{% url 'post-update' post.pk %}"><i class="fas fa-edit"></i> Edit</a>
+                <a href="{% url 'post-delete' post.pk %}"><i class="fas fa-trash"></i> Delete</a>
+            </div>
+            {% else %}
+            <div class="manage-dropdown">
+                <a href="{% url 'report-post' post.pk %}"><i class="fas fa-thumbtack"></i> Report</a>
+            </div>
+            {% endif %}
+        </div>
     </div>
+
+    
 
     <div class="post-body">
         <h3 class="post-title">{{ post.title }}</h3>
@@ -90,21 +110,7 @@
                 <span>{{ post.comments.count }}</span>
             </a>
 
-            <div class="manage-post">
-                <button class="manage-button">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-                {% if post.author == user or user.is_staff %}
-                <div class="manage-dropdown">
-                    <a href="{% url 'post-update' post.pk %}"><i class="fas fa-edit"></i> Edit</a>
-                    <a href="{% url 'post-delete' post.pk %}"><i class="fas fa-trash"></i> Delete</a>
-                </div>
-                {% else %}
-                <div class="manage-dropdown">
-                    <a href="{% url 'report-post' post.pk %}"><i class="fas fa-thumbtack"></i> Report</a>
-                </div>
-                {% endif %}
-            </div>
+            
         </div>
     </div>
 
@@ -202,8 +208,8 @@
         {% if user.is_authenticated %}
                 <form method="post" action="{% url 'add-comment' post.id %}">
                     {% csrf_token %}
-                    <input type="text" name="content" placeholder="Write comment..." required>
-                    <button type="submit">Submit</button>
+                    <input class="comment-area" type="text" name="content" placeholder="Write comment..." required>
+                    <button class="submit-comment" type="submit"><img src="{% static 'post/images/paper-plane.png' %}" alt="Send"></button>
                 </form>
                 {% endif %}
     </div>
