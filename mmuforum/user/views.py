@@ -359,8 +359,7 @@ def resend_otp_view(request):
                    """
         from_email = 'mmuforum3@gmail.com'
         
-        send_mail(subject, message, from_email, [email])
-        
+        send_mail(subject, message, from_email, [email])   
         messages.success(request, "A new OTP has been sent to your student email.")
     except User.DoesNotExist:
         messages.error(request, "An error occurred. Please try again.")

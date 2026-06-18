@@ -6,8 +6,8 @@ body{
      margin: 0;
     padding-top: 130px;
     background-color:#d2dfcd;
-    margin-left: 80px;
-    margin-right: 10px;
+    margin-left: 185px;
+    margin-right: 150px;
     
 }
 .user-sec{
@@ -15,7 +15,7 @@ body{
     display:flex;
     flex-direction:row;
     align-items: center;
-    background: rgb(255, 255, 255);
+    background: #f1f6e5;
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 24px;
@@ -31,6 +31,7 @@ body{
     position:relative;
     margin-top: -120px;
     margin-left:auto;
+
    
 }
 .manage-pf-btn{
@@ -60,7 +61,8 @@ i{
     color:#2c5a2e
 }
 .manage-profile a:hover{
-   background-color:#d7f4e1;
+      background-color: #e0e1e2;
+  
 }
 .manage-profile .manage-pf-dd{
     display:none;
@@ -81,13 +83,14 @@ i{
 
 .avatar{
     margin-left:20px;
+     
 }
 .avatar-img {
     width: 150px;
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow:0px 0px 3px grey;
+    box-shadow:0px 0px 4px rgb(107, 107, 107);
 
 }
 
@@ -134,7 +137,7 @@ i{
 .tab-btn {
     flex: 1;
     padding: 14px;
-    background: #f8f9fa;
+    background: #f1f6e5;
     cursor: pointer;
     font-size: 15px;
     font-weight: 500;
@@ -163,33 +166,21 @@ i{
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 24px;
-    background: white;
+    background: #f1f6e5;
     box-shadow: 0px  0px 3px rgb(152, 152, 152);
     border: 1px solid #e9ecef;
 
 }
-.posts-container{
-   column-width:280px;
-   column-gap:20px;
-    width:inherit;
-    gap:20px;
-    align-items: center;
-  
-
-}
 .post-card {
-    background: white;
+    background: #f1f6e5;
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 15px;
     box-shadow: 0px  0px 3px rgb(152, 152, 152);
     border: 1px solid #e9ecef;
-    width:250px;
     height:fit-content;
     overflow:hidden;
-  break-inside:auto;
-  break-inside: avoid;
-  display: inline-block;
+  display: block;
 }
 
 .post-header {
@@ -204,6 +195,7 @@ i{
     width: 40px;
     border-radius: 50%;
     object-fit: cover;
+    box-shadow: 0px 0px 5px rgb(127, 127, 127);
 }
 
 .username-link {
@@ -341,26 +333,25 @@ i{
 
 .pdf-download:hover {
     background-color: #e9ecef;
+    
 }
 
 .post-footer {
     margin-top: 10px;
     padding-top: 8px;
     display: flex;
+    justify-content: flex-start;
     gap: 24px;
-    align-items: center;
+    align-items: center;    
 }
-
 .post-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
+   text-align: left;
+    width: 3%;
 }
 
 .like-form {
     display: flex;
+    width:50px;
     align-items: center;
     margin: 0;
     padding: 0;
@@ -368,7 +359,7 @@ i{
 
 .like-post, .comment-button {
     display: inline-flex;
-    align-items: center;
+    justify-content: left;
     gap: 6px;
     padding: 10px;
     font-size: 14px;
@@ -380,6 +371,7 @@ i{
     transition: all 0.2s;
     outline: none;
     line-height: 1;
+    width:50px;
 }
 
 .like-post i {
@@ -433,7 +425,7 @@ i{
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: white;
+    background: #f1f6e5;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     min-width: 160px;
@@ -442,6 +434,7 @@ i{
     overflow: hidden;
     border: 1px solid #e9ecef;
     margin-top: 8px;
+    box-shadow: 0px 0px 4px grey;
 }
 
 .manage-dropdown.show {
@@ -460,7 +453,7 @@ i{
 }
 
 .manage-dropdown a:hover {
-    background-color: #f8f9fa;
+    background-color: #e0e1e2;
 }
 
 .manage-dropdown a.delete {
@@ -555,4 +548,7 @@ i{
 
 .alert-close:hover {
     opacity: 1;
+}
+.text-muted{
+     color: #343333;
 }

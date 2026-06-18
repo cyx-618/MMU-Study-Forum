@@ -33,10 +33,10 @@ body{
 }
 .container{
       background-color:#EAEDE5;
-    margin-left:auto;
+    margin-left:185px;
     margin-right:auto;
      border:none;
-     width:80%;
+     width:75%;
      height:80%;
      margin-bottom:20px;
      overflow:auto;
@@ -56,8 +56,8 @@ a:hover{
     font-family: "Merriweather", serif;
     margin-top:15px;
     font-weight: bold;
-    margin-left:-14px;
-    font-size:25px;
+    margin-left:60px;
+    margin-bottom: 20px;
 }
 .bold{
     font-weight:bold;

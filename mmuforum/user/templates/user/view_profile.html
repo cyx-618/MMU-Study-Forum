@@ -77,6 +77,7 @@
                     <div class="author-info">
                         <a href="{% url 'view-profile' post.author.username %}" class="author-username">{{post.author.username}}</a>
                         <span class="author-major">{{ post.author.user_profile.major}}</span>
+                        <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
                     </div>
                      {% if request.user.is_authenticated and request.user == profile_user %}
                     <div class="manage-post">
@@ -85,8 +86,8 @@
                             </button>
                             <div class="manage-dropdown">
                                 <a href="#"><i class="fas fa-thumbtack"></i> Pin Post</a>
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Delete</a>
+                                <a href="{% url 'post-update' post.pk %}"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="{% url 'post-delete' post.pk %}"><i class="fas fa-trash"></i> Delete</a>
                             </div>
                         </div>
                          {% endif %}
@@ -146,7 +147,10 @@
                             </button>
                         </form>
                     </div>
-                    
+                    <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button">
+                            <i class="far fa-comment"></i>
+                            <span>{{ post.comments.count }}</span>
+                    </a>
                 </div>
             </div>
         {% endfor %}
