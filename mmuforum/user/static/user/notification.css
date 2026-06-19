@@ -76,10 +76,10 @@ body{
  }
 }
 .noti-title{
-  font-family:'Times New Roman', Times, serif;
+ font-family: "Merriweather", serif;
   color:#000000;
   font-weight: bold;
-  font-size:38px;
+  font-size:30px;
   margin-bottom: 0;
   margin-top:0px;
 }
@@ -109,4 +109,17 @@ body{
 }
 .sender:hover{
     text-decoration: underline;
+}
+.preview{
+    color:rgb(13, 110, 222);
+    cursor:pointer;
+    text-decoration: none;
+}
+.preview:hover{
+    text-decoration: underline;
+    color:rgb(13, 110, 222);
+}
+.preview:visited{
+    color:rgb(13, 110, 222);
+    text-decoration: none;
 }

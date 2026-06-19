@@ -25,4 +25,5 @@ urlpatterns = [
     path('forgot-password/', views.forgot_password_view, name='forgot-password'),
     path('verify-otp/', views.verify_otp_view, name='verify-otp'),
     path('resend-otp/', views.resend_otp_view, name='resend-otp'),
+    path('view-report/',views.view_report,name='view-report'),
 ]

@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from post.models import ReportPost,ReportComment
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -366,3 +367,13 @@ def resend_otp_view(request):
         return redirect('forgot-password')
 
     return redirect('verify-otp')
+
+@login_required
+def view_report(request):
+   user_reports = ReportPost.objects.filter(reporter=request.user).select_related('post')
+   report_comment=ReportComment.objects.filter(reporter=request.user).select_related('comment')
+   context = {
+        'reports': user_reports,
+        'comment_reports':report_comment,
+    }
+   return render(request, 'user/view_report.html', context)
