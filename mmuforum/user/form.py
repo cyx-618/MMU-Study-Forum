@@ -61,6 +61,8 @@ class UserRegisterForm(UserCreationForm):
         email = cleaned_data.get("email")
         if email and not email.endswith('@student.mmu.edu.my'):
             self.add_error('email', "Please enter a valid school email address.")
+        elif email and User.objects.filter(email=email).exists():
+            self.add_error('email', "This student email has already been taken.")
         if p1 and p2 and p1 != p2:
            if 'password2' in self._errors:
                 del self._errors['password2']
@@ -155,7 +157,7 @@ class FeedbackForm(forms.ModelForm):
         )
 
 class RequestOTPForm(forms.Form):
-    email = forms.EmailField(label="Student Email",
+    email= forms.EmailField(label="Student Email",
             widget=forms.EmailInput(attrs={
             'placeholder': 'Enter your student email...',
             'class': 'my-custom-input-class'  
@@ -164,9 +166,9 @@ class RequestOTPForm(forms.Form):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if not email.endswith('@student.mmu.edu.my'): 
-           raise forms.ValidationError("Please enter valid MMU email address")
+           raise forms.ValidationError("Please enter valid MMU email address.")
         
-        if not User.objects.filter(email=email).exists():
+        elif not User.objects.filter(email=email).exists():
             raise forms.ValidationError("No user found with this email address.")
         return email
     
