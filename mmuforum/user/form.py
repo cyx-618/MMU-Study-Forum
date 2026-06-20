@@ -200,3 +200,14 @@ class ResetPasswordForm(forms.Form):
             raise forms.ValidationError("Invalid OTP. Please try again.")
         return cleaned_data
         
+class SignUpVerify(forms.Form):
+    otp_code = forms.CharField(
+        max_length=6,
+        min_length=6,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter 6-digit OTP code', 'autocomplete': 'off',
+                                      'class':'my-custom-input-class'},
+        )
+    )
+
+    
