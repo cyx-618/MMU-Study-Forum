@@ -45,23 +45,6 @@
                             </span>
                         </div>
                     </form>
-
-                    {% if search_query %}
-                    <div class="search-info">
-                        <p>Search "{{ search_query }}" result:found 
-                            {% if search_type == 'users' %}
-                                {{ users|length }}
-                            {% else %}
-                                {% if total_results %}
-                                    {{ total_results }}
-                                {% else %}
-                                    {{ posts|length }}
-                                {% endif %}
-                            {% endif %}
-                        </p>
-                        <a href="{% url 'forum-main' %}">Clear</a>
-                    </div>
-                    {% endif %}
                 </div>
             
                 <div class="register">
@@ -106,15 +89,34 @@
         </div>
 
         {% if messages %}
-          {% for message in messages %}
-           <div class="alert alert-{{message.tags}}">
-            {{message}}
-           </div>
-          {% endfor %}
+            <div class="messages-container" id="messagesContainer">
+                {% for message in messages %}
+                <div class="alert alert-{{message.tags}}" id="alert-{{ forloop.conter }}">
+                    <span>{{message}}</span>
+                    <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                </div>
+                {% endfor %}
+            </div>
         {%endif%}
 
         <div class="main-content">
             <div class="content-container">
+                {% if search_query %}
+                    <div class="search-info">
+                        <p>Search "{{ search_query }}" result:found 
+                            {% if search_type == 'users' %}
+                                {{ users|length }}
+                            {% else %}
+                                {% if total_results %}
+                                    {{ total_results }}
+                                {% else %}
+                                    {{ posts|length }}
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'forum-main' %}">Clear</a>
+                    </div>
+                    {% endif %}
             {% block content %}{% endblock %}
             </div>
         </div>
