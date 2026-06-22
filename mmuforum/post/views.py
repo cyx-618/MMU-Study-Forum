@@ -352,6 +352,19 @@ MMU Forum System
     }
     return render(request, 'post/report_post.html', context)
 
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    post_id =  comment.post.id
+
+    if request.user == comment.user or request.user.is_staff:
+        post_id = comment.post.id
+        comment.delete()
+        messages.success(request, 'Comment deleted successful.')
+    else:
+        messages.error(request, 'You cannot delete this comment.')
+
+    return redirect('post-detail', pk=post_id)
 
 @login_required
 def report_comment(request, comment_id):

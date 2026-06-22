@@ -81,6 +81,71 @@ body{
     margin: 0;
 }
 
+.manage-post{
+    position: relative;
+}
+
+.manage-button{
+    border: none;
+    font-size: 25px;
+    background: transparent;
+    margin-right: 20px;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    width: 44px;
+    height: 44px;
+}
+
+.manage-button:hover{
+    background-color: #e4f1c7;
+}
+
+.manage-dropdown{
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #f8f9fa;
+    min-width: 120px;
+    z-index: 100;
+    overflow: hidden;
+    border:2px solid #2c5a2e;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.manage-dropdown.show{
+    display: block;
+}
+
+.manage-dropdown a{
+    display: block;
+    padding: 10px 16px;
+    text-decoration: none;
+    color:#2c5a2e;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.manage-dropdown a:hover{
+    background: #e4f1c7;
+}
+
+.manage-dropdown a i{
+    margin-right: 8px;
+    width: 16px;
+}
+
+.post-body .post-title{
+    font-size: 20px;
+    font-weight: bold;
+}
+
 .post-title a {
     text-decoration: none;
     color: black;
@@ -193,6 +258,25 @@ h4,
     align-items: center;
 }
 
+.post-card hr{
+    border: 0;
+    border-top: 1px solid black;
+    margin: 10px 0;
+    width: 100%;
+    display: block;
+}
+
+.post-actions{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.post-actions form{
+    display: inline-block;
+    margin: 0;
+}
+
 .like-post {
     display: inline-flex;
     align-items: center;
@@ -219,6 +303,30 @@ h4,
 .likes-count {
     font-size: 13px;
     color: #495057;
+}
+
+.comment-count{
+    font-size: 13px;
+    color:#2c5a2e;
+}
+
+.comment-button{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color:#2c5a2e;
+    padding: 20px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.comment-button i{
+    font-size: 18px;
+}
+
+.comment-button:hover {
+    background-color: #f8f9fa;
 }
 
 .comment-block{

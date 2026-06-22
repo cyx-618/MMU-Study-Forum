@@ -1,13 +1,53 @@
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Delete Post</legend>
-                <p>Are you sure you want to delete the post "{{ object.title }}"?</p>
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
-                <a class="btn btn-outline-secondary" href="{% url 'post-detail' object.pk %}">Cancel</a>
+{% load crispy_forms_tags %}
+{% load static %}
+<html>
+    <head>
+        <title>Delete Post</title>
+        <link rel="stylesheet" href="{% static 'post/create_post.css' %}?v={% now 'YmdHis' %}">
+    </head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <a href= "{% url 'forum-main' %}"><img src="{% static 'post/images/exit.png' %}" alt="Exit"></a>Delete Your Post
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-menu">
+                <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/home.png' %}" alt="Home">
+                </a>
+                {% if user.is_authenticated and user.username %}
+                    <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                        <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                    </a>
+                {% else %}
+                    <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                        <img src="{% static 'post/images/user.png' %}" alt="Profile">
+                    </a>
+                {% endif %}
+                <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+                </a>
+                <a href="{% url 'post-create' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/add.png' %}" alt="Create">
+                </a>
             </div>
-        </form>
+        </div>
+
+        <div class="content-section">
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Delete Post</legend>
+                    <p>Are you sure you want to delete the post "{{ object.title }}"?</p>
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+                    <a class="btn btn-outline-secondary" href="{% url 'post-detail' object.pk %}">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
+</body>
+</html>
