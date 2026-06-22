@@ -8,7 +8,7 @@ body{
 .form-text, .help-block, .text-muted {
     font-size: 0.9rem !important; 
     color: #353535 !important;   
-    margin-top: 5px !important; 
+    margin-top: 7px !important; 
      line-height: 1.4 !important;
      text-align: left !important;
      margin-left: 10% !important;
@@ -16,6 +16,7 @@ body{
 .error-message {
     color: rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 
 .alert-danger, 
@@ -23,20 +24,24 @@ body{
 .errorlist.nonfield li {
     color: rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 .errorlist.nonfield li {
     color:rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 
 .errorlist li {
     color: rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 .errorlist, .invalid-feedback strong {
     color: rgb(194, 5, 5) !important;
     font-weight: bold;
     font-size: 0.9rem !important;
+    
 }
 .form-container{
    width:400px;
@@ -138,6 +143,7 @@ body{
     transition: box-shadow 0.2s ease;
     font-family:"Merriweather", serif;
     margin-top: 30px;
+  
   
     
 }
