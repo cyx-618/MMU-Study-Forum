@@ -5,7 +5,7 @@
 
 {% block nav_title %}
 <h2 class="title">
-    <a href= "javascript:history.back()">
+    <a href= "{% url 'forum-main' %}?post_id={{ post.id }}#post-{{ post.id }}" style="text-decoration: none;" onclick="sessionStorage.setItem('post_Detail','true');">
         <img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px">
     </a>
     {{ post.title }} 
@@ -20,14 +20,16 @@
 {% block content %}
 <div class="post-card">
     <div class="post-header">
+        <a href="{% url 'view-profile' post.author.username %}" class="avatar-link">
         {% if post.author.user_profile.profile_picture %}
             <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
         {% else %}
             <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
         {% endif %}
+        </a>
 
         <div class="author-info">
-            <a href="{% url 'view-profile' user.id %}" class="username-link">
+            <a href="{% url 'view-profile' post.author.username %}" class="username-link" style="text-decoration: none">
                 <span class="author-username">{{ post.author.username }}</span>
             </a>
             <span class="author-major">{{ post.author.user_profile.major}}</span>
@@ -54,7 +56,7 @@
     
 
     <div class="post-body">
-        <h3 class="post-title">{{ post.title }}</h3>
+        <p class="post-title">{{ post.title }}</p>
         <p class="post-content">{{ post.content }}</p>
     </div>
 
@@ -89,7 +91,7 @@
             {% endif %}
         </div>
     {% endif %}
-    <br><hr>
+    <br>
                         
     <div class="post-footer">
         <div class="post-actions">
@@ -107,117 +109,162 @@
 
             <a href="{% url 'post-detail' post.pk %}#comments" class="comment-button" onclick="document.getElementById('comments').scrollIntoView({behavior:'smooth'})">
                 <i class="far fa-comment"></i>
-                <span>{{ post.comments.count }}</span>
+                <span class="comment-count">{{ post.comments.count }}</span>
             </a>
 
-            
         </div>
     </div>
 
     <div id="comments" class="comment-section">
-        <h3><i class="far fa-comment"></i> Comments ( {{ post.comments.count}} )</h3>
-
+        <hr>
+        <div class="comment-title">Comments({{ post.comments.count }})</div>
         {% for comment in post.comments.all %}
             {% if not comment.parent_comment %}
-                <div class="comment-item">
-                    <div class="comment-header">
-                        {% if comment.user.user_profile.profile_picture %}
-                            <img src="{{ comment.user.user_profile.profile_picture.url }}" class="comment-avatar"">
-                        {% else %}
-                            <img src="{% static 'media/default.png' %}" class="comment-avatar">
+            <div class="comment-block" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <strong>{{ comment.user.username }}:</strong>
+                        <span>{{ comment.text }}</span>
+                        <small style="color: gray;">{{ comment.created_at|timesince }} ago</small>
+                    </div>
+                                            
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        {% if user.is_authenticated and user != comment.user %}
+                        <a href="{% url 'report-comment' comment.id %}" style="text-decoration: none; color: #999; font-size: 12px; margin-left: 10px;" title="Report this comment">
+                        Report
+                        </a>
                         {% endif %}
-                    
-                        <div class="comment-info">
-                            <span class="comment-author">{{ comment.user.username }}</span>
-                            <span class="comment-time">{{ comment.created_at|timesince }} ago</span>
+
+                        {% if user == comment.user or user.is_staff %}
+                        <form method="post" action="{% url 'delete-comment' comment.id %}" onsubmit="return confirm('Are you sure want to delete this comment?');" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background: none; border: none; color: #da6e62; cursor: pointer; font-size: 14px;" title="delete-comment">
+                                Delete
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
+                    {% if user in comment.likes_count.all %}
+                    <span style="color: red;">❤️</span>({{ comment.likes_count.count }})
+                    {% else %}
+                    <span>🤍</span>({{ comment.likes_count.count }})
+                    {% endif %}
+                </a>
+
+                <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline;">Reply</a>
+                    <div style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 10px; margin-top: 10px;">
+                        {% for reply in comment.replies.all %}
+                            <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <strong>{{ reply.user.username }}:</strong>
+                                    <span>{{ reply.text }}</span>
+                                    <small style="color: gray;">{{ reply.created_at|timesince }} ago</small>
+
+                                <a href="{% url 'like-comment' reply.id %}" style="text-decoration: none; color: inherit;">
+                                    {% if user in reply.likes_count.all %}
+                                    <span style="color: red;">❤️</span>({{ reply.likes_count.count }})
+                                    {% else %}
+                                    <span>🤍</span>({{ reply.likes_count.count }})
+                                    {% endif %}
+                                </a>
+                                
+                                <a href="javascript:void(0)" onclick="toggleReplyForm('{{ comment.id }}')" style="text-decoration: underline; font-size: 0.9em;">Reply</a>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; align-items: center; flex-shrink: 0; margin-left: 10px;">
+                                {% if user.is_authenticated and user != reply.user %}
+                                    <a href="{% url 'report-comment' reply.id %}" style="text-decoration: none; color: #999; font-size: 11px;" title="Report this reply">
+                                        Report
+                                    </a>
+                                {% endif %}
+
+                                {% if user == reply.user or user.is_staff %}
+                                    <form method="post" actions="{% url 'delete-comment' reply.id %}" onsubmit="return confirm('Are you sure want to delete this reply?')" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" style="background: none; border: none; color: #da6e62; cursor: pointer; font-size: 12px; padding: 0;" title="Delete reply">
+                                            Delete
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
 
-                    <p class="comment-text">{{ comment.text }}</p>
-
-                    <button class="comment-like-button" data-id="{{ comment.id }}">
-                        {% if user in comment.likes_count.all %}
-                            ❤️({{ comment.likes_count.count }})
-                        {% else %}
-                            🤍({{ comment.likes_count.count }})
-                        {% endif %}
-                    </button>
-                </div>  
-
-                    <button class="comment-reply-button" onclick="toggleReply('main-{{ comment.id }}')">
-                        <i class="fa fa-reply"></i> Reply
-                    </button>
-
-                    <div id="reply-form-main-{{ comment.id }}" class="reply-form" style="display: none;">
+                    <div id="reply-form-{{ comment.id }}" style="display:none;">
                         <form method="post" action="{% url 'add-comment' post.id %}">
                             {% csrf_token %}
                             <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                            <input type="text" name="content" placeholder="Reply to {{ comment.user.username }}..." required>
-                            <button type="submit">Post Reply</button>
-                            <button type="button" onclick="document.getElementById('reply-form-main-{{ comment.id }}').style.display='none'">Cancel</button>
+                            <input type="text" name="content" class="comment-area" placeholder="Reply to {{comment.user.username}} ..." required>
+                            <button type="submit" class="submit-comment">
+                                <img src="{% static 'post/images/paper-plane.png' %}" alt="Send">
+                            </button>
+                            <button type="button" class="submit-comment" onclick="document.getElementById('reply-form-{{ comment.id }}').style.display='none'; this.closest('form').querySelector('input[name=content]').value='';"><img src="{% static 'post/images/cancel.png' %}" alt="Cancel"></button>
                         </form>
                     </div>
-
-                    {% if comment.replies.all %}
-                        <div class="replies-list">
-                            {% for reply in comment.replies.all %}
-                                <div class="reply-item">
-
-                                    {% if reply.user.user_profile.profile_picture %}
-                                        <img src="{{ reply.user.user_profile.profile_picture.url }}" class="comment-avatar">
-                                    {% else %}
-                                        <img src="{% static 'media/default.png' %}" class="comment-avatar">
-                                    {% endif %}
-
-                                    <strong>{{ reply.user.username }}</strong>
-                                    <span class="reply-time">{{ reply.created_at }}</span>
-                                    <p class="reply-text">{{ reply.text }}</p>
-
-                                    <button class="comment-like-button" data-id="{{ reply.id }}">
-                                        {% if user in comment.likes_count.all %}
-                                            ❤️({{ comment.likes_count.count }})
-                                        {% else %}
-                                            🤍({{ comment.likes_count.count }})
-                                        {% endif %}
-                                    </button>
-
-                                    <button class="comment-reply-button" onclick="toggleReply('{{ reply.id }}')">
-                                        <i class="fa fa-reply"></i> Reply
-                                    </button>
-
-                                    <div id="reply-form-{{ reply.id }}" class="reply-form">
-                                        <form method="post" action="{% url 'add-comment' post.id %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="parent_id" value="{{ reply.id }}">
-                                            <input type="hidden" name="reply_to_id" value="{{ reply.user.id }}">
-                                            <input type="text" name="content" placeholder="Reply to {{ reply.user.username }}..." required>
-                                            <button type="submit">Post Reply</button>
-                                            <button type="button" onclick="document.getElementById('reply-form-{{ reply.id }}').style.display='none'">Cancel</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% empty %}
-            <p class="no-comments">No comment yet. Be the first to comment!</p>
+            </div>
+            {% endif %} 
+            {% empty %}
+            <p>No comment.</p>
         {% endfor %}
 
-        {% if user.is_authenticated %}
-                <form method="post" action="{% url 'add-comment' post.id %}">
-                    {% csrf_token %}
-                    <input class="comment-area" type="text" name="content" placeholder="Write comment..." required>
-                    <button class="submit-comment" type="submit"><img src="{% static 'post/images/paper-plane.png' %}" alt="Send"></button>
-                </form>
-                {% endif %}
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add-comment' post.id %}">
+                {% csrf_token %}
+                <input class="comment-area" type="text" name="content" placeholder="Write comment..." required>
+                <button class="submit-comment" type="submit"><img src="{% static 'post/images/paper-plane.png' %}" alt="Send"></button>
+            </form>
+            {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+
+    document.querySelectorAll('.like-post').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('.like-form');
+            const postId = form.dataset.postId;
+            const url = form.action;
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            const icon = this.querySelector('i');
+            const countSpan = this.querySelector('span');
+
+            if (!countSpan) {
+                console.error('Error: .likes-count element not found');
+                return;
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#e74c3c';
+                    countSpan.innerText = data.count;
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '#6c757d';
+                    countSpan.innerText = data.count;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
 //manage-post dropdown
     document.querySelectorAll('.manage-button').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -239,5 +286,15 @@
             dropdown.classList.remove('show');
         });
     });
+
+        function toggleReplyForm(commentId) {
+        var x = document.getElementById('reply-form-' + commentId);
+        if (x.style.display === 'none' || x.style.display === '') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }
+    }
+
 </script>
 {% endblock %}
