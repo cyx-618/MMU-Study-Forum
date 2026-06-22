@@ -16,6 +16,15 @@
         <form method="post">
             <p class="username"><span class="form-label">Username :</span> {{username}}</p>
             {% csrf_token %}
+             {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
                {% if form.errors %}
         <div class="form-error-container">
             {% for error in form.non_field_errors %}
@@ -31,8 +40,8 @@
     {% endif %}
             {{ form.as_p }}
             <button class="submit-btn" type="submit">Reset Password</button>
-        </form>
-             
+        </form>     
+        <a href="{% url 'resend-otp' %}" class="resend-btn">Resend OTP</a>
         </div>
     </body>
        {% endblock content %}

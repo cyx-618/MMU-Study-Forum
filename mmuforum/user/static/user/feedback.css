@@ -4,7 +4,7 @@ body{
 }
 
 .subject{
-      background-color:rgb(255, 255, 255);
+       background: #f1f6e5;
       width:80%;
       height:40px;
       border-radius:5px;
@@ -24,7 +24,7 @@ body{
 
 }
 .message{
-   background-color:rgb(251, 255, 232);
+     background: #f1f6e5;
     border:none;
     width:80%;
     height:300px;
@@ -37,7 +37,7 @@ body{
 
 }
 .submit-btn{
-    background-color:rgb(16, 16, 197);
+    background-color:#225328;
     box-shadow:0px 0px 5px rgb(154, 154, 154);
     border:none;
     font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;

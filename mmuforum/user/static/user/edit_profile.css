@@ -1,31 +1,35 @@
+
 body{
- margin: 0;
-padding: 0;
-  background-color: #FFFDF7;
+    padding-bottom: 20vh;
+    margin: 0;
+    padding-top: 130px;
+    background-color:#d2dfcd;
+    margin-left: 185px;
+    margin-right: 150px;
+    font-size:18px;
+    
 }
 .form-group{
-  width:700px;
-   height:480px;
+   height:490px;
    display:grid;
+   width:100%;
    text-align: left;
    border-radius: 20px;
    margin-left: auto;
    margin-right: auto;
-   margin-top: 10px;
-   box-shadow:0px 0px 6px rgb(235, 235, 235);
+   box-shadow:0px 0px 6px rgb(189, 189, 189);
    border: none;
-   overflow: hidden;
-    background-color:#D1DAD0;
-
+    background: #f1f6e5;
+   overflow:hidden;
 }
 
 .username, .email{
   text-align:left;
-  margin-left:10%;
   font-size:19px;
   color:#000000;
   font-family:Times New Roman, serif;
   margin-bottom:0px;
+  margin-left:5%;
 }
 .username{
   margin-top:20px;
@@ -38,18 +42,21 @@ padding: 0;
   font-weight:bold;
   font-family:Times New Roman, serif;
 }
-.profile-title{
-  font-family:"Calistoga", serif;
-  font-size:40px;
-  color:#2F5F48;
-  font-weight:100;
-  text-align: center;
-  margin-bottom: 0px;
+.edit-profile-title{
+   text-align: left;
+   color: #000000;
+    font-family: "Merriweather", serif;
+    margin-top:15px;
+    margin-bottom:10px;
+    margin-left:20px;
+    padding:0;
+    font-size: 28px;
+    display:inline-block;
 }
 .major-select.form-control{
-  background-color:rgb(251, 255, 232);
+  background-color:#e4f1c7;;
   border: none;
-  margin-left: 10%;
+  margin-left: 5%;
   margin-top: 5px;
   padding: 8px;
   font-family:'Times New Roman', serif;
@@ -61,9 +68,9 @@ padding: 0;
 
 }
 .bio.form-control{
-  background-color:rgb(251, 255, 232);
+  background-color:#e4f1c7;
   border: none;
-  margin-left: 10%;
+  margin-left: 5%;
   display: block;
   box-shadow: 0px 0px 4px rgb(170, 170, 170);
   font-family:'Times New Roman', serif;
@@ -86,12 +93,14 @@ padding: 0;
   margin-top: 10px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  box-shadow: 0px 0px 4px rgb(152, 152, 152);
 
 }
 .update-btn:hover{
   background-color: #ffffff;
   color:#2F5F48;
 }
+
 .profile-picture.form-control-file::file-selector-button{
   background-color:#2F5F48;
   border: none;
@@ -105,14 +114,20 @@ padding: 0;
   transition: background-color 0.2s ease;
   font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
   font-weight: bold;
-  margin-top: 10px;
-  margin-left:28%;
+  margin-left:18%;
   cursor: pointer;
-  box-shadow: 0px 0px 4px rgb(186, 186, 186);
- 
-  
+  box-shadow: 0px 0px 5px rgb(150, 150, 150);
+  margin-top:10px;
+  margin-bottom: 10px;
+  margin-right: 3px;
 }
 .profile-picture.form-control-file::file-selector-button:hover{
   background-color:#ffffff;
   color:#2F5F48;  
+}
+.form-select{
+    color:black;
+    font-size: bold;
+    border-radius: 3px;
+     
 }

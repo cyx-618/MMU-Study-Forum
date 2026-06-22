@@ -25,9 +25,9 @@
                 {{ notification.get_message }}
 
                 {% if notification.post %}
-                    <a href= "{% url 'post-detail' notification.post.id %}">{{ notification.post.title|truncatechars:30 }}</a>
+                    <a class="preview" href= "{% url 'post-detail' notification.post.id %}">{{ notification.post.title|truncatechars:30 }}</a>
                 {% elif notification.feedback %}
-                    <a href= "{% url 'feedback-detail' notification.feedback.id %}">Feedback {{ notification.feedback.id }}</a>
+                    <a class="preview" href= "{% url 'feedback-detail' notification.feedback.id %}">Feedback {{ notification.feedback.id }}</a>
                 {% endif %}
                 <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
             </p>

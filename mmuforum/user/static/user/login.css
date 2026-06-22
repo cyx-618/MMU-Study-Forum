@@ -141,9 +141,11 @@ ul.errorlist li {
     margin-left:3%;
     margin-right:auto;
     text-decoration: none;
+    color:black;
 }
 .forgot-password:hover{
     text-decoration:underline;
+    color:black;
 }
 .forgot-password:visited{
     color:black;

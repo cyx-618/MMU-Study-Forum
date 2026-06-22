@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from post.models import ReportPost,ReportComment
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -280,25 +281,26 @@ def forgot_password_view(request):
             request.session['reset_student_username'] = user.username
             otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
             otp_profile.generate_otp()
+                
+            try:
+                user = User.objects.get(email=email)
+                student_username = user.username
+                subject = "Your Password Reset OTP"
+                message = f"""Hi {student_username},
+                \nYour OTP for resetting your password is: {otp_profile.otp}.
+                \nIt is valid for 10 minutes.
+                \nFrom MMU Forum Team
+                """
+                from_email = 'mmuforum3@gmail.com'
+                
+                send_mail(subject, message, from_email, [email])
+                messages.success(request, "A new OTP has been sent to your student email.")
+                
             
-        try:
-            user = User.objects.get(email=email)
-            student_username = user.username
-            subject = "Your Password Reset OTP"
-            message = f"""Hi {student_username},
-            \nYour OTP for resetting your password is: {otp_profile.otp}.
-            \nIt is valid for 10 minutes.
-            \nFrom MMU Forum Team
-            """
-            from_email = 'mmuforum3@gmail.com'
-            
-            send_mail(subject, message, from_email, [email])
-            
-           
-            request.session['reset_email'] = email
-            return redirect('verify-otp')
-        except User.DoesNotExist:
-            pass
+                request.session['reset_email'] = email
+                return redirect('verify-otp')
+            except User.DoesNotExist:
+                pass
     else:
         form = RequestOTPForm()
     return render(request, 'user/forgot_password.html', {'form': form})
@@ -359,11 +361,20 @@ def resend_otp_view(request):
                    """
         from_email = 'mmuforum3@gmail.com'
         
-        send_mail(subject, message, from_email, [email])
-        
+        send_mail(subject, message, from_email, [email])   
         messages.success(request, "A new OTP has been sent to your student email.")
     except User.DoesNotExist:
         messages.error(request, "An error occurred. Please try again.")
         return redirect('forgot-password')
 
     return redirect('verify-otp')
+
+@login_required
+def view_report(request):
+   user_reports = ReportPost.objects.filter(reporter=request.user).select_related('post')
+   report_comment=ReportComment.objects.filter(reporter=request.user).select_related('comment')
+   context = {
+        'reports': user_reports,
+        'comment_reports':report_comment,
+    }
+   return render(request, 'user/view_report.html', context)

@@ -1,0 +1,134 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+<html>
+      {% block content %}
+    <head>
+       <title>Feedbacks List</title>
+    <link rel="stylesheet" href="{% static 'user/view_report.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Calistoga&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Stencil:ital,wdth@0,112.5;1,112.5&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    </head>
+    <body>
+        <h2 class="title">Report Centre</h2>
+         <div class="report-tabs">
+            <button class="tab-btn active" id="tabPost" onclick="showPosts()">
+                <i class="fas fa-file-alt"></i> Post Reports
+            </button>
+
+            <button class="tab-btn" id="tabComment" onclick="showComments()">
+                <i class="fas fa-comment"></i> Comment Reports
+            </button>
+        </div>
+
+        <div id="postReports">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Reported Post</th>
+                        <th>Reporter</th>
+                        <th>Offender</th>
+                        <th>Reason</th>
+                        <th>Resolution</th>
+                        <th>Resolved At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr class="{% if report.status == 'reviewed' or report.status == 'dismissed' %}resolved-row{% endif %}">
+                        <td>
+                            {% if report.status == 'pending' %}
+                                <span class="status-pending">Pending</span>
+                            {% elif report.status == 'reviewed' %}
+                                <span class="status-reviewed">Reviewed</span>
+                            {% else %}
+                                <span class="status-dismissed">Dismissed</span>
+                            {% endif %}
+                        </td>
+                        <td class="content-preview" title="{{ report.post.title }}"><a class="content-preview a" href="{% url 'post-detail' report.post.id %}">{{ report.post.title|truncatechars:20 }}</a></td>
+                        <td>{{ report.reporter.username }}</td>
+                        <td ><a href="{% url 'view-profile' report.post.author.username %}" class="offender">{{ report.post.author.username }}</a></td>
+                        <td>{{ report.get_reason_display }}</td>
+                        <td>
+                            {% if report.resolution %}
+                                <span class="resolved-text">{{ report.get_resolution_display }}</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ report.resolved_at|date:"Y-m-d H:i"|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="empty-row">No Posts Reported</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="commentReports" style="display: none;">
+            <table class="report-table">
+                <thead>
+                    <th>Status</th>
+                    <th>Reported Comment</th>
+                    <th>Reporter</th>
+                    <th>Offender</th>
+                    <th>Reason</th>
+                    <th>Resolution</th>
+                    <th>Resolved At</th>
+                </thead>
+                <tbody>
+                    {% for report in comment_reports %}
+                    <tr class="{% if report.status == 'reviewed' or report.status == 'dismissed' %}resolved-row{% endif %}">
+                        <td>
+                            {% if report.status == 'pending' %}
+                                <span class="status-pending">Pending</span>
+                            {% elif report.status == 'reviewed' %}
+                                <span class="status-reviewed">Reviewed</span>
+                            {% else %}
+                                <span class="status-dismissed">Dismissed</span>
+                            {% endif %}
+                        </td>
+                        <td class="content-preview" title="{{ report.comment.text }}">{{ report.comment.text|truncatechars:13 }}</td>
+                        <td>{{ report.reporter.username }}</td>
+                        <td>{{ report.comment.user.username }}</a></td>
+                        <td>{{ report.get_reason_display }}</td>
+                        <td>
+                            {% if report.resolution %}
+                                <span class="resolved-text">{{ report.get_resolution_display }}</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ report.resolved_at|date:"Y-m-d H:i"|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="empty-row">No Comment Reported</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPosts() {
+        document.getElementById('postReports').style.display = 'block';
+        document.getElementById('commentReports').style.display = 'none';
+        document.getElementById('tabPost').classList.add('active');
+        document.getElementById('tabComment').classList.remove('active');
+    }
+
+    function showComments() {
+        document.getElementById('postReports').style.display = 'none';
+        document.getElementById('commentReports').style.display = 'block';
+        document.getElementById('tabPost').classList.remove('active');
+        document.getElementById('tabComment').classList.add('active');
+    }
+</script>
+    </body>
+    {% endblock content %}
+</html>

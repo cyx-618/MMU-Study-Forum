@@ -61,6 +61,8 @@ class UserRegisterForm(UserCreationForm):
         email = cleaned_data.get("email")
         if email and not email.endswith('@student.mmu.edu.my'):
             self.add_error('email', "Please enter a valid school email address.")
+        elif email and User.objects.filter(email=email).exists():
+            self.add_error('email', "This student email has already been taken.")
         if p1 and p2 and p1 != p2:
            if 'password2' in self._errors:
                 del self._errors['password2']
@@ -102,7 +104,11 @@ class UserUpdateForm(forms.ModelForm):
        queryset=Major.objects.all(), 
        required=True,
        empty_label="-- Please Select Your Major --",
-       label="Your Major"
+       label="Your Major",
+       widget=forms.Select(attrs={
+            'class': 'form-select',
+           
+        })
        )
    class Meta:
        model=User_profile
@@ -116,6 +122,10 @@ class UserUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
+        self.fields['major'].widget.attrs.update({
+            'class': 'form-select',
+            'data-placeholder': 'Select your major'
+        })
         self.fields['major'].label = ""
         self.fields['bio'].label = ""
         self.fields['profile_picture'].widget = forms.FileInput()
@@ -129,7 +139,7 @@ class UserUpdateForm(forms.ModelForm):
             Field('profile_picture', css_class='profile-picture form-control-file'),
             Submit('submit', 'Update Profile', css_class='update-btn'),
         )
-
+    
 
 class FeedbackForm(forms.ModelForm):
     class Meta:
@@ -147,7 +157,7 @@ class FeedbackForm(forms.ModelForm):
         )
 
 class RequestOTPForm(forms.Form):
-    email = forms.EmailField(label="Student Email",
+    email= forms.EmailField(label="Student Email",
             widget=forms.EmailInput(attrs={
             'placeholder': 'Enter your student email...',
             'class': 'my-custom-input-class'  
@@ -156,9 +166,9 @@ class RequestOTPForm(forms.Form):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if not email.endswith('@student.mmu.edu.my'): 
-           raise forms.ValidationError("Please enter valid MMU email address")
+           raise forms.ValidationError("Please enter valid MMU email address.")
         
-        if not User.objects.filter(email=email).exists():
+        elif not User.objects.filter(email=email).exists():
             raise forms.ValidationError("No user found with this email address.")
         return email
     
@@ -189,3 +199,4 @@ class ResetPasswordForm(forms.Form):
         if not otp_exists:
             raise forms.ValidationError("Invalid OTP. Please try again.")
         return cleaned_data
+        
