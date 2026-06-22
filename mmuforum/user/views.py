@@ -120,27 +120,6 @@ def sign_up_verify(request):
                   'form': form
                   })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def login(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
