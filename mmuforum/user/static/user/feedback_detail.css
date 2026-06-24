@@ -1,6 +1,5 @@
 .back-btn{
      border:none;
-    font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
     cursor:pointer;
     font-weight:bold;
     border-radius:5px;
@@ -16,12 +15,15 @@
     display:inline-block;
     margin-left:86%;
     margin-top:145px;
-    
+    width:110px;
 }
 .back-btn:hover{
     background-color:#EAEDE5;
     color:rgb(10, 106, 24);
 
+}
+body{
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .container{
         background-color:#EAEDE5;
@@ -43,15 +45,14 @@
 .bold{
      font-weight:bold;
     font-size:18px;
-    font-family: "Noto Serif", serif;
 }
 .feedback-title{
     text-align: left;
     color: #000000;
-    font-family: "Merriweather", serif;
     margin-top:15px;
     display:inline-block;
     margin-left:185px;
     margin-bottom:0px;
     padding:0;
+    font-size:30px;
 }

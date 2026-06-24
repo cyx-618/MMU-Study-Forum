@@ -1,6 +1,7 @@
 body{
     background-color: #d2dfcd;
     margin-left:200px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .subject{
@@ -21,6 +22,16 @@ body{
     width:90%;
     margin-bottom: auto;
     margin-right: auto;
+    border:1px solid black;
+    background-color:#EAEDE5;
+     border:none;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+     border-radius:10px;
+     box-shadow:0px 0px 5px rgb(92, 92, 92);
+     margin-top:0px;
+     padding:10px;
 
 }
 .message{
@@ -40,17 +51,17 @@ body{
     background-color:#225328;
     box-shadow:0px 0px 5px rgb(154, 154, 154);
     border:none;
-    font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
     color:#EAEDE5;
     transition:background-color 0.2s ease;
     cursor:pointer;
     font-weight:bold;
     border-radius:5px;
-    margin-top: 20px;
+    margin-top: 20px !important;
     font-size:16px;
     padding: 8px 12px;
     display:block;
     width:120px !important;
+    height:40px !important;
 
 
 }
@@ -61,15 +72,14 @@ body{
 .feedback-title{
     text-align: left;
     color: #000000;
-    font-family: "Merriweather", serif;
     margin-top:15px;
     display:inline-block;
+    font-size:30px;
 }
 .form-group label{
-    font-size:18px;
+    font-size:22px;
     font-weight:bold;
     color:#0a5c14;
-    font-family: "Merriweather", serif;
 }
 .form-group, .mb-3 {
     display: flex;
@@ -85,15 +95,14 @@ label {
 }
 .view-fb-btn{
     border:none;
-    font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
     cursor:pointer;
     font-weight:bold;
     display:inline-block;
-    font-size:16px;
+    font-size:18px;
     text-decoration:none;
-    margin-top:15px;
+    margin-top:30px;
     color:rgb(0, 0, 179);
-    margin-left:-100px !important;
+    margin-left:-90px !important;
 
     }
 .view-fb-btn:hover{
@@ -103,6 +112,9 @@ label {
     display:flex;
     justify-content:space-between;
     width:80%;
+    padding:0;
+    margin: 0;
+    height:60px;
 }
 
 .alert {
@@ -165,4 +177,10 @@ label {
 
 .alert-close:hover {
     opacity: 1;
+}
+.form-group{
+    width:100%;
+    margin-left: 100px;
+    margin-right:auto;
+
 }

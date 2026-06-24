@@ -7,10 +7,24 @@ from crispy_forms.layout import Layout, Submit, Field, Div, HTML
 from django.utils.safestring import mark_safe
 from django.contrib.auth.forms import AuthenticationForm
 from .models import ProfileOTP
+from django.core.validators import RegexValidator
 
 class UserRegisterForm(UserCreationForm):
    email=forms.EmailField()
-   
+   username = forms.CharField(
+        max_length=150,
+        required=True,
+        validators=[
+            RegexValidator(
+                regex=r'^[\w.@+()-]+$',
+                code='invalid_username'
+            )
+        ],
+        error_messages={
+            'invalid': 'Username contains only letters,digits and @/./+/-/_ ' 
+        },
+        help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'
+    )
    class Meta:
        model=User
        fields=['username','email','password1','password2']
@@ -59,6 +73,7 @@ class UserRegisterForm(UserCreationForm):
         p1 = cleaned_data.get("password1")
         p2 = cleaned_data.get("password2")
         email = cleaned_data.get("email")
+    
         if email and not email.endswith('@student.mmu.edu.my'):
             self.add_error('email', "Please enter a valid school email address.")
         elif email and User.objects.filter(email=email).exists():
