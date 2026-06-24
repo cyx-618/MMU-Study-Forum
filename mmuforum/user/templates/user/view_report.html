@@ -30,8 +30,6 @@
                     <tr>
                         <th>Status</th>
                         <th>Reported Post</th>
-                        <th>Reporter</th>
-                        <th>Offender</th>
                         <th>Reason</th>
                         <th>Resolution</th>
                         <th>Resolved At</th>
@@ -50,8 +48,6 @@
                             {% endif %}
                         </td>
                         <td class="content-preview" title="{{ report.post.title }}"><a class="content-preview a" href="{% url 'post-detail' report.post.id %}">{{ report.post.title|truncatechars:20 }}</a></td>
-                        <td>{{ report.reporter.username }}</td>
-                        <td ><a href="{% url 'view-profile' report.post.author.username %}" class="offender">{{ report.post.author.username }}</a></td>
                         <td>{{ report.get_reason_display }}</td>
                         <td>
                             {% if report.resolution %}
@@ -74,8 +70,6 @@
                 <thead>
                     <th>Status</th>
                     <th>Reported Comment</th>
-                    <th>Reporter</th>
-                    <th>Offender</th>
                     <th>Reason</th>
                     <th>Resolution</th>
                     <th>Resolved At</th>
@@ -93,8 +87,6 @@
                             {% endif %}
                         </td>
                         <td class="content-preview" title="{{ report.comment.text }}">{{ report.comment.text|truncatechars:13 }}</td>
-                        <td>{{ report.reporter.username }}</td>
-                        <td>{{ report.comment.user.username }}</a></td>
                         <td>{{ report.get_reason_display }}</td>
                         <td>
                             {% if report.resolution %}

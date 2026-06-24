@@ -110,5 +110,6 @@ form .errorlist li {
     background-color: #dff5d4; 
     padding: 6px 12px;
     border-radius: 4px;
+    margin-bottom:5px;
     border-left: 4px solid #a7debf; 
 }

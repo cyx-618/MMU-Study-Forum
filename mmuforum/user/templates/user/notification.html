@@ -23,12 +23,14 @@
                 <img  class="profile-pic" src="{{notification.sender.user_profile.profile_picture.url }}" alt="Profile Picture">
                 <a class="sender" href="{% url 'view-profile' notification.sender.username %}">@{{ notification.sender.username }}</a>
                 {{ notification.get_message }}
-
-                {% if notification.post %}
+                  {% if 'report' in notification.notification_type %}
+                            <a class="preview" href="{% url 'view-report' %}"> View Report</a>
+                {% elif notification.post %}
                     <a class="preview" href= "{% url 'post-detail' notification.post.id %}">{{ notification.post.title|truncatechars:30 }}</a>
                 {% elif notification.feedback %}
                     <a class="preview" href= "{% url 'feedback-detail' notification.feedback.id %}">Feedback {{ notification.feedback.id }}</a>
                 {% endif %}
+
                 <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
             </p>
         </div>
