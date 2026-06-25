@@ -1,7 +1,7 @@
 body{
     background-color: #d2dfcd;
     margin-top: 80px;
-    
+     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .delete-profile-container{
   background-color:#fafffa;
@@ -39,7 +39,7 @@ body{
     transition:box-shadow 0.2s ease;
     cursor:pointer;
     padding:8px;
-    font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     margin-top:80px;
 }
 
@@ -56,7 +56,6 @@ body{
     margin-left:auto;
     margin-right:auto;
     font-weight:bold;
-    font-family:"Merriweather", serif;
     margin-top:50px;
     display:block;
 

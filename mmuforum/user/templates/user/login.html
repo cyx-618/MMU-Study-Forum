@@ -13,6 +13,7 @@
     <body>
        <div>
             <h2 class="login-title">Log In</h2>
+            <a href="{% url 'forum-home' %}" class="home"><i class="fa fa-home"></i></a>
             <form method="POST">
                 {%csrf_token%}
              <fieldset class="form-group">

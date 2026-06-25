@@ -48,7 +48,6 @@
         <div class="manage-pf-dd">
             <a href="{% url 'edit-profile' %}"> <i class="fas fa-edit"></i> Edit Profile</a>
             <a href="{% url 'delete-profile' %}"> <i class="fas fa-trash"></i> Delete Profile</a>
-            <a href="{% url 'view-report' %}"><i class="fas fa-exclamation-triangle"></i> Report Centre</a>
         </div>
        {% endif %}
       </div>
@@ -221,7 +220,6 @@
                 <div class="post-actions">
                     <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                         {% csrf_token %}
-                        <!--like function still has problem-->
                         <button type="button" class="action-buttons like-post">
                             {% if request.user in post.likes.all %}
                                 <i style="color: #e74c3c !important;" class="fas fa-heart"></i>
@@ -232,6 +230,10 @@
                         </button>
                     </form>
                 </div>
+                <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button">
+                            <i class="far fa-comment"></i>
+                            <span>{{ post.comments.count }}</span>
+                    </a>
             </div>
         </div>
     {% empty %}
