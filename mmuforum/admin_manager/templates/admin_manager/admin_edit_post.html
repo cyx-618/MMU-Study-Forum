@@ -1,0 +1,112 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - Edit User {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_post.css' %}">
+
+<div class="post-card">
+    <div class="title-header">
+        <h3><i class="fas fa-edit"></i> Edit Post</h3>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Title<span class="required">*</label>
+            <input type="text" name="title" value="{{ post.title }}" required>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label>Content <span class="required">*</span></label>
+            <textarea name="content" rows="8" class="form-textarea" required>{{ post.content }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <select name="category" class="form-select">
+                <option value="">No Category</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if post.category and post.category.id == category.id %}selected{% endif %}>
+                    {{ category.category }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <!--until-->
+        <div class="form-group media-group">
+            <label>Image</label>
+            <div class="current-file">
+                {% if post.image %}
+                <a href="{{ post.image.url }}" target="_blank">View Current Image</a>
+                <button type="button" class="remove-btn" onclick="toggleRemove(this, 'delete_image')">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+                <input type="hidden" name="delete_image" id="delete_image" value="">
+                {% else %}
+                <span class="no-file">No image uploaded</span>
+                {% endif %}
+            </div>
+            <input type="file" name="image" accept="image/*">
+        </div>
+
+        <div class="form-group media-group">
+            <label>Video</label>
+            <div class="current-file">
+                {% if post.video_file %}
+                <a href="{{ post.video_file.url }}" target="_blank">View Current Video</a>
+                <button type="button" class="remove-btn" onclick="toggleRemove(this, 'delete_video')">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+                <input type="hidden" name="delete_video" id="delete_video" value="">
+                {% else %}
+                <span class="no-file">No video uploaded</span>
+                {% endif %}
+            </div>
+            <input type="file" name="video_file" accept="video/*">
+        </div>
+
+        <div class="form-group media-group">
+            <label>PDF</label>
+            <div class="current-file">
+                {% if post.pdf %}
+                <a href="{{ post.pdf.url }}" target="_blank">View Current PDF</a>
+                <button type="button" class="remove-btn" onclick="toggleRemove(this, 'delete_pdf')">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+                <input type="hidden" name="delete_pdf" id="delete_pdf" value="">
+                {% else %}
+                <span class="no-file">No PDF uploaded</span>
+                {% endif %}
+            </div>
+            <input type="file" name="pdf" accept=".pdf">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="save-btn">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <a href="{% url 'admin-post-detail' post.id %}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+</div>
+
+<script>
+    /*Remove button*/
+    function toggleRemove(btn, inputId) {
+    btn.classList.toggle('active');
+    const hiddenInput = document.getElementById(inputId);
+    
+    if (btn.classList.contains('active')) {
+        hiddenInput.value = 'on';
+        btn.innerHTML = '<i class="fas fa-undo"></i> Cancel Remove';
+    } else {
+        hiddenInput.value = '';
+        btn.innerHTML = '<i class="fas fa-trash"></i> Remove';
+    }
+}
+</script>
+{% endblock content %}

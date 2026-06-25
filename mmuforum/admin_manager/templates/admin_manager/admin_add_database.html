@@ -1,7 +1,7 @@
 {% extends 'admin_manager/admin_base.html' %}
 {% load static %}
 
-{% block title %} MMU Forum - Admin Panel {% endblock title %}
+{% block title %} MMU Forum - {{ title }} {% endblock title %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
@@ -28,7 +28,25 @@
     </div>
 
     <div class="panel-content">
-        <h2>Welcome to the Admin Panel</h2>
+        <div class="title-header">
+            <h3><i class="fas fa-plus"></i> {{ title }}</h3>
+        </div>
+        <br>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{{ model_type|title }} Name <span class="required">*</span></label>
+                <input type="text" name="name" placeholder="Enter {{ model_type }}..." required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i> Create {{ model_type| title }}
+                </button>
+                <a href="{% url 'database-management' %}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock content %}

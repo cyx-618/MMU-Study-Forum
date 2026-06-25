@@ -2,18 +2,22 @@ from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from post.models import Post, Comment, Like, ReportComment, ReportPost, Category
-from user.models import User, User_profile, Major, Feedback, Notification
+from user.models import User, User_profile, Major, Feedback, Notification, Major
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth import logout
+
 
 # Create your views here.
 @user_passes_test(lambda u: u.is_superuser)
 def admin_main(request):
     query = request.GET.get('q')
     search_type = request.GET.get('type', 'post')
-    posts = Post.objects.all().order_by('-date_posted')
+    posts = Post.objects.all().order_by('-is_announcement', '-date_posted')
 
     if query:
         if search_type == 'post':
@@ -25,7 +29,7 @@ def admin_main(request):
             posts = posts.filter(author__username__icontains=query)
 
     for post in posts:
-        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists
+        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
 
     context = {
         'posts': posts,
@@ -85,8 +89,24 @@ def admin_panel(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def user_management(request):
+    query = request.GET.get('q')
+    search_type = request.GET.get('type', 'username')
     users = User.objects.all().order_by('-date_joined')
-    return render(request, 'admin_manager/admin_user_management.html', {'users': users})
+
+    if query:
+        if search_type == 'username':
+            users = users.filter(username__icontains=query)
+        elif search_type == 'email':
+            users = users.filter(email__icontains=query)
+        elif search_type == 'major':
+            users = users.filter(user_profile__major__major_name__icontains=query)
+
+    context = {
+        'users': users,
+        'query': query,
+        'search_type': search_type,
+    }
+    return render(request, 'admin_manager/admin_user_management.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -283,10 +303,20 @@ def batch_delete_execute(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def feedback_center(request):
+    query = request.GET.get('q')
     feedbacks = Feedback.objects.all().order_by('-created_at')
+
+    if query:
+        feedbacks = feedbacks.filter(
+            Q(subject__icontains=query) |
+            Q(message__icontains=query)
+        )
+
     context = {
-        'feedbacks': feedbacks
+        'feedbacks': feedbacks,
+        'query': query
     }
+
     return render(request, 'admin_manager/admin_feedback_center.html', context)
 
 
@@ -307,6 +337,32 @@ def feedback_detail(request, feedback_id):
             post=None
         )
 
+        if feedback.is_resolved and feedback.user.email:
+            subject = f"Admin reply to your Feedback: {feedback.subject}"
+            email_body = f"""
+Hi {feedback.user.username},
+
+Admin has reviewed your feedback.
+
+Your feedback: {feedback.message}
+
+Admin Reply: {feedback.admin_reply}
+
+Status: {'Resolved' if feedback.is_resolved else 'Pending'}
+
+From MMU Forum Team
+"""
+            try:
+                send_mail(
+                    subject=subject,
+                    message=email_body,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[feedback.user.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error sending email: {e}")
+
         messages.success(request, 'Reply sent successfully.')
         return redirect('feedback-center')
     
@@ -320,12 +376,18 @@ def feedback_detail(request, feedback_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def report_center(request):
+    query = request.GET.get('q')
     post_reports = ReportPost.objects.all().order_by('-created_at')
     comment_reports = ReportComment.objects.all().order_by('-created_at')
 
+    if query:
+        post_reports = post_reports.filter(reason__icontains=query)
+        comment_reports = comment_reports.filter(reason__icontains=query)
+
     context= {
         'post_reports': post_reports,
-        'comment_reports': comment_reports 
+        'comment_reports': comment_reports,
+        'query': query
     }
     return render(request, 'admin_manager/admin_report_center.html', context)
 
@@ -398,6 +460,58 @@ def report_process(request, report_type, report_id):
                 notification_type=offender_notification_type,
                 post=report.post if report_type == 'post' else None
             )
+
+        if report.reporter.email:
+            subject= f"Report Update: {report.post.title if report_type == 'post' else 'Comment Report'}"
+            email_body= f"""
+Hi {report.reporter},
+
+The resolution for your report is 
+
+{report.resolution}
+
+From MMU Forum Team
+"""
+            try:
+                send_mail(
+                    subject=subject,
+                    message=email_body,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[report.reporter.email],
+                    fail_silently=False,
+                )
+
+            except Exception as e:
+                print(f"Error sending email to reporter: {e}")
+
+        if offender_msg and offender.email:
+            subject= f"Community Guidelines Violation"
+            email_body= f"""
+Hi {report.offender}
+
+Your post/comment: {report.post.title if report_type == 'post' else ''} has violate the community rules.
+
+We have already
+
+{report.resolution}
+
+Please do not violate the communitity rules again. We will take attention on your actions.
+
+Thank you for using MMU Forum
+
+From MMU Forum Team
+"""
+            try:
+                send_mail(
+                    subject=subject,
+                    message=email_body,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[offender.email],
+                    fail_silently=False,
+                )
+
+            except Exception as e:
+                print(f"Error sending email to offender: {e}")
         
         messages.success(request, 'Report processed successfully.')
         return redirect('report-center')
@@ -446,3 +560,163 @@ def admin_database_management(request):
         'categories': categories,
     }
     return render(request, 'admin_manager/admin_database_management.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def database_add(request, model_type):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        print(f"model_type: {model_type}")
+
+        if name:
+            if model_type == 'major':
+                Major.objects.create(major_name=name)
+            elif model_type == 'category':
+                Category.objects.create(category=name)
+            messages.success(request, f'{model_type.title()} added successfully.')
+        else:
+            messages.error(request, f'Name is required.')
+        return redirect('database-management')
+    
+    context = {
+        'model_type': model_type,
+        'title': f'Add {model_type.title()}',
+    }
+    return render(request, 'admin_manager/admin_add_database.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def database_edit(request, model_type, item_id):
+    if model_type == 'major':
+        item = get_object_or_404(Major, id=item_id)
+        field_value = item.major_name
+    elif model_type == 'category':
+        item = get_object_or_404(Category, id=item_id)
+        field_value = item.category
+    else:
+        return redirect('database-management')
+    
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            if model_type == 'major':
+                item.major_name = name
+            elif model_type == 'category':
+                item.category = name
+            item.save()
+            messages.success(request, f'{model_type.title()} updated successfully.')
+        else:
+            messages.error(request, 'Name is required.')
+        return redirect('database-management')
+    
+    context = {
+        'item': item,
+        'model_type': model_type,
+        'title': f'{model_type.title()}',
+        'field_value': field_value,
+    }
+    return render(request, 'admin_manager/admin_edit_database.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def database_delete_confirmation(request, model_type, item_id):
+    if model_type == 'major':
+        item = get_object_or_404(Major, id=item_id)
+        item_name = item.major_name
+    elif model_type == 'category':
+        item = get_object_or_404(Category, id=item_id)
+        item_name = item.category
+    else:
+        return redirect('database-management')
+    
+    context = {
+        'item': item,
+        'item_name': item_name,
+        'model_type': model_type,
+        'title': f'Delete {model_type.title()}',
+    }
+    return render(request, 'admin_manager/admin_delete_database.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def database_delete_execute(request, model_type, item_id):
+    print(f"Deleting {model_type} with id {item_id}")
+    if model_type == 'major':
+        item = get_object_or_404(Major, id=item_id)
+        item_name = item.major_name
+    elif model_type == 'category':
+        item = get_object_or_404(Category, id=item_id)
+        item_name = item.category
+    else:
+        return redirect('database-management')
+    
+    item.delete()
+    messages.success(request, f'{model_type.title()} "{item_name}" deleted successfully.')
+    return redirect('database-management') 
+
+
+def admin_logout(request):
+    logout(request)
+    return redirect('forum-home')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    categories = Category.objects.all().order_by('category')
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        category_id = request.POST.get('category')
+        
+        if title and content:
+            post.title = title
+            post.content = content
+            
+            if category_id:
+                post.category = Category.objects.filter(id=category_id).first()
+            else:
+                post.category = None
+            
+            if 'image' in request.FILES:
+                post.image = request.FILES['image']
+            elif request.POST.get('delete_image') == 'on':
+                post.image = None
+                
+            if 'video_file' in request.FILES:
+                post.video_file = request.FILES['video_file']
+            elif request.POST.get('delete_video') == 'on':
+                post.video_file = None
+            
+            if 'pdf' in request.FILES:
+                post.pdf = request.FILES['pdf']
+            elif request.POST.get('delete_pdf') == 'on':
+                post.pdf = None
+            
+            post.save()
+            messages.success(request, 'Post updated successfully.')
+            return redirect('admin-post-detail', post_id=post.id)
+        else:
+            messages.error(request, 'Title and content are required.')
+    
+    context = {
+        'post': post,
+        'categories': categories,
+    }
+    return render(request, 'admin_manager/admin_edit_post.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, 'Post deleted successfully.')
+        return redirect('admin-main')
+    
+    context = {
+        'post': post,
+    }
+    return render(request, 'admin_manager/admin_delete_post.html', context)

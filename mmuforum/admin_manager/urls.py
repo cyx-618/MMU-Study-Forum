@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('admin/main', views.admin_main, name='admin-main'),
+    path('logout/', views.admin_logout, name='admin-logout'),
     path('admin/post/<int:post_id>/', views.admin_post_detail, name='admin-post-detail'),
     path('admin/like/<int:post_id>/', views.admin_like_post, name='admin-like-post'),
     path('admin/like-comment/<int:comment_id>/', views.like_comment, name='like_comment'),
@@ -22,5 +23,15 @@ urlpatterns = [
     path('admin/panel/report/process/<str:report_type>/<int:report_id>/', views.report_process, name='report-process'),
     path('admin/notifications/', views.admin_notifications, name='admin-notifications'),
     path('admin/main/<str:major_name>/', views.admin_major, name='admin-major'),
-    path('admin/panel/database/', views.admin_database_management, name='database-management')
+    path('admin/panel/database/', views.admin_database_management, name='database-management'),
+    path('admin/panel/database/major/add/', views.database_add, {'model_type': 'major'}, name='add-major'),
+    path('admin/panel/database/major/edit/<int:item_id>/', views.database_edit, {'model_type': 'major'}, name='edit-major'),
+    path('admin/panel/database/category/add/', views.database_add, {'model_type': 'category'}, name='add-category'),
+    path('admin/panel/database/category/edit/<int:item_id>/', views.database_edit, {'model_type': 'category'}, name='edit-category'),
+    path('admin/panel/database/major/delete-confirm/<int:item_id>/', views.database_delete_confirmation, {'model_type': 'major'}, name='delete-major-confirmation'),
+    path('admin/panel/database/category/delete-confirm/<int:item_id>/', views.database_delete_confirmation, {'model_type': 'category'}, name='delete-category-confirmation'),
+    path('admin/panel/database/major/delete/<int:item_id>/', views.database_delete_execute, {'model_type': 'major'}, name='delete-major-execute'),
+    path('admin/panel/database/category/delete/<int:item_id>/', views.database_delete_execute, {'model_type': 'category'}, name='delete-category-execute'),
+    path('admin/post/edit/<int:post_id>/', views.admin_edit_post, name='admin-edit-post'),
+    path('admin/post/delete/<int:post_id>/', views.admin_delete_post, name='admin-delete-post'),
 ]

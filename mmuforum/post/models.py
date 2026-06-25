@@ -28,6 +28,8 @@ class Post (models.Model):
     is_reported = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
 
+    is_announcement = models.BooleanField(default=False)
+
     def total_likes(self):
         return self.likes.count()
 
