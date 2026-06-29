@@ -22,10 +22,8 @@
             <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
                 <i class="fas fa-lightbulb"></i>Feedback System
             </a>
-            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
-                <i class="fas fa-bullhorn"></i>Announcements
-            </a>
-            <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management" title="Database Management">
+            <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management"
+                title="Database Management">
                 <i class="fas fa-database"></i>Database Management
             </a>
         </div>
@@ -37,18 +35,22 @@
         </div>
 
         <div class="database-tabs">
-            <button class="database-tab active" id="tabMajor" onclick="showMajor()">
+            <a href="?tab=major{% if query %}&q={{ query }}{% endif %}" 
+            class="database-tab {% if tab == 'major' or not tab %}active{% endif %}" 
+            id="tabMajor" onclick="showMajor(); return false;">
                 <i class="fas fa-graduation-cap"></i> Majors
-            </button>
-            <button class="database-tab" id="tabCategory" onclick="showCategory()">
+            </a>
+            <a href="?tab=category{% if query %}&q={{ query }}{% endif %}" 
+            class="database-tab {% if tab == 'category' %}active{% endif %}" 
+            id="tabCategory" onclick="showCategory(); return false;">
                 <i class="fas fa-tags"></i> Categories
-            </button>
+            </a>
         </div>
 
         <div id="majorContent" class="database-content">
             <div class="table-header">
                 <span>{{ majors|length }} majors</span>
-                <a href="#" class="btn-add"><i class="fas fa-plus"></i> Add Major</a>
+                <a href="{% url 'add-major' %}" class="btn-add"><i class="fas fa-plus"></i> Add Major</a>
             </div>
             <div class="table-container">
                 <table class="data-table">
@@ -63,13 +65,17 @@
                             <td>{{ major.id }}</td>
                             <td>{{ major.major_name }}</td>
                             <td class="action-buttons">
-                                <a href="#" class="btn-edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" class="btn-delete"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'edit-major' major.id %}" class="btn-edit"><i
+                                        class="fas fa-edit"></i></a>
+                                <a href="{% url 'delete-major-confirmation' major.id %}" class="btn-delete"><i
+                                        class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3" class="empty-row">No majors found.</td><tr>
-                        {% endfor %}
+                        <tr>
+                            <td colspan="3" class="empty-row">No majors found.</td>
+                        <tr>
+                            {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -78,7 +84,7 @@
         <div id="categoryContent" class="database-content" style="display:none;">
             <div class="table-header">
                 <span>{{ categories|length }} Categories</span>
-                <a href="#" class="btn-add"><i class="fas fa-add"></i> Add Category</a>
+                <a href="{% url 'add-category' %}" class="btn-add"><i class="fas fa-add"></i> Add Category</a>
             </div>
             <div class="table-container">
                 <table class="data-table">
@@ -93,13 +99,17 @@
                             <td>{{ category.id }}</td>
                             <td>{{ category.category }}</td>
                             <td class="action-buttons">
-                                <a href="#" class="btn-edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" class="btn-delete"><i class="fas fa-trash"></i></a>
+                                <a href="{% url 'edit-category' category.id %}" class="btn-edit"><i
+                                        class="fas fa-edit"></i></a>
+                                <a href="{% url 'delete-category-confirmation' category.id %}" class="btn-delete"><i
+                                        class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3" class="empty-row">No category found.</td><tr>
-                        {% endfor %}
+                        <tr>
+                            <td colspan="3" class="empty-row">No category found.</td>
+                        <tr>
+                            {% endfor %}
                     </tbody>
                 </table>
             </div>

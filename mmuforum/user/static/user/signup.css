@@ -8,7 +8,7 @@ body{
 .form-text, .help-block, .text-muted {
     font-size: 0.9rem !important; 
     color: #353535 !important;   
-    margin-top: 5px !important; 
+    margin-top: 7px !important; 
      line-height: 1.4 !important;
      text-align: left !important;
      margin-left: 10% !important;
@@ -16,6 +16,7 @@ body{
 .error-message {
     color: rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 
 .alert-danger, 
@@ -23,20 +24,24 @@ body{
 .errorlist.nonfield li {
     color: rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 .errorlist.nonfield li {
     color:rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 
 .errorlist li {
     color: rgb(194,5,5) !important;
     font-weight: bold;
+      font-size: 0.9rem !important; 
 }
 .errorlist, .invalid-feedback strong {
     color: rgb(194, 5, 5) !important;
     font-weight: bold;
     font-size: 0.9rem !important;
+    
 }
 .form-container{
    width:400px;
@@ -46,7 +51,7 @@ body{
    border-radius: 50px;
    margin-left: auto;
    margin-right: auto;
-   margin-top: 20px;
+   margin-top: 12px;
    box-shadow:0px 0px 6px rgb(235, 235, 235);
    border: none;
    background-color:#D1DAD0;
@@ -139,5 +144,15 @@ body{
     font-family:"Merriweather", serif;
     margin-top: 30px;
   
-    
+}
+.home{
+    border-radius: 50%;
+    padding:10px;
+    color: #225328; 
+    font-size:25px;
+    margin-left:auto;
+   align-items: center;
+   margin-left:400px;
+   box-shadow: 0px 0px 4px grey;
+   margin-bottom: 0px; 
 }

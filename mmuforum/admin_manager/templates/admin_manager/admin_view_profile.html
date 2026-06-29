@@ -33,6 +33,7 @@
                 {% endif %}
             </p>
             <p><i class="fas fa-file-alt"></i> {{ post_count }} Posts </p>
+            <p><i class="fas fa-calendar"></i> {{ profile_user.date_joined|date:"F d, Y" }}</p>
         </div>
     </div>
 
@@ -237,9 +238,8 @@
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
                         <div class="manage-dropdown">
-                            <a href="#"><i class="fas fa-thumbtack"></i> Pin Post</a>
-                            <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                            <a href="#"><i class="fas fa-trash"></i> Delete</a>
+                            <a href="{% url 'admin-edit-post' post.id %}"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="{% url 'admin-delete-post' post.id %}"><i class="fas fa-trash"></i> Delete</a>
                         </div>
                     </div>
                 </div>

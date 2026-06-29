@@ -21,9 +21,6 @@
             <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
                 <i class="fas fa-lightbulb"></i>Feedback System
             </a>
-            <a href="#" class="panel-item" alt="Announcements" title="Announcements">
-                <i class="fas fa-bullhorn"></i>Announcements
-            </a>
             <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management" title="Database Management">
                 <i class="fas fa-database"></i>Database Management
             </a>
@@ -33,6 +30,28 @@
     <div class="panel-content">
         <div class="title-header">
             <h3><i class="fas fa-users"></i> Users Management</h3>
+
+            <div class="search-container">
+                <form action="{% url 'user-management' %}" method="GET">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="q" placeholder="Search..." value="{{ query }}">
+
+                        <select name="type" class="search-select">
+                            <option value="username" {% if search_type == 'username' or not search_type %}selected{% endif %}>Username</option>
+                            <option value="email" {% if search_type == 'email' %}selected{% endif %}>Email</option>
+                            <option value="major" {% if search_type == 'major' %}selected{% endif %}>Major</option>
+                        </select>
+                        
+                        {% if query %}
+                            <a href="{% url 'user-management' %}" class="um-clear-btn">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
             <a href="{% url 'add-user' %}" class="um-add-user"><i class="fas fa-plus"></i>Add User</a>
             <button id="batchDeleteBtn" class="um-delete-selected">
                 <i class="fas fa-trash"></i> Delete Selected

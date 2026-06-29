@@ -7,6 +7,7 @@ body{
     margin-left: 185px;
     margin-right: 150px;
     font-size:18px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     
 }
 .form-group{
@@ -20,6 +21,7 @@ body{
    box-shadow:0px 0px 6px rgb(189, 189, 189);
    border: none;
     background: #f1f6e5;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
    overflow:hidden;
 }
 
@@ -27,7 +29,6 @@ body{
   text-align:left;
   font-size:19px;
   color:#000000;
-  font-family:Times New Roman, serif;
   margin-bottom:0px;
   margin-left:5%;
 }
@@ -40,12 +41,10 @@ body{
 .form-label{
   color:#065010;
   font-weight:bold;
-  font-family:Times New Roman, serif;
 }
 .edit-profile-title{
    text-align: left;
    color: #000000;
-    font-family: "Merriweather", serif;
     margin-top:15px;
     margin-bottom:10px;
     margin-left:20px;
@@ -59,7 +58,6 @@ body{
   margin-left: 5%;
   margin-top: 5px;
   padding: 8px;
-  font-family:'Times New Roman', serif;
   font-size: 18px;
   line-height: 1.4;
   border-radius:5px;
@@ -73,7 +71,6 @@ body{
   margin-left: 5%;
   display: block;
   box-shadow: 0px 0px 4px rgb(170, 170, 170);
-  font-family:'Times New Roman', serif;
   border-radius:5px;
   font-size: 16px;
   padding:2px;
@@ -112,7 +109,6 @@ body{
   font-size: 16px;
   border-radius:15px;
   transition: background-color 0.2s ease;
-  font-family:"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif;
   font-weight: bold;
   margin-left:18%;
   cursor: pointer;
@@ -124,10 +120,13 @@ body{
 .profile-picture.form-control-file::file-selector-button:hover{
   background-color:#ffffff;
   color:#2F5F48;  
+   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  
 }
 .form-select{
     color:black;
     font-size: bold;
     border-radius: 3px;
+     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
      
 }

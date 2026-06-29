@@ -494,3 +494,11 @@
     margin: 6px 0;
 }
 
+.clear-btn {
+    color: #6c757d;
+    padding: 0 8px;
+    text-decoration: none;
+    font-size: 14px;
+    border-left: 1px solid #e9ecef;
+    padding-left: 4px;
+}
