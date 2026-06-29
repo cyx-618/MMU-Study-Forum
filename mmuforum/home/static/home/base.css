@@ -33,8 +33,18 @@ body{
 }
 
 .title{
-    padding-left: 50px;
-    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.title img{
+    margin-right: 0;
+}
+
+.title h2{
+    margin: 0;
+    padding-left: 10px;
 }
 
 .search-bar {
