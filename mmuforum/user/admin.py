@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Feedback, Major, User_profile, Notification
+from .models import Feedback, Major, User_profile, Notification, Offender
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -8,6 +8,7 @@ from django.conf import settings
 admin.site.register(Major)
 admin.site.register(User_profile)
 admin.site.register(Notification)
+admin.site.register(Offender)
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):

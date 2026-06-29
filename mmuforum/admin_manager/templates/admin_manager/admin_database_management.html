@@ -10,8 +10,8 @@
 <div class="admin-panel-layout">
     <div class="panel-sidebar">
         <div class="panel-menu">
-            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
-                <i class="fas fa-chart-bar"></i>Data Visualization
+            <a href="{% url 'admin-panel' %}" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Dashboard
             </a>
             <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
                 <i class="fas fa-users"></i>User Management
@@ -25,6 +25,9 @@
             <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management"
                 title="Database Management">
                 <i class="fas fa-database"></i>Database Management
+            </a>
+            <a href="{% url 'offender-management' %}" class="panel-item" alt="Offender" title="Offender">
+                <i class="fas fa-gavel"></i>Offender
             </a>
         </div>
     </div>

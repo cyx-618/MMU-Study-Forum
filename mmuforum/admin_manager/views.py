@@ -2,14 +2,16 @@ from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from post.models import Post, Comment, Like, ReportComment, ReportPost, Category
-from user.models import User, User_profile, Major, Feedback, Notification, Major
+from user.models import User, User_profile, Major, Feedback, Notification, Major, Offender
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
-from django.db.models import Q
+from datetime import datetime, timedelta
+from django.db.models import Q, Count
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -84,7 +86,61 @@ def like_comment(request, comment_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_panel(request):
-    return render(request, 'admin_manager/admin_panel.html')
+    #Users
+    total_users = User.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    new_users_today = User.objects.filter(date_joined__date=timezone.now().date()).count()
+
+    #Posts
+    total_posts = Post.objects.count()
+    posts_today = Post.objects.filter(date_posted__date=timezone.now().date()).count()
+
+    #Offender
+    total_offenders = Offender.objects.count()
+    active_offenders = Offender.objects.filter(is_active=True).count()
+
+    #Major
+    major_data = []
+    for major in Major.objects.all():
+        count = User.objects.filter(user_profile__major=major).count()
+        if count > 0:
+            major_data.append({'name': major.major_name, 'count': count})
+
+    #Feedback
+    total_feedback = Feedback.objects.count()
+    resolved_feedback = Feedback.objects.filter(is_resolved=True).count()
+    pending_feedback = Feedback.objects.filter(is_resolved=False).count()
+
+    #Report
+    total_reports = ReportPost.objects.count() + ReportComment.objects.count()
+    resolved_reports = ReportPost.objects.filter(status='reviewed').count() + ReportComment.objects.filter(status='reviewed').count()
+    pending_reports = ReportPost.objects.filter(status='pending').count() + ReportComment.objects.filter(status='pending').count()
+
+    report_reasons = {}
+    for report in ReportPost.objects.all():
+        reason = report.get_reason_display()
+        report_reasons[reason] = report_reasons.get(reason, 0) + 1
+    for report in ReportComment.objects.all():
+        reason = report.get_reason_display()
+        report_reasons[reason] = report_reasons.get(reason, 0) + 1
+    report_reason_data = [{'name': k, 'count': v} for k, v in report_reasons.items()]
+
+    context = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'total_posts': total_posts,
+        'total_offenders': total_offenders,
+        'active_offenders': active_offenders,
+        'major_data': major_data,
+        'total_feedback': total_feedback,
+        'resolved_feedback': resolved_feedback,
+        'pending_feedback': pending_feedback,
+        'total_reports': total_reports,
+        'resolved_reports': resolved_reports,
+        'pending_reports': pending_reports,
+        'report_reason_data': report_reason_data,
+    }
+    return render(request, 'admin_manager/admin_panel.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -411,6 +467,26 @@ def report_process(request, report_type, report_id):
                 offender = report.comment.user
 
             resolution = 'approved_deleted'
+
+            offender_record, created = Offender.objects.get_or_create(
+                user=offender,
+                report_id=report.id,
+                report_type=report_type,
+                defaults={
+                    'reason': report.reason,
+                    'resolution': resolution,
+                    'marked_by': request.user,
+                    'is_active': True,
+                }
+            )
+
+            if not created:
+                offender_record.reason = report.reason
+                offender_record.resolution = resolution
+                offender_record.marked_by = request.user
+                offender_record.is_active = True
+                offender_record.save()
+
             reporter_msg = f'Your report has been approved. The {report_type} has been deleted.'
             offender_msg = f'Your {report_type} has been removed for violating guidelines.'
             offender_notification_type = 'content_deleted'
@@ -418,6 +494,26 @@ def report_process(request, report_type, report_id):
         elif action == 'warn':
             offender = report.post.author if report_type == 'post' else report.comment.user
             resolution = 'approved_warned'
+
+            offender_record, created = Offender.objects.get_or_create(
+                user=offender,
+                report_id=report.id,
+                report_type=report_type,
+                defaults={
+                    'reason': report.reason,
+                    'resolution': resolution,
+                    'marked_by': request.user,
+                    'is_active': True,
+                }
+            )
+
+            if not created:
+                offender_record.reason = report.reason
+                offender_record.resolution = resolution
+                offender_record.marked_by = request.user
+                offender_record.is_active = True
+                offender_record.save()
+
             reporter_msg = f'Your report has been approved. The user has been warned.'
             offender_msg = f'You have received a warning for violating guidelines.'
             offender_notification_type = 'content_warning'
@@ -427,6 +523,26 @@ def report_process(request, report_type, report_id):
             offender.is_active = False
             offender.save()
             resolution = 'approved_suspended'
+
+            offender_record, created = Offender.objects.get_or_create(
+                user=offender,
+                report_id=report.id,
+                report_type=report_type,
+                defaults={
+                    'reason': report.reason,
+                    'resolution': resolution,
+                    'marked_by': request.user,
+                    'is_active': False,
+                }
+            )
+
+            if not created:
+                offender_record.reason = report.reason
+                offender_record.resolution = resolution
+                offender_record.marked_by = request.user
+                offender_record.is_active = False
+                offender_record.save()
+        
             reporter_msg = f'Your report has been approved. The user has been suspended.'
             offender_msg = f'Your account has been suspended for violating guidelines.'
             offender_notification_type = 'account_suspended'
@@ -487,7 +603,7 @@ From MMU Forum Team
         if offender_msg and offender.email:
             subject= f"Community Guidelines Violation"
             email_body= f"""
-Hi {report.offender}
+Hi {offender.username}
 
 Your post/comment: {report.post.title if report_type == 'post' else ''} has violate the community rules.
 
@@ -519,6 +635,7 @@ From MMU Forum Team
     context = {
         'report': report,
         'report_type': report_type,
+        'current_resolution': report.resolution,
     }
     
     return render (request, 'admin_manager/admin_report_process.html', context)
@@ -720,3 +837,79 @@ def admin_delete_post(request, post_id):
         'post': post,
     }
     return render(request, 'admin_manager/admin_delete_post.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_create_post(request):
+    categories = Category.objects.all().order_by('category')
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        category_id = request.POST.get('category')
+        is_announcement = request.POST.get('is_announcement') == 'on'
+        
+        if title and content:
+            post = Post.objects.create(
+                author=request.user,
+                title=title,
+                content=content,
+                is_announcement=is_announcement or request.user.is_superuser
+            )
+            
+            if category_id:
+                post.category = Category.objects.filter(id=category_id).first()
+                post.save()
+            
+            messages.success(request, 'Post created successfully.')
+            return redirect('admin-main')
+        else:
+            messages.error(request, 'Title and content are required.')
+    
+    context = {
+        'categories': categories,
+    }
+    return render(request, 'admin_manager/admin_create_post.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    post_id = comment.post.id
+    
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, 'Comment deleted successfully.')
+        return redirect('admin-post-detail', post_id=post_id)
+    
+    context = {
+        'comment': comment,
+        'post': comment.post,
+    }
+    return render(request, 'admin_manager/admin_delete_comment.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def offender(request):
+    offenders = Offender.objects.all().order_by('-marked_at')
+
+    if request.method == 'POST':
+        offender_id = request.POST.get('offender_id')
+        is_active = request.POST.get('is_active') == 'on'
+        offender = get_object_or_404(Offender, id=offender_id)
+        offender.is_active = is_active
+        offender.save()
+        
+        if not is_active:
+            offender.user.is_active = False
+        else:
+            offender.user.is_active = True
+        offender.user.save()
+        
+        messages.success(request, f'Offender status updated.')
+        return redirect('offender-management')
+    
+    context = {
+        'offenders': offenders,
+    }
+    return render(request, 'admin_manager/admin_offender.html', context)

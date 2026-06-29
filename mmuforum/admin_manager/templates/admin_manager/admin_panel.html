@@ -1,16 +1,18 @@
 {% extends 'admin_manager/admin_base.html' %}
 {% load static %}
 
-{% block title %} MMU Forum - Admin Panel {% endblock title %}
+{% block title %} MMU Forum - Admin Dashboard {% endblock title %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+<link rel="stylesheet" href="{% static 'admin_manager/admin_dashboard.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
 <div class="admin-panel-layout">
     <div class="panel-sidebar">
         <div class="panel-menu">
-            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
-                <i class="fas fa-chart-bar"></i>Data Visualization
+            <a href="{% url 'admin-panel' %}" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Dashboard
             </a>
             <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
                 <i class="fas fa-users"></i>User Management
@@ -21,14 +23,165 @@
             <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
                 <i class="fas fa-lightbulb"></i>Feedback System
             </a>
-            <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management" title="Database Management">
+            <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management"
+                title="Database Management">
                 <i class="fas fa-database"></i>Database Management
+            </a>
+            <a href="{% url 'offender-management' %}" class="panel-item" alt="Offender" title="Offender">
+                <i class="fas fa-gavel"></i>Offender
             </a>
         </div>
     </div>
 
     <div class="panel-content">
-        <h2>Welcome to the Admin Panel</h2>
+        <div class="title-header">
+            <h3><i class="fas fa-chart-bar"></i> Dashboard</h3>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ total_users }}</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-sub">{{ active_users }} active</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ total_posts }}</div>
+                    <div class="stat-label">Total Posts</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-gavel"></i></div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ total_offenders }}</div>
+                    <div class="stat-label">Total Offenders</div>
+                    <div class="stat-sub">{{ active_offenders }} active</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-comment"></i></div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ total_feedback }}</div>
+                    <div class="stat-label">Total Feedback</div>
+                    <div class="stat-sub">{{ pending_feedback }} pending</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-flag"></i></div>
+                <div class="stat-info">
+                    <div class="stat-number">{{ total_reports }}</div>
+                    <div class="stat-label">Total Reports</div>
+                    <div class="stat-sub">{{ pending_reports }} pending</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Major Bar Chart + Report Reason Pie Chart -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h4><i class="fas fa-graduation-cap"></i> Users by Major</h4>
+                <div class="chart-container">
+                    <canvas id="majorChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h4><i class="fas fa-flag"></i> Report Reasons</h4>
+                <div class="chart-container">
+                    <canvas id="reportReasonChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Cards -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h4><i class="fas fa-lightbulb"></i> Feedback Status</h4>
+                <div class="feedback-status">
+                    <div class="status-item">
+                        <span class="status-label">Pending</span>
+                        <span class="status-value">{{ pending_feedback }}</span>
+                        <a href="{% url 'feedback-center' %}" class="status-link">View All →</a>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Resolved</span>
+                        <span class="status-value">{{ resolved_feedback }}</span>
+                        <a href="{% url 'feedback-center' %}" class="status-link">View All →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h4><i class="fas fa-flag"></i> Reports Status</h4>
+                <div class="feedback-status">
+                    <div class="status-item">
+                        <span class="status-label">Pending</span>
+                        <span class="status-value">{{ pending_reports }}</span>
+                        <a href="{% url 'report-center' %}" class="status-link">View All →</a>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Resolved</span>
+                        <span class="status-value">{{ resolved_reports }}</span>
+                        <a href="{% url 'report-center' %}" class="status-link">View All →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Major Chart (Bar)
+        var majorData = {{ major_data|safe}};
+        new Chart(document.getElementById('majorChart'), {
+            type: 'bar',
+            data: {
+                labels: majorData.map(function (d) { return d.name; }),
+                datasets: [{
+                    label: 'Users',
+                    data: majorData.map(function (d) { return d.count; }),
+                    backgroundColor: '#2c5a2e',
+                borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Report Reason Chart (Pie)
+        var reasonData = {{ report_reason_data|safe }} || [];
+        new Chart(document.getElementById('reportReasonChart'), {
+            type: 'pie',
+            data: {
+                labels: reasonData.map(function (d) { return d.name; }),
+                datasets: [{
+                    data: reasonData.map(function (d) { return d.count; }),
+                    backgroundColor: ['#2c5a2e', '#ffc107', '#dc3545', '#17a2b8', '#6c757d', '#fd7e14']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { font: { size: 11 } }
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock content %}

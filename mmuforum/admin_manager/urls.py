@@ -34,4 +34,7 @@ urlpatterns = [
     path('admin/panel/database/category/delete/<int:item_id>/', views.database_delete_execute, {'model_type': 'category'}, name='delete-category-execute'),
     path('admin/post/edit/<int:post_id>/', views.admin_edit_post, name='admin-edit-post'),
     path('admin/post/delete/<int:post_id>/', views.admin_delete_post, name='admin-delete-post'),
+    path('admin/create-post/', views.admin_create_post, name='admin-create-post'),
+    path('admin/comment/delete/<int:comment_id>', views.admin_delete_comment, name='admin-delete-comment'),
+    path('admin/panel/offenders/', views.offender, name='offender-management'),
 ]

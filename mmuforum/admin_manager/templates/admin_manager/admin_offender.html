@@ -1,0 +1,106 @@
+{% extends 'admin_manager/admin_base.html' %}
+{% load static %}
+
+{% block title %} MMU Forum - Offender {% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'admin_manager/admin_panel.css' %}">
+<link rel="stylesheet" href="{% static 'admin_manager/offender.css' %}">
+
+<div class="admin-panel-layout">
+    <div class="panel-sidebar">
+        <div class="panel-menu">
+            <a href="{% url 'admin-panel' %}" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Dashboard
+            </a>
+            <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
+                <i class="fas fa-users"></i>User Management
+            </a>
+            <a href="{% url 'report-center' %}" class="panel-item" alt="Report Center" title="Report Center">
+                <i class="fas fa-flag"></i>Report Center
+            </a>
+            <a href="{% url 'feedback-center' %}" class="panel-item" alt="Feedback System" title="Feedback System">
+                <i class="fas fa-lightbulb"></i>Feedback System
+            </a>
+            <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management" title="Database Management">
+                <i class="fas fa-database"></i>Database Management
+            </a>
+            <a href="{% url 'offender-management' %}" class="panel-item" alt="Offender" title="Offender">
+                <i class="fas fa-gavel"></i>Offender
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-content">
+        <div class="title-header">
+            <h3><i class="fas fa-gavel"></i> Offender Management</h3>
+        </div>
+
+        <div class="offender-table-container">
+            <table class="offender-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Reason</th>
+                        <th>Resolution</th>
+                        <th>Report Link</th>
+                        <th>Marked By</th>
+                        <th>Marked At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for offender in offenders %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'view-profile' offender.user.id %}">
+                                {{ offender.user.username }}
+                            </a>
+                        </td>
+                        <td>{{ offender.get_reason_display }}</td>
+                        <td>
+                            {% if offender.resolution == 'approved_warned' %}
+                                <span class="resolution-warned">Warned</span>
+                            {% elif offender.resolution == 'approved_suspended' %}
+                                <span class="resolution-suspended">Suspended</span>
+                            {% elif offender.resolution == 'approved_deleted' %}
+                                <span class="resolution-deleted">Deleted</span>
+                            {% elif offender.resolution == 'dismissed' %}
+                                <span class="resolution-dismissed">Dismissed</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if offender.report_id %}
+                                <a href="{% url 'report-process' offender.report_type offender.report_id %}">
+                                    View Report #{{ offender.report_id }}
+                                </a>
+                            {% else %}
+                                Manual
+                            {% endif %}
+                        </td>
+                        <td>{{ offender.marked_by.username|default:"System" }}</td>
+                        <td>{{ offender.marked_at|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <form method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="offender_id" value="{{ offender.id }}">
+                                <label class="toggle-label">
+                                    <input type="checkbox" name="is_active" {% if offender.is_active %}checked{% endif %}
+                                           onchange="this.form.submit()">
+                                    Active
+                                </label>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="empty-row">No offenders recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

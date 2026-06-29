@@ -121,3 +121,30 @@ class ProfileOTP(models.Model):
         self.otp = f"{random.randint(100000, 999999)}"
         self.created_at = timezone.now()
         self.save()
+
+class Offender(models.Model):
+    VIOLATION_CHOICES = [
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        ('hate_speech', 'Hate Speech'),
+        ('inappropriate', 'Inappropriate Content'),
+        ('repeated_violation', 'Repeated Violation'),
+        ('other', 'Other'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='offender_records')
+    reason = models.CharField(max_length=30, choices=VIOLATION_CHOICES)
+    description = models.TextField(blank=True)
+    marked_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='marked_offenders')
+    marked_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    report_id = models.IntegerField(null=True, blank=True)
+    report_type = models.CharField(max_length=10, choices=[('post', 'Post'), ('comment', 'Comment')], null=True, blank=True)
+    resolution = models.CharField(max_length=30, blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.reason}"
+    
+    class Meta:
+        ordering = ['-marked_at']

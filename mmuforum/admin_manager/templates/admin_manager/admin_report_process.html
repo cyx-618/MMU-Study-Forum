@@ -10,8 +10,8 @@
 <div class="admin-panel-layout">
     <div class="panel-sidebar">
         <div class="panel-menu">
-            <a href="#" class="panel-item" alt="Data Visualization" title="Data Visualization">
-                <i class="fas fa-chart-bar"></i>Data Visualization
+            <a href="{% url 'admin-panel' %}" class="panel-item" alt="Data Visualization" title="Data Visualization">
+                <i class="fas fa-chart-bar"></i>Dashboard
             </a>
             <a href="{% url 'user-management' %}" class="panel-item" alt="User Management" title="User Management">
                 <i class="fas fa-users"></i>User Management
@@ -24,6 +24,9 @@
             </a>
             <a href="{% url 'database-management' %}" class="panel-item" alt="Database Management" title="Database Management">
                 <i class="fas fa-database"></i>Database Management
+            </a>
+            <a href="{% url 'offender-management' %}" class="panel-item" alt="Offender" title="Offender">
+                <i class="fas fa-gavel"></i>Offender
             </a>
         </div>
     </div>
@@ -83,28 +86,28 @@
                     <label>Resolution:</label>
                     <div class="radio-group">
                         <label class="radio-option">
-                            <input type="radio" name="action" value="delete" required>
+                            <input type="radio" name="action" value="delete" required {% if current_resolution == 'approved_deleted' %}checked{% endif %}>
                                 <strong>Approved - Content Deleted</strong>
                                 <br>
                                 <p class="hint">Content violates guidelines, remove it.</p>
                         </label>
 
                         <label class="radio-option">
-                            <input type="radio" name="action" value="warn">
+                            <input type="radio" name="action" value="warn" {% if current_resolution == 'approved_warned' %}checked{% endif %}>
                                 <strong>Approved - User Warned</strong>
                                 <br>
                                 <p class="hint">Warn the user for violating guidelines.</p>
                         </label>
 
                         <label class="radio-option">
-                            <input type="radio" name="action" value="suspend">
+                            <input type="radio" name="action" value="suspend" {% if current_resolution == 'approved_suspended' %}checked{% endif %}>
                                 <strong>Approved - User Suspended</strong>
                                 <br>
                                 <p class="hint">Suspend the user. Unactivate or ban the user's account.</p>
                         </label>
 
                         <label class="radio-option">
-                            <input type="radio" name="action" value="dismiss">
+                            <input type="radio" name="action" value="dismiss" {% if current_resolution == 'dismissed' %}checked{% endif %}>
                                 <strong>Dismissed - No Action</strong>
                                 <br>
                                 <p class="hint">Report invalid, user dos not violate guidelines.</p>

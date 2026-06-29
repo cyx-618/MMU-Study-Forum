@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="banner-actions">
-                    <a href="{% url 'amdin-logout' }" class="logout-item" title="Log Out">
+                    <a href="{% url 'admin-logout' %}" class="logout-item" title="Log Out">
                         <img src="{% static 'admin_manager/images/logout.png'%}" alt="Logout">
                     </a>
                 </div>
@@ -60,7 +60,7 @@
                 <a href="{% url 'admin-main' %}" class="sidebar-item" alt="Home" title="Mainpage">
                     <i class="fa fa-home"></i>
                 </a>
-                <a href="#" class="sidebar-item" alt="Create" title="Create Post/Announcement">
+                <a href="{% url 'admin-create-post' %}" class="sidebar-item" alt="Create" title="Create Post/Announcement">
                     <i class="fas fa-plus-circle"></i>
                 </a>
                 <a href="{% url 'admin-notifications' %}" class="sidebar-item" alt="Notification" title="Notification">
