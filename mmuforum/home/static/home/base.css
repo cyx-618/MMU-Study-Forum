@@ -82,7 +82,7 @@ body{
     margin: 5px 5px 10px 70px;
     justify-content: space-between;
     padding: 10px 15px;
-    background-color: #f1f6e5;
+    background-color: #e4f1c7;;
     border-radius: 8px;
     border: 1px solid #e9ecef;
 }
@@ -96,6 +96,7 @@ body{
     border-radius: 10px;
     transition: all 0.3s;
 }
+
 .register{
     display: flex;
     align-items: center;
@@ -106,7 +107,6 @@ body{
 .register-icon:hover {
     opacity: 0.5;
 }
-
 
 .category-bar {
     display: flex;
@@ -207,7 +207,7 @@ body{
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     align-items: center;
     animation: slideInRight 0.4s ease;
-    display: fllex;
+    display: flex;
     justify-content: space-between;
     font-size: 14px;
     border-left: 4px solid transparent;
@@ -252,4 +252,33 @@ body{
         
 .alert-close:hover {
     opacity: 1;
+}
+
+.highlight{
+    background: linear-gradient(120deg, #d4edda 0%, #b7d7a8 100%);
+    padding: 0 4px;
+    border-radius: 3px;
+    color: #1a1a2e;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.post-content .highlight,
+.post-title .highight,
+.author-usernam .highlight{
+    background: linear-gradient(120deg, #d4edda 0%, #b7d7a8 100%);
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 600;
+    border-bottom: 2px solid #28a745;
+}
+
+.post-title .highlight{
+    background: linear-gradient(120deg, #d4edda 0%, #b7d7a8 100%);
+    border-bottom: 2px solid #28a745;
+}
+
+.author-username .highlight{
+    background: linear-gradient(120deg, #cce5ff 0%, #99caff 100%);
+    border-bottom: 2px solid #007bff;
 }

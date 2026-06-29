@@ -16,7 +16,6 @@
         </div>
     </div>
 
-
         <div class="main-content">
             <div class="content-container">
                 {% if search_type == 'posts' or not search_type %}
@@ -59,9 +58,9 @@
 
                         <div class="post-body">
                             <h3 class="post-title">
-                                <a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a>
+                                <a href="{% url 'post-detail' post.pk %}" class="title-searchable"> {{ post.title }} </a>
                             </h3>
-                            <p class="post-content">{{ post.content }}</p>
+                            <p class="post-content searchable">{{ post.content }}</p>
                         </div>
 
                         {% if post.image or post.video_file or post.pdf %}
@@ -103,7 +102,7 @@
                                 <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                                     {% csrf_token %}
                                     <button type="button" class="action-buttons like-post">
-                                        {% if user in post.likes.all %}
+                                        {% if post.id in liked_posts %}
                                             <i class="fas fa-heart" style="color: #e74c3c;"></i>
                                         {% else %}
                                             <i class="far fa-heart"></i>
@@ -143,7 +142,7 @@
                                 {% endif %}
                                 <div>
                                     <h3 style="margin: 0 0 5px 0;">
-                                        <a href="{% url 'view-profile' searched_user.username %}" style="text-decoration: none; color: #333;">
+                                        <a href="{% url 'view-profile' searched_user.username %}" style="text-decoration: none; color: #333;" class="username-searchable">
                                             {{ searched_user.username }}
                                         </a>
                                     </h3>
@@ -268,6 +267,8 @@ document.addEventListener('DOMContentLoaded', function(){
             dropdown.classList.toggle('show');
         });
     });
+
+    
 
 </script>
 {% endblock %}

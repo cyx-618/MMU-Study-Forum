@@ -30,12 +30,27 @@ body{
     top: 0;
     left: 0;
     z-index: 1000;
+    justify-content: space-between;
+    padding: 10px 20px;
 }
 
 .header img{
     width: 20px;
     height: 20px;
     padding-right: 10px;
+}
+
+.header .register{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    margin-left: auto;
+    margin-right: 25px;
+}
+
+.register-icon:hover {
+    opacity: 0.5;
 }
 
 .header a{

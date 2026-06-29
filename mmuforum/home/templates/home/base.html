@@ -85,19 +85,23 @@
                 <a href="{% url 'post-create' %}" class="sidebar-icon">
                     <img src="{% static 'post/images/add.png' %}" alt="Create">
                 </a>
+                <a href="{% url 'view-report' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/report.png' %}" alt="Create">
+                </a>
             </div>
         </div>
 
         {% if messages %}
-            <div class="messages-container" id="messagesContainer">
-                {% for message in messages %}
-                <div class="alert alert-{{message.tags}}" id="alert-{{ forloop.conter }}">
-                    <span>{{message}}</span>
-                    <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
-                </div>
-                {% endfor %}
+        <div class="messages-container" id="messagesContainer">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" id="alert-{{ forloop.counter }}">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                <span>{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
             </div>
-        {%endif%}
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <div class="main-content">
             <div class="content-container">
@@ -135,6 +139,126 @@
             }
             lastScrollTop= scrollTop;
         });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const container = document.getElementById('messagesContainer');
+            if (container) {
+                container.style.transition = 'opacity 0.5s ease';
+                container.style.opacity = '0';
+                setTimeout(function() {
+                    container.remove();
+                }, 500);
+            }
+        }, 5000);
+        
+        document.querySelectorAll('.alert-close').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const alert = this.parentElement;
+                alert.style.transition = 'opacity 0.3s ease';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 300);
+            });
+        });
+    });
+
+    function highlightSearchTerms(){
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q') || urlParams.get('search') || '';
+
+        if (!searchQuery.trim()) return;
+            const keywords = searchQuery.trim().split(/\s+/).filter(k => k.length > 0);
+            if (keywords.length === 0) return;
+
+            document.querySelectorAll('.searchable').forEach(element => {
+            let text = element.textContent;
+            let highlightedText = text;
+
+            keywords.forEach(keyword => {
+                const regex = new RegExp(escapeRegExp(keyword), 'gi');
+                highlightedText = highlightedText.replace(regex, match => 
+                    `<span class="highlight">${match}</span>`
+                );
+            });
+
+            if (highlightedText !== text) {
+                element.innerHTML = highlightedText;
+            }
+        });
+
+            document.querySelectorAll('.title-searchable').forEach(element => {
+                let text = element.textContent;
+                let highlightedText = text;
+
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(escapeRegExp(keyword), 'gi');
+                    highlightedText = highlightedText.replace(regex, match => 
+                        `<span class="highlight">${match}</span>`
+                    );
+                });
+
+                if (highlightedText !== text) {
+                    element.innerHTML = highlightedText;
+                }
+            });
+
+            document.querySelectorAll('.author-username, .username-searchable').forEach(element => {
+            let text = element.textContent;
+            let highlightedText = text;
+
+            keywords.forEach(keyword => {
+                const regex = new RegExp(escapeRegExp(keyword), 'gi');
+                highlightedText = highlightedText.replace(regex, match => 
+                    `<span class="highlight">${match}</span>`
+                );
+            });
+
+            if (highlightedText !== text) {
+                element.innerHTML = highlightedText;
+            }
+        });
+    }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        document.addEventListener('DOMContentLoaded', function(){
+            highlightSearchTerms();
+    
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post_id');
+
+            if(postId){
+                const postDetail = sessionStorage.getItem('post_Detail');
+
+                if (postDetail === 'true'){
+                    setTimeout(function(){
+                        const targetPost = document.getElementById('post-' + postId);
+                        if(targetPost){
+                            targetPost.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+
+                            targetPost.style.transition = 'box-shadow 0.3s ease';
+                            targetPost.style.boxShadow = '0 0 0 2px #2c5a2e, 0 4px 15px rgba(52, 152, 219, 0.3)';
+
+                            setTimeout(function(){
+                                targetPost.style.boxShadow = '';
+                            }, 3000);
+
+                            sessionStorage.setItem(highlightedKey, 'true');
+                        }
+                    }, 500);
+
+                    sessionStorage.removeItem('post_Detail');
+                }
+            }
+        });
+
 </script>
 
 {% block extra_js %}{% endblock %}
