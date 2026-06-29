@@ -10,6 +10,10 @@
                 <img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px">
             </a>
             Update Post
+            <div class="register">
+                <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
+                <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
+            </div>
         </div>
 
         <div class="sidebar">
@@ -31,6 +35,9 @@
                 </a>
                 <a href="{% url 'post-create' %}" class="sidebar-icon">
                     <img src="{% static 'post/images/add.png' %}" alt="Create">
+                </a>
+                <a href="{% url 'view-report' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/report.png' %}" alt="Create">
                 </a>
             </div>
         </div>

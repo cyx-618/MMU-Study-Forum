@@ -53,8 +53,6 @@
         </div>
     </div>
 
-    
-
     <div class="post-body">
         <p class="post-title">{{ post.title }}</p>
         <p class="post-content">{{ post.content }}</p>
@@ -146,7 +144,7 @@
                     </div>
                 </div>
 
-                <a href="{% url 'like-comment' comment.id %}" style="text-decoration: none; color: inherit;">
+                <a href="{% url 'like-comment' comment.id %}#comments" style="text-decoration: none; color: inherit;">
                     {% if user in comment.likes_count.all %}
                     <span style="color: red;">❤️</span>({{ comment.likes_count.count }})
                     {% else %}
@@ -163,7 +161,7 @@
                                     <span>{{ reply.text }}</span>
                                     <small style="color: gray;">{{ reply.created_at|timesince }} ago</small>
 
-                                <a href="{% url 'like-comment' reply.id %}" style="text-decoration: none; color: inherit;">
+                                <a href="{% url 'like-comment' reply.id %}#comments" style="text-decoration: none; color: inherit;">
                                     {% if user in reply.likes_count.all %}
                                     <span style="color: red;">❤️</span>({{ reply.likes_count.count }})
                                     {% else %}
@@ -182,7 +180,7 @@
                                 {% endif %}
 
                                 {% if user == reply.user or user.is_staff %}
-                                    <form method="post" actions="{% url 'delete-comment' reply.id %}" onsubmit="return confirm('Are you sure want to delete this reply?')" style="display: inline;">
+                                    <form method="post" action="{% url 'delete-comment' reply.id %}" onsubmit="return confirm('Are you sure want to delete this reply?')" style="display: inline;">
                                         {% csrf_token %}
                                         <button type="submit" style="background: none; border: none; color: #da6e62; cursor: pointer; font-size: 12px; padding: 0;" title="Delete reply">
                                             Delete

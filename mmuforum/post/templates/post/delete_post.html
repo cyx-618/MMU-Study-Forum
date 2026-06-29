@@ -3,13 +3,22 @@
 <html>
     <head>
         <title>Delete Post</title>
-        <link rel="stylesheet" href="{% static 'post/create_post.css' %}?v={% now 'YmdHis' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="{% static 'post/delete_post.css' %}?v={% now 'YmdHis' %}">
     </head>
 
 <body>
+
     <div class="container">
         <div class="header">
-            <a href= "{% url 'forum-main' %}"><img src="{% static 'post/images/exit.png' %}" alt="Exit"></a>Delete Your Post
+            <a href= "javascript:history.back()">
+                <img src="{% static 'post/images/exit.png' %}" alt="Exit" style="width: 20px; height: 20px">
+            </a>
+            Delete Your Post
+            <div class="register">
+                <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
+                <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
+            </div>
         </div>
 
         <div class="sidebar">
@@ -32,6 +41,9 @@
                 <a href="{% url 'post-create' %}" class="sidebar-icon">
                     <img src="{% static 'post/images/add.png' %}" alt="Create">
                 </a>
+                <a href="{% url 'view-report' %}" class="sidebar-icon">
+                    <img src="{% static 'post/images/report.png' %}" alt="Create">
+                </a>
             </div>
         </div>
 
@@ -40,8 +52,31 @@
                 {% csrf_token %}
                 <fieldset class="form-group">
                     <legend class="border-bottom mb-4">Delete Post</legend>
-                    <p>Are you sure you want to delete the post "{{ object.title }}"?</p>
+
+                    <div class="delete-icon-large">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+
+                    <div class="delete-warning-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span><strong>Warning:</strong> This action cannot be undone. All data associated with this post will be premanently deleted.</span>
+                    </div>
+
+                    <div class="post-preview-box">
+                        <div class="post-title-preview">{{ post.title }}</div>
+                        <div class="post-content-preview">{{ post.content }}</div>
+                        <div class="post-meta-preview">
+                            <strong>Author:</strong>{{ object.author.username }} &nbsp;|&nbsp;
+                            <strong>Posted:</strong>{{ post.date_posted|date:"F d, Y" }}
+                        </div>
+                    </div>
+                    
+                    <div class="delete-confirm-text">
+                        <p>Are you sure you want to delete the post "{{ object.title }}"?</p>
+                    </div>
+
                 </fieldset>
+
                 <div class="form-group">
                     <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
                     <a class="btn btn-outline-secondary" href="{% url 'post-detail' object.pk %}">Cancel</a>
@@ -49,5 +84,6 @@
             </form>
         </div>
     </div>
+
 </body>
 </html>

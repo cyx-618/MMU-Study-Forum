@@ -221,7 +221,7 @@ From MMU Forum Team
                 except Exception as e:
                     print(f"Error sending email: {e}")
 
-    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+    return redirect(f"{reverse('post-detail', kwargs={'pk': post.id})}#comments")
 
 
 @login_required
@@ -274,7 +274,7 @@ From MMU Forum Team
             except Exception as e:
                 print(f"Error sending email: {e}")
 
-    return redirect(request.META.get('HTTP_REFERER', 'forum-main'))
+    return redirect(f"{reverse('post-detail', kwargs={'pk': comment.post.pk})}#comments")
 
 
 @login_required
@@ -482,6 +482,12 @@ class  PostListView(LoginRequiredMixin, ListView):
         context['search_query'] = search_query
         context['search_type_display'] = 'Post' if search_type == 'posts' else 'User'
         
+        liked_posts = Like.objects.filter(
+            user = self.request.user
+        ).values_list('post_id', flat=True)
+
+        context['liked_posts'] = liked_posts
+
         users = []
         if search_query and search_type == 'users':
             from django.contrib.auth.models import User
@@ -517,9 +523,17 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'post/delete_post.html' 
-    
-    def get_success_url(self):
-        return reverse('forum-main')
+    success_url = reverse_lazy('forum-main')
+
+    def form_valid(self, form):
+        post_title = self.object.title
+
+        messages.success(
+            self.request,
+            f'Post "{post_title}" has been successfully deleted.'
+        )
+        
+        return super().form_valid(form)
 
 
 class PostDetailView(LoginRequiredMixin, DetailView):
