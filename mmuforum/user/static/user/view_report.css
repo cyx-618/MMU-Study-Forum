@@ -10,14 +10,14 @@ body{
     margin-right: 110px;
     
 }
-.title{
-margin-left:-40px;
+.report-title{
+margin-left:0px;
 text-align: left;
 color: #000000;
 font-family: "Merriweather", serif;
 margin-top:0px;
 display:inline-block;
-margin-bottom: 3px;
+margin-bottom:5px;
 font-size: 30px;
 }
 .report-tabs {

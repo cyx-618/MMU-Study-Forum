@@ -20,7 +20,7 @@
             <div class="feedback-list">
             {% for feedback in feedbacks %}
                 <div class="container">
-                    <p><span class="bold">Subject:</span> <a href="{% url 'feedback-detail' feedback.id %}">{{ feedback.subject }}</a></p>
+                    <p><span class="bold">Subject:</span> <a class="fb-title" href="{% url 'feedback-detail' feedback.id %}">{{ feedback.subject }}</a></p>
                     <p><span class="bold">Message:</span> {{ feedback.message }}</p>
                     <p><span class="bold">Ticket number:</span> {{feedback.id|add:1000 }}</p>
                     <hr>

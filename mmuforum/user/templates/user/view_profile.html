@@ -146,7 +146,7 @@
                             </button>
                         </form>
                     </div>
-                    <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button">
+                    <a href="{% url 'post-detail' post.pk %}#comments" class="comment-button">
                             <i class="far fa-comment"></i>
                             <span>{{ post.comments.count }}</span>
                     </a>
@@ -229,7 +229,7 @@
                         </button>
                     </form>
                 </div>
-                <a href="{% url 'admin-post-detail' post.pk %}#comments" class="comment-button">
+                <a href="{% url 'post-detail' post.pk %}#comments" class="comment-button">
                             <i class="far fa-comment"></i>
                             <span>{{ post.comments.count }}</span>
                     </a>

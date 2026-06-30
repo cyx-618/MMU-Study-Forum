@@ -110,8 +110,9 @@ label {
 }
 .btn{
     display:flex;
+     left:30%;
     justify-content:space-between;
-    width:80%;
+    width:92%;
     padding:0;
     margin: 0;
     height:60px;
