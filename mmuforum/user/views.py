@@ -55,15 +55,27 @@ def signup (request):
             cache.set(f"signup_data:{email}", registration_data, timeout=300)
             cache.set(f"signup_otp:{email}", otp, timeout=300)
             cache.set(cooldown_key, True, timeout=60)
+            
+            subject = "MMU Study Forum - Email Verification Code"
+            email_body = f"""
+Hi {username},
 
+Your sign-up verification OTP is: {otp}.
+
+It will expire in 5 minutes.
+
+From MMU Forum Team
+
+            """
             try:
                 send_mail(
-                    subject="MMU Study Forum - Email Verification Code",
-                    message=f"Hi {username},\nYour sign-up verification OTP is: {otp}.\nIt will expire in 5 minutes.\nFrom MMU Forum Team",
-                    from_email="noreply@mmustudyforum.com",
-                    recipient_list=[email],
-                    fail_silently=False,
-                )
+                        subject, 
+                        email_body, 
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                    )
+        
                 request.session['verification_email'] = email
                 messages.success(request, 'A verification code has been sent to your MMU student email!')
                 return redirect('sign-up-verify')
@@ -346,19 +358,25 @@ def forgot_password_view(request):
             request.session['reset_student_username'] = user.username
             otp_profile, created = ProfileOTP.objects.get_or_create(user=user)
             otp_profile.generate_otp()
-                
-            try:
-                user = User.objects.get(email=email)
-                student_username = user.username
-                subject = "Your Password Reset OTP"
-                message = f"""Hi {student_username},
-                \nYour OTP for resetting your password is: {otp_profile.otp}.
-                \nIt is valid for 10 minutes.
-                \nFrom MMU Forum Team
-                """
-                from_email = 'mmuforum3@gmail.com'
-                
-                send_mail(subject, message, from_email, [email])
+
+            subject = "Your Password Reset OTP"
+            email_body = f"""
+Hi {user.username},  
+
+Your OTP for resetting your password is: {otp_profile.otp}.
+
+It is valid for 10 minutes.
+
+From MMU Forum Team
+"""
+            try:   
+                send_mail(
+                    subject, 
+                    email_body,
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
                 messages.success(request, "A new OTP has been sent to your student email.")
                 
             

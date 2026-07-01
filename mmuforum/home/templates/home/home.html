@@ -13,6 +13,15 @@
 </head>
     </head>
     <body>
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="header">
             <img class="logo" src="{% static 'home/images/discussion logo.png' %}" alt="logo">
             <a class="log-in-btn" href="{% url 'forum-login' %}">Log In</a>
