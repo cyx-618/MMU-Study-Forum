@@ -41,6 +41,8 @@ def admin_main(request):
 @user_passes_test(lambda u: u.is_superuser)
 def admin_post_detail(request, post_id):
     post=get_object_or_404 (Post, id=post_id)
+    if post.is_deleted:
+        messages.warning(request, 'This post has been deleted.')
     context = {
         'post': post,
     }
@@ -460,14 +462,21 @@ def report_process(request, report_type, report_id):
 
         if action == 'delete':
             if report_type == 'post':
-                report.post.delete()
+                content = report.post
+                content.is_deleted = True
+                content.deleted_at = timezone.now()
+                content.deleted_by = request.user
+                content.save()
                 offender = report.post.author
             else:
-                report.comment.delete()
+                content = report.comment
+                content.is_deleted = True
+                content.deleted_at = timezone.now()
+                content.deleted_by = request.user
+                content.save()
                 offender = report.comment.user
 
             resolution = 'approved_deleted'
-
             offender_record, created = Offender.objects.get_or_create(
                 user=offender,
                 report_id=report.id,

@@ -27,6 +27,8 @@ class Post (models.Model):
     views_count = models.IntegerField(default=0)
     is_reported = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='deleted_posts')
 
     is_announcement = models.BooleanField(default=False)
 
@@ -57,6 +59,9 @@ class Comment (models.Model):
     parent_comment = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
     likes_count = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='comment_likes', blank=True)
     dislikes_count = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='comment_dislikes', blank=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='deleted_comments')
 
     class Meta:
         verbose_name_plural = 'Comments'

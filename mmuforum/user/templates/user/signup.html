@@ -19,7 +19,7 @@
         <div>
             <h2 class="sign-up-title">Sign Up</h2>
               <a href="{% url 'forum-home' %}" class="home"><i class="fa fa-home"></i></a>
-        </div>  
+        </div>
             <form method="POST">
                 {%csrf_token%}
                 {% if form.non_field_errors %}
@@ -29,7 +29,7 @@
                 {% endfor %}
             </div>
                 {% endif %}
-             <fieldset class="form-container">
+            <fieldset class="form-container">
               <div>
                 {% crispy form %}
                  <p class="have-acc">Alreday have an account ?  <a class="log-in-btn" href= "{% url 'forum-login' %}"> Log In</a></p>

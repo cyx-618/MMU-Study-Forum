@@ -361,6 +361,39 @@ body {
     text-decoration: underline;
 }
 
+.post-deleted {
+    background: #fce4e4;
+    border: 1px solid #f5c6c6;
+    opacity: 0.85;
+}
+
+.post-hidden-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(220, 53, 69, 0.08);
+    border-radius: 8px;
+    color: #721c24;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.post-hidden-message i {
+    font-size: 16px;
+}
+
+.view-detail-link {
+    color: #2c5a2e;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: auto;
+}
+
+.view-detail-link:hover {
+    text-decoration: underline;
+}
+
 .post-content {
     color: black;
     font-size: 16px;
