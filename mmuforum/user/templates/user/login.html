@@ -14,6 +14,15 @@
     </head>
 
     <body>
+          {% if messages %}              
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <div class="messafe-container">
+                    {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+          {% endif %}
        <div>
             <h2 class="login-title">Log In</h2>
             <a href="{% url 'forum-home' %}" class="home"><i class="fa fa-home"></i></a>
