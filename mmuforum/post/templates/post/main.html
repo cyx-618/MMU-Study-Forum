@@ -9,7 +9,11 @@
     {% block title %}MMU Study Forum{% endblock %}
 
 {% block content %}
-    <div id="welcome" class="modal">
+    {% if show_welcome %}
+    <div id="welcome" class="modal" style="display: block;">
+    {% else %}
+    <div id="welcome" class="modal" style="display: none;">
+    {% endif %}
         <div class="modal_content">
             <p>Welcome, {{user.username}} !</p>
             <span class="close" onclick="closeModal()">Start journey</span>
@@ -241,12 +245,6 @@ document.addEventListener('DOMContentLoaded', function(){
             .catch(error => console.error('Error:', error));
         });
     });
-
-    window.onload = function() {
-        if (!localStorage.getItem('welcomeShown')) {
-        document.getElementById('welcome').style.display = 'block';
-        localStorage.setItem('welcomeShown', 'true');
-    }}
 
     function closeModal() {
         document.getElementById('welcome').style.display = 'none';

@@ -481,6 +481,7 @@ class  PostListView(LoginRequiredMixin, ListView):
         context['search_type'] = search_type
         context['search_query'] = search_query
         context['search_type_display'] = 'Post' if search_type == 'posts' else 'User'
+        context['show_welcome'] = self.request.session.pop('show_welcome', False)
         
         liked_posts = Like.objects.filter(
             user = self.request.user
@@ -539,4 +540,12 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'post/detail_post.html' 
-    context_object_name = 'post' 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['post_liked'] = Like.objects.filter(
+            user=self.request.user,
+            post=self.object
+        ).exists()
+
+        return context

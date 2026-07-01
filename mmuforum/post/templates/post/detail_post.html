@@ -96,7 +96,7 @@
             <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                 {% csrf_token %}
                 <button type="button" class="action-buttons like-post">
-                    {% if user in post.likes.all %}
+                    {% if post_liked %}
                         <i class="fas fa-heart" style="color: #e74c3c;"></i>
                     {% else %}
                         <i class="far fa-heart"></i>
