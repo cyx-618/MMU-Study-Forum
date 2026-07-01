@@ -271,13 +271,12 @@ def feedback_detail(request, feedback_id):
 def view_profile(request,username):
     user=get_object_or_404(User, username=username)
     user_profile = User_profile.objects.filter(user=user).first()
-    posts = Post.objects.filter(author=user).order_by('-date_posted')
+    posts = Post.objects.filter(author=user, is_deleted=False).order_by('-date_posted')
     post_count = posts.count()
     liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
 
-  
     if request.user.is_authenticated:
-        user_post_count = Post.objects.filter(author=request.user).count()
+        user_post_count = Post.objects.filter(author=request.user, is_deleted=False).count()
     else:
         user_post_count = 0
     context = {
@@ -337,7 +336,7 @@ def view_other_profile(request,user_id):
         messages.error(request, 'User not found.')
         return redirect('forum-main')
 
-    user_posts = Post.objects.filter(author=profile_user).order_by('-date_posted')
+    user_posts = Post.objects.filter(author=profile_user, is_deleted=False).order_by('-date_posted')
     user_posts_count = user_posts.count()
 
     context = {

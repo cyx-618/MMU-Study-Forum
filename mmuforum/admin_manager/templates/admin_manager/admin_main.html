@@ -6,29 +6,38 @@
 {% block content %}
 
 {% for post in posts%}
-    <div class="post-card">
-        <div class="post-header">
-            {% if post.author.user_profile.profile_picture %}
-                <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
-            {% else %}
-                <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
-            {% endif %}
+<div class="post-card" {% if post.is_deleted %}post-deleted{% endif %}>
+    <div class="post-header">
+        {% if post.author.user_profile.profile_picture %}
+        <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
+        {% else %}
+        <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
+        {% endif %}
 
-            <div class="author-info">
-                <a href="{% url 'view-profile' post.author.id %}" class="username-link">
-                    <span class="author-username">{{ post.author.username }}</span>
-                </a>
-                <span class="author-major">{{ post.author.user_profile.major}}</span>
-            </div>
+        <div class="author-info">
+            <a href="{% url 'view-profile' post.author.id %}" class="username-link">
+                <span class="author-username">{{ post.author.username }}</span>
+            </a>
+            <span class="author-major">{{ post.author.user_profile.major}}</span>
         </div>
+    </div>
 
-        <div class="post-body">
-            <h3 class="post-title">
-                <a href="{% url 'admin-post-detail' post.pk %}"> {{ post.title }} </a>
-            </h3>
-            <p class="post-content">{{ post.content }}</p>
+    <div class="post-body">
+        <h3 class="post-title">
+            <a href="{% url 'admin-post-detail' post.pk %}"> {{ post.title }} </a>
+        </h3>
+
+        {% if post.is_deleted %}
+        <div class="post-hidden-message">
+            <i class="fas fa-eye-slash"></i> This post has been hidden.
+            <a href="{% url 'admin-post-detail' post.pk %}" class="view-detail-link">View Details →</a>
         </div>
+        {% else %}
+        <p class="post-content">{{ post.content }}</p>
+        {% endif %}
+    </div>
 
+    {% if not post.is_deleted %}
         {% if post.image or post.video_file or post.pdf %}
             <div class="post-media">
                 {% if post.image %}
@@ -41,7 +50,7 @@
                         <video controls>
                             <source src="{{ post.video_file.url }}" type="video/mp4">
                             Your browser does not support the video tag.
-                        </video>
+                            </video>
                     </div>
                 {% endif %}
                 {% if post.pdf %}
@@ -60,17 +69,18 @@
                 {% endif %}
             </div>
         {% endif %}
-        <br><hr>
-                        
+        <br>
+        <hr>
+
         <div class="post-footer">
             <div class="post-actions">
                 <form method="post" action="{% url 'admin-like-post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
-                    {% csrf_token %}
+                {% csrf_token %}
                     <button type="button" class="action-buttons like-post">
                         {% if post.user_has_liked %}
-                            <i class="fas fa-heart" style="color: #e74c3c;"></i>
+                        <i class="fas fa-heart" style="color: #e74c3c;"></i>
                         {% else %}
-                            <i class="far fa-heart"></i>
+                        <i class="far fa-heart"></i>
                         {% endif %}
                         <span class="likes-count">{{ post.likes.count }}</span>
                     </button>
@@ -92,18 +102,19 @@
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
+</div>
 {% empty %}
-    <p id="no-post-warning">
-        No posts available yet.<br>
-        Feel free to write your post.
-    </p>
+<p id="no-post-warning">
+    No posts available yet.<br>
+    Feel free to write your post.
+</p>
 {% endfor %}
 
 <script>
     //like-post-no-refresh
     document.querySelectorAll('.like-post').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const form = this.closest('.like-form');
             const url = form.action;
             const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -123,27 +134,27 @@
                 },
                 body: JSON.stringify({})
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.liked) {
-                    icon.classList.remove('far');
-                    icon.classList.add('fas');
-                    icon.style.color = '#e74c3c';
-                    countSpan.innerText = data.count;
-                } else {
-                    icon.classList.remove('fas');
-                    icon.classList.add('far');
-                    icon.style.color = '#6c757d';
-                    countSpan.innerText = data.count;
-                }
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.liked) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        icon.style.color = '#e74c3c';
+                        countSpan.innerText = data.count;
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        icon.style.color = '#6c757d';
+                        countSpan.innerText = data.count;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
     });
 
     //manage-post dropdown
     document.querySelectorAll('.manage-button').forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', function (e) {
             e.stopPropagation();
             const dropdown = this.nextElementSibling;
 
@@ -157,7 +168,7 @@
         });
     });
 
-    document.addEventListener('click', function() {
+    document.addEventListener('click', function () {
         document.querySelectorAll('.manage-dropdown').forEach(dropdown => {
             dropdown.classList.remove('show');
         });

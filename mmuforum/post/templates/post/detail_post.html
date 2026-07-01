@@ -89,6 +89,8 @@
             {% endif %}
         </div>
     {% endif %}
+
+    {% if not post.is_deleted %}
     <br>
                         
     <div class="post-footer">
@@ -217,6 +219,7 @@
             </form>
             {% endif %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 
