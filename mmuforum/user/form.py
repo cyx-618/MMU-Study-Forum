@@ -37,6 +37,7 @@ class UserRegisterForm(UserCreationForm):
         self.fields['password1'].label = ""
         self.fields['password2'].label = ""
         self.fields['username'].help_text = ""
+        self.fields['username'].help_text = mark_safe(" <li> Cannot change username after registration.")
         self.fields['password1'].help_text = mark_safe(
             """
            <li> Password must be at least <strong>8 characters</strong> long.</li><br>

@@ -17,7 +17,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from post.models import ReportPost,ReportComment
-from django.contrib.auth.hashers import make_password
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -25,8 +24,9 @@ from .form import (
     LoginForm,
     RequestOTPForm, 
     ResetPasswordForm,
-    SignUpVerify
+   
 )
+from user import form
 
 def signup (request):
     context = {
@@ -43,52 +43,21 @@ def signup (request):
                 messages.error(request, 'Please enter a valid MMU student email address.')
                 return render(request, 'user/signup.html', {'form': form})
             
-            cooldown_key = f"otp_cooldown:{email}"
-            if cache.get(cooldown_key):
-                messages.error(request, 'Please wait 60 seconds before requesting another verification code.')
-                return render(request, 'user/signup.html', {'form': form, **context}) 
-            otp = str(secrets.randbelow(900000) + 100000)
-            registration_data = {
-                'username': username,
-                'email': email,
-                'password':make_password(form.cleaned_data.get('password1')),
-            }
-            
-            subject = "MMU Study Forum - Email Verification Code"
-            email_body = f"""
-Hi {username},
+            user = form.save(commit=False)
+            user.email = email
+            user.save()
+           
+            User_profile.objects.create(user=user)
+            auth_login(request, user)
 
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created successfully! Welcome, {username}!')
             return redirect('forum-profile')
-
-It will expire in 5 minutes.
-
-From MMU Forum Team
-
-            """
-            try:
-                send_mail(
-                        subject, 
-                        email_body, 
-                        settings.EMAIL_HOST_USER,
-                        [email],
-                        fail_silently=False,
-                    )
-                cache.set(f"signup_data:{email}", registration_data, timeout=300)
-                cache.set(f"signup_otp:{email}", otp, timeout=300)
-                cache.set(cooldown_key, True, timeout=60)
-        
-                request.session['verification_email'] = email
-                messages.success(request, 'A verification code has been sent to your MMU student email!')
-                return redirect('sign-up-verify')
             
-            except Exception as e:
-                messages.error(request, 'Failed to send email. Please try again later.')
-                print(f"Mail Error: {e}")
-                return render(request, 'user/signup.html', {'form': form, **context})
     else:
-         return render(request, 'user/signup.html', {'form': UserRegisterForm(), **context})
+         form = UserRegisterForm()
+    
+    return render(request, 'user/signup.html', {'form': form})
 
 
 def login(request):
