@@ -295,6 +295,7 @@ hr{
 
 .like-post:hover {
     background-color: #f8f9fa;
+    border-radius: 8px;
 }
 
 .likes-count{
@@ -324,6 +325,11 @@ hr{
 
 .comment-button i{
     font-size: 18px;
+}
+
+.comment-button:hover {
+    background-color: #f8f9fa;
+    border-radius: 8px;
 }
 
 .comment-title{

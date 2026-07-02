@@ -137,7 +137,7 @@
                         <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                             {% csrf_token %}
                             <button type="button" class="action-buttons like-post">
-                                {% if request.user in post.likes.all %}
+                                {% if post.id in liked_post_ids %}
                                     <i class="fas fa-heart" style="color: #e74c3c;"></i>
                                 {% else %}
                                     <i class="far fa-heart"></i>
@@ -220,7 +220,7 @@
                     <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                         {% csrf_token %}
                         <button type="button" class="action-buttons like-post">
-                            {% if request.user in post.likes.all %}
+                            {% if post.id in liked_post_ids %}
                                 <i style="color: #e74c3c !important;" class="fas fa-heart"></i>
                             {% else %}
                                 <i class="far fa-heart"></i>

@@ -279,6 +279,10 @@ def view_profile(request,username):
     post_count = posts.count()
     liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
 
+    liked_post_ids = Like.objects.filter(
+        user=request.user
+    ).values_list('post_id', flat=True)
+
   
     if request.user.is_authenticated:
         user_post_count = Post.objects.filter(author=request.user).count()
@@ -290,7 +294,9 @@ def view_profile(request,username):
         'posts': posts,
         'post_count': post_count,
         'liked_posts': liked_posts,
+        'liked_post_ids': liked_post_ids,
     }
+    
     return render(request, 'user/view_profile.html', context)
 
 
