@@ -36,101 +36,27 @@ def signup (request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             email = request.POST.get('email')
-            username = form.cleaned_data.get('username')
+
 
             if not email or not email.endswith('@student.mmu.edu.my'):
                 messages.error(request, 'Please enter a valid MMU student email address.')
                 return render(request, 'user/signup.html', {'form': form})
             
-            cooldown_key = f"otp_cooldown:{email}"
-            if cache.get(cooldown_key):
-                messages.error(request, 'Please wait 60 seconds before requesting another verification code.')
-                return render(request, 'user/signup.html', {'form': form, **context}) 
-            otp = str(secrets.randbelow(900000) + 100000)
-            registration_data = {
-                'username': username,
-                'email': email,
-                'password': form.cleaned_data.get('password1') 
-            }
-            cache.set(f"signup_data:{email}", registration_data, timeout=300)
-            cache.set(f"signup_otp:{email}", otp, timeout=300)
-            cache.set(cooldown_key, True, timeout=60)
-            
-            subject = "MMU Study Forum - Email Verification Code"
-            email_body = f"""
-Hi {username},
+            user = form.save(commit=False)
+            user.email = email
+            user.save()
+            User_profile.objects.get_or_create(user=user)
+            auth_login(request, user)
 
-Your sign-up verification OTP is: {otp}.
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created successfully! Welcome, {username}!')
+            return redirect('forum-profile')
 
-It will expire in 5 minutes.
-
-From MMU Forum Team
-
-            """
-            try:
-                send_mail(
-                        subject, 
-                        email_body, 
-                        settings.EMAIL_HOST_USER,
-                        [email],
-                        fail_silently=False,
-                    )
-        
-                request.session['verification_email'] = email
-                messages.success(request, 'A verification code has been sent to your MMU student email!')
-                return redirect('sign-up-verify')
-            
-            except Exception as e:
-                messages.error(request, 'Failed to send email. Please try again later.')
-                print(f"Mail Error: {e}")
-        
+     
     else:
         form = UserRegisterForm()
-    context['form'] = form
-    return render(request, 'user/signup.html',context)
+    return render(request, 'user/signup.html', {'form': form, 'title': 'Sign Up'})
 
-def sign_up_verify(request):
-  email = request.session.get('verification_email')
-  if not email:
-        messages.error(request, "Session expired or invalid signup attempt.")
-        return redirect('forum-signup-user')
-  
-  form=SignUpVerify(request.POST)   
-  if request.method == 'POST':
-    if form.is_valid():
-        user_otp = request.POST.get('otp_code')
-        
-        cached_otp = cache.get(f"signup_otp:{email}")
-        signup_data = cache.get(f"signup_data:{email}")
-        
-        if not cached_otp or not signup_data:
-            messages.error(request, "Your verification code has expired. Please sign up again.")
-            return redirect('forum-signup-user')
-            
-        if user_otp == cached_otp:
-            user = User.objects.create_user(
-                username=signup_data['username'],
-                email=signup_data['email'],
-                password=signup_data['password']
-            )
-            User_profile.objects.get_or_create(user=user)
-            
-            auth_login(request, user)
-            
-            cache.delete(f"signup_otp:{email}")
-            cache.delete(f"signup_data:{email}")
-            
-            request.session.pop('verification_email', None)
-            
-            messages.success(request, f"Account created successfully! Welcome, {user.username}!")
-            return redirect('forum-main')
-        else:
-            messages.error(request, "Invalid verification code. Please check your email and try again.")
-            
-  return render(request, 'user/sign_up_verify.html',
-                 {'email': email,
-                  'form': form
-                  })
 
 def login(request):
     if request.method == 'POST':
