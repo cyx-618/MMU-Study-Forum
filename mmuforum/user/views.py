@@ -17,6 +17,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from post.models import ReportPost,ReportComment
+from django.contrib.auth.hashers import make_password
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -50,11 +51,8 @@ def signup (request):
             registration_data = {
                 'username': username,
                 'email': email,
-                'password': form.cleaned_data.get('password1') 
+                'password':make_password(form.cleaned_data.get('password1')),
             }
-            cache.set(f"signup_data:{email}", registration_data, timeout=300)
-            cache.set(f"signup_otp:{email}", otp, timeout=300)
-            cache.set(cooldown_key, True, timeout=60)
             
             subject = "MMU Study Forum - Email Verification Code"
             email_body = f"""
@@ -75,6 +73,9 @@ From MMU Forum Team
                         [email],
                         fail_silently=False,
                     )
+                cache.set(f"signup_data:{email}", registration_data, timeout=300)
+                cache.set(f"signup_otp:{email}", otp, timeout=300)
+                cache.set(cooldown_key, True, timeout=60)
         
                 request.session['verification_email'] = email
                 messages.success(request, 'A verification code has been sent to your MMU student email!')
@@ -83,11 +84,9 @@ From MMU Forum Team
             except Exception as e:
                 messages.error(request, 'Failed to send email. Please try again later.')
                 print(f"Mail Error: {e}")
-        
+                return render(request, 'user/signup.html', {'form': form, **context})
     else:
-        form = UserRegisterForm()
-    context['form'] = form
-    return render(request, 'user/signup.html',context)
+         return render(request, 'user/signup.html', {'form': UserRegisterForm(), **context})
 
 def sign_up_verify(request):
   email = request.session.get('verification_email')
@@ -275,17 +274,16 @@ def feedback_detail(request, feedback_id):
 def view_profile(request,username):
     user=get_object_or_404(User, username=username)
     user_profile = User_profile.objects.filter(user=user).first()
-    posts = Post.objects.filter(author=user).order_by('-date_posted')
+    posts = Post.objects.filter(author=user, is_deleted=False).order_by('-date_posted')
     post_count = posts.count()
     liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
-
     liked_post_ids = Like.objects.filter(
         user=request.user
     ).values_list('post_id', flat=True)
 
-  
+
     if request.user.is_authenticated:
-        user_post_count = Post.objects.filter(author=request.user).count()
+        user_post_count = Post.objects.filter(author=request.user, is_deleted=False).count()
     else:
         user_post_count = 0
     context = {
@@ -347,7 +345,7 @@ def view_other_profile(request,user_id):
         messages.error(request, 'User not found.')
         return redirect('forum-main')
 
-    user_posts = Post.objects.filter(author=profile_user).order_by('-date_posted')
+    user_posts = Post.objects.filter(author=profile_user, is_deleted=False).order_by('-date_posted')
     user_posts_count = user_posts.count()
 
     context = {
@@ -387,13 +385,17 @@ From MMU Forum Team
                     [email],
                     fail_silently=False,
                 )
-                messages.success(request, "A new OTP has been sent to your student email.")
-                
             
                 request.session['reset_email'] = email
+                messages.success(request, "A new OTP has been sent to your student email.")
                 return redirect('verify-otp')
             except User.DoesNotExist:
-                pass
+                 messages.success(request, "If that email is registered, an OTP has been sent.")
+                 return redirect('verify-otp')
+            except Exception as e:
+                messages.error(request, "Failed to send OTP email. Please try again later.")
+                print(f"Mail Error: {e}")
+                return render(request, 'user/forgot_password.html', {'form': form})
     else:
         form = RequestOTPForm()
     return render(request, 'user/forgot_password.html', {'form': form})

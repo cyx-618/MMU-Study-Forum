@@ -61,9 +61,10 @@
         {% endif %}
     </div>
     {% endif %}
+
+    {% if not post.is_deleted %}
     <br>
     <hr>
-
     <div class="post-footer">
         <div class="post-actions">
             <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
@@ -95,8 +96,10 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
+{% if not post.is_deleted %}
 <div id="comments" class="comment-section">
     <h3><i class="far fa-comment"></i> Comments ( {{ post.comments.count}} )</h3>
 
@@ -213,6 +216,7 @@
         </form>
     </div>
 </div>
+{% endif %}
 
 <script>
     document.querySelectorAll('.like-post').forEach(button => {
