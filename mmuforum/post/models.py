@@ -31,6 +31,12 @@ class Post (models.Model):
     deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='deleted_posts')
 
     is_announcement = models.BooleanField(default=False)
+    pinned_until = models.DateTimeField(null=True, blank=True)
+
+    def is_pinned(self):
+        if not self.pinned_until:
+            return False
+        return self.is_announcement and timezone.now() < self.pinned_until
 
     def total_likes(self):
         return self.likes.count()

@@ -33,6 +33,10 @@ def admin_main(request):
     for post in posts:
         post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
 
+        if post.pinned_until and timezone.now() > post.pinned_until:
+            post.is_announcement = False
+            post.save(update_fields=['is_announcement'])
+
     context = {
         'posts': posts,
     }
@@ -859,11 +863,19 @@ def admin_create_post(request):
         is_announcement = request.POST.get('is_announcement') == 'on'
         
         if title and content:
+            category = None
+            if category_id:
+                category = Category.objects.filter(id=category_id).first()
+            else:
+                category, created = Category.objects.get_or_create(category='General')
+
             post = Post.objects.create(
                 author=request.user,
                 title=title,
                 content=content,
-                is_announcement=is_announcement or request.user.is_superuser
+                category=category,
+                is_announcement=True,
+                pinned_until=timezone.now() + timedelta(days=7)
             )
             
             if category_id:

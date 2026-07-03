@@ -28,7 +28,7 @@ from django.http import JsonResponse
 def main(request):
     context = {
         #'posts': Post.objects.all().prefetch_related('comments','likes'),
-        'posts': Post.objects.filter(is_deleted=False).prefetch_related('comments','likes'),
+        'posts': Post.objects.filter(is_deleted=False).prefetch_related('comments','likes').order_by('is_announcement', '-date_posted'),
         'title':'Main Forum',
     }
     return render(request, 'post/main.html', context)
