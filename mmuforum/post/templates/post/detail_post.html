@@ -129,19 +129,19 @@
                     </div>
                                             
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        {% if user.is_authenticated and user != comment.user and not comment.user.is_staff and not comment.user.is_superuser %}
-                            <a href="{% url 'report-comment' comment.id %}" style="text-decoration: none; color: #999; font-size: 12px; margin-left: 10px;">
-                            Report
-                            </a>
+                        {% if user.is_authenticated and user != comment.user %}
+                        <a href="{% url 'report-comment' comment.id %}" style="text-decoration: none; color: #999; font-size: 12px; margin-left: 10px;" title="Report this comment">
+                        Report
+                        </a>
                         {% endif %}
 
                         {% if user == comment.user or user.is_staff %}
-                            <form method="post" action="{% url 'delete-comment' comment.id %}" onsubmit="return confirm('Are you sure want to delete this comment?')">
+                        <form method="post" action="{% url 'delete-comment' comment.id %}" onsubmit="return confirm('Are you sure want to delete this comment?');" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" style="background: none; border: none; color: #da6e62; cursor: pointer; font-size: 14px;" title="delete">
+                            <button type="submit" style="background: none; border: none; color: #da6e62; cursor: pointer; font-size: 14px;" title="delete-comment">
                                 Delete
                             </button>
-                            </form>
+                        </form>
                         {% endif %}
                     </div>
                 </div>
