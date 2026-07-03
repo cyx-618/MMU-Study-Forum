@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login, logout
 from .models import Notification, User_profile, Feedback, ProfileOTP
-from post.models import Like, Post
+from post.models import Like, Post, Category
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -92,6 +92,7 @@ def dispatch_user(request):
 
 @login_required
 def profile(request):
+    categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, request.FILES, instance=request.user.user_profile)
         if form.is_valid():
@@ -102,13 +103,15 @@ def profile(request):
         form = UserUpdateForm(instance=request.user.user_profile)
     
     context={
-        'title':'Update Profile'
+        'title':'Update Profile',
+        'categories': categories
     }
     return render(request,'user/profile.html',{'form': form})
 
 
 @login_required
 def submit_feedback(request):
+    categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
@@ -170,24 +173,28 @@ From MMU Forum Admin System
         form = FeedbackForm()
 
     context = {
-        'title': 'Submit Feedback'
+        'title': 'Submit Feedback',
+        'categories': categories,
     }
     return render(request, 'user/feedback.html', {'form': form})
 
 
 @login_required
 def feedback_list(request):
+    categories = Category.objects.all().order_by('category')
     feedbacks = Feedback.objects.filter(user=request.user).order_by('-created_at')
 
     context = {
         'feedbacks': feedbacks,
-        'title': 'My Feedback'
+        'title': 'My Feedback',
+        'categories': categories,
     }
     return render(request, 'user/feedback_list.html', context)
 
 
 @login_required
 def feedback_detail(request, feedback_id):
+    categories = Category.objects.all().order_by('category')
     feedback = get_object_or_404(Feedback, id=feedback_id)
     if not request.user.is_superuser and not request.user.is_staff and feedback.user != request.user:
         messages.error(request, 'You do not have permission to view this feedback.')
@@ -195,7 +202,8 @@ def feedback_detail(request, feedback_id):
     
     context = {
         'feedback': feedback,
-        'title': f'Feedback Detail - {feedback.subject}'
+        'title': f'Feedback Detail - {feedback.subject}',
+        'categories': categories,
     }
 
     return render(request, 'user/feedback_detail.html', context)
@@ -208,6 +216,7 @@ def view_profile(request,username):
     posts = Post.objects.filter(author=user, is_deleted=False).order_by('-date_posted')
     post_count = posts.count()
     liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
+    categories = Category.objects.all().order_by('category')
 
     if request.user.is_authenticated:
         user_post_count = Post.objects.filter(author=request.user, is_deleted=False).count()
@@ -219,6 +228,7 @@ def view_profile(request,username):
         'posts': posts,
         'post_count': post_count,
         'liked_posts': liked_posts,
+        'categories': categories,
         'liked_post_ids': Like.objects.filter(
             user=request.user
         ).values_list('post_id', flat=True),
@@ -228,6 +238,7 @@ def view_profile(request,username):
 
 @login_required
 def edit_profile(request):
+    categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, request.FILES, instance=request.user.user_profile)
         if form.is_valid():
@@ -240,33 +251,37 @@ def edit_profile(request):
     context={
         'title':'Edit Profile',
         'form': form,
+        'categories': categories,
     }
     return render(request,'user/edit_profile.html',{'form': form})
 
 
 @login_required
 def delete_profile(request):
+    categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         user = request.user
         user.delete()
         logout(request)
         messages.success(request, 'Your account has been deleted!')
         return redirect('forum-home')
-    return render(request, 'user/delete_profile.html')
+    return render(request, 'user/delete_profile.html', {'categories': categories})
 
 
 @login_required
 def notifications(request):
+    categories = Category.objects.all().order_by('category')
     notifications = request.user.notifications.all()
 
     unread_notifications = notifications.filter(is_read=False)
     unread_notifications.update(is_read=True)
 
-    return render(request, 'user/notification.html', {'notifications': notifications})
+    return render(request, 'user/notification.html', {'notifications': notifications, 'categories': categories})
     
 
 @login_required
 def view_other_profile(request,user_id):
+    categories = Category.objects.all().order_by('category')
     profile_user = get_object_or_404(User, id=user_id)
 
     if not profile_user.user_profile:
@@ -281,7 +296,8 @@ def view_other_profile(request,user_id):
         'user_posts': user_posts,
         'user_posts_count': user_posts_count,
         'user': profile_user,
-        'title': f"{profile_user.username}'s Profile"
+        'title': f"{profile_user.username}'s Profile",
+        'categories': categories
     }
     return render(request, 'user/view_other_profile.html', context)
 
@@ -394,10 +410,12 @@ def resend_otp_view(request):
 
 @login_required
 def view_report(request):
+   categories = Category.objects.all().order_by('category')
    user_reports = ReportPost.objects.filter(reporter=request.user).select_related('post')
    report_comment=ReportComment.objects.filter(reporter=request.user).select_related('comment')
    context = {
         'reports': user_reports,
         'comment_reports':report_comment,
+        'categories': categories,
     }
    return render(request, 'user/view_report.html', context)

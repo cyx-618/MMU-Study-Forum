@@ -37,4 +37,5 @@ urlpatterns = [
     path('admin/create-post/', views.admin_create_post, name='admin-create-post'),
     path('admin/comment/delete/<int:comment_id>', views.admin_delete_comment, name='admin-delete-comment'),
     path('admin/panel/offenders/', views.offender, name='offender-management'),
+    path('admin/add-comment/<int:post_id>/', views.admin_add_comment, name='admin-add-comment'),
 ]

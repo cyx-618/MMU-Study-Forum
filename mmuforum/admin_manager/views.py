@@ -12,6 +12,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.urls import reverse
+
 
 
 # Create your views here.
@@ -20,6 +22,8 @@ def admin_main(request):
     query = request.GET.get('q')
     search_type = request.GET.get('type', 'post')
     posts = Post.objects.all().order_by('-is_announcement', '-date_posted')
+    category_id = request.GET.get('category')
+    majors = Major.objects.all()
 
     if query:
         if search_type == 'post':
@@ -30,6 +34,9 @@ def admin_main(request):
         elif search_type == 'user':
             posts = posts.filter(author__username__icontains=query)
 
+    if category_id:
+        posts= posts.filter(category_id=category_id)
+
     for post in posts:
         post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
 
@@ -37,18 +44,38 @@ def admin_main(request):
             post.is_announcement = False
             post.save(update_fields=['is_announcement'])
 
+    categories = Category.objects.all().order_by('category')
+    selected_category = None
+    if category_id:
+        selected_category = Category.objects.filter(id=category_id).first()
+
+    current_major_id = request.GET.get('major')
+    if current_major_id:
+        posts = posts.filter(author__user_profile__major_id=current_major_id)
+
     context = {
         'posts': posts,
+        'query': query,
+        'search_type': search_type,
+        'categories': categories,
+        'selected_category': selected_category,
+        'majors': majors,
+        'current_major_id': current_major_id,
     }
     return render(request, 'admin_manager/admin_main.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_post_detail(request, post_id):
     post=get_object_or_404 (Post, id=post_id)
+    categories = Category.objects.all().order_by('category')
+
+    post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
+
     if post.is_deleted:
         messages.warning(request, 'This post has been deleted.')
     context = {
         'post': post,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_post_detail.html', context)
 
@@ -56,6 +83,7 @@ def admin_post_detail(request, post_id):
 @user_passes_test(lambda u: u.is_superuser)
 def admin_like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+    categories = Category.objects.all().order_by('category')
 
     existing_like = Like.objects.filter(post=post, user=request.user).first()
     
@@ -70,12 +98,14 @@ def admin_like_post(request, post_id):
 
     return JsonResponse({
         'liked': liked,
-        'count': total_likes
+        'count': total_likes,
+        'categories': categories,
     })
 
 @user_passes_test(lambda u: u.is_superuser)
 def like_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
+    categories = Category.objects.all().order_by('category')
 
     if comment.likes_count.filter(id=request.user.id).exists():
         comment.likes_count.remove(request.user)
@@ -86,12 +116,14 @@ def like_comment(request, comment_id):
 
     return JsonResponse({
         'liked': liked, 
-        'count': comment.likes_count.count()
+        'count': comment.likes_count.count(),
+        'categories': categories,
     })
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_panel(request):
+    categories = Category.objects.all().order_by('category')
     #Users
     total_users = User.objects.count()
     active_users = User.objects.filter(is_active=True).count()
@@ -145,6 +177,7 @@ def admin_panel(request):
         'resolved_reports': resolved_reports,
         'pending_reports': pending_reports,
         'report_reason_data': report_reason_data,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_panel.html', context)
 
@@ -154,6 +187,7 @@ def user_management(request):
     query = request.GET.get('q')
     search_type = request.GET.get('type', 'username')
     users = User.objects.all().order_by('-date_joined')
+    categories = Category.objects.all().order_by('category')
 
     if query:
         if search_type == 'username':
@@ -167,6 +201,7 @@ def user_management(request):
         'users': users,
         'query': query,
         'search_type': search_type,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_user_management.html', context)
 
@@ -174,7 +209,8 @@ def user_management(request):
 @user_passes_test(lambda u: u.is_superuser)
 def delete_user_confirmation(request, user_id):
     user = get_object_or_404(User, id=user_id)
-    return render(request, 'admin_manager/admin_um_delete_user.html', {'user': user})
+    categories = Category.objects.all().order_by('category')
+    return render(request, 'admin_manager/admin_um_delete_user.html', {'user': user, 'categories': categories})
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -187,6 +223,7 @@ def user_delete(request, user_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def add_user(request):
+    categories = Category.objects.all().order_by('category')
     majors = Major.objects.all().order_by('major_name')
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -243,16 +280,23 @@ def add_user(request):
             messages.error(request, f'Error creating user: {str(e)}')
             return redirect('add-user')
         
-    return render(request, 'admin_manager/admin_um_add_user.html', {'majors': majors})
+    return render(request, 'admin_manager/admin_um_add_user.html', {'majors': majors, 'categories': categories})
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def view_profile(request, user_id):
+    categories = Category.objects.all().order_by('category')
     user = get_object_or_404(User, id=user_id)
     user_profile = User_profile.objects.filter(user=user).first()
     posts = Post.objects.filter(author=user).order_by('-date_posted')
     post_count = posts.count()
     liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
+
+    for post in posts:
+        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
+
+    for post in liked_posts:
+        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
     
     context = {
         'profile_user': user,
@@ -260,28 +304,40 @@ def view_profile(request, user_id):
         'posts': posts,
         'post_count': post_count,
         'liked_posts': liked_posts,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_view_profile.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_profile(request):
+    categories = Category.objects.all().order_by('category')
     user= request.user
+    user_profile = User_profile.objects.filter(user=user).first()
     posts= Post.objects.filter(author=user).order_by('-date_posted')
     post_count = posts.count()
     liked_posts = Post.objects.filter(likes__user=user).order_by('-date_posted')
+
+    for post in posts:
+        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
+
+    for post in liked_posts:
+        post.user_has_liked = Like.objects.filter(post=post, user=request.user).exists()
     
     context = {
         'profile_user': user,
+        'user_profile': user_profile,
         'posts': posts,
         'post_count': post_count,
         'liked_posts': liked_posts,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_view_profile.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def edit_user(request, user_id):
+    categories = Category.objects.all().order_by('category')
     target_user = get_object_or_404(User, id=user_id)
     user_profile = User_profile.objects.filter(user=target_user).first()
     majors = Major.objects.all().order_by('major_name')
@@ -327,12 +383,14 @@ def edit_user(request, user_id):
         'profile_user': target_user,
         'user_profile': user_profile,
         'majors': majors,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_um_edit_user.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def batch_delete_confirmation(request):
+    categories = Category.objects.all().order_by('category')
     ids_str = request.GET.get('ids', '')
     if not ids_str:
         return redirect('user-management')
@@ -340,11 +398,12 @@ def batch_delete_confirmation(request):
     user_ids = [int(id) for id in ids_str.split(',')]
     users = User.objects.filter(id__in=user_ids)
 
-    return render(request, 'admin_manager/admin_um_delete_user.html', {'users': users, 'is_batch': True})
+    return render(request, 'admin_manager/admin_um_delete_user.html', {'users': users, 'is_batch': True, 'categories': categories})
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def batch_delete_execute(request):
+    categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         ids_str = request.POST.get('ids', '')
         if ids_str:
@@ -360,11 +419,12 @@ def batch_delete_execute(request):
         else:
             messages.error(request, 'No users selected.')
     
-    return redirect('user-management')
+    return redirect('user-management', {'categories': categories})
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def feedback_center(request):
+    categories = Category.objects.all().order_by('category')
     query = request.GET.get('q')
     feedbacks = Feedback.objects.all().order_by('-created_at')
 
@@ -376,7 +436,8 @@ def feedback_center(request):
 
     context = {
         'feedbacks': feedbacks,
-        'query': query
+        'query': query,
+        'categories': categories,
     }
 
     return render(request, 'admin_manager/admin_feedback_center.html', context)
@@ -384,6 +445,7 @@ def feedback_center(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def feedback_detail(request, feedback_id):
+    categories = Category.objects.all().order_by('category')
     feedback = get_object_or_404(Feedback, id=feedback_id)
 
     if request.method == 'POST':
@@ -431,13 +493,15 @@ From MMU Forum Team
     
     
     context = {
-        'feedback': feedback
+        'feedback': feedback,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_feedback_detail.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def report_center(request):
+    categories = Category.objects.all().order_by('category')
     query = request.GET.get('q')
     post_reports = ReportPost.objects.all().order_by('-created_at')
     comment_reports = ReportComment.objects.all().order_by('-created_at')
@@ -449,13 +513,15 @@ def report_center(request):
     context= {
         'post_reports': post_reports,
         'comment_reports': comment_reports,
-        'query': query
+        'query': query,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_report_center.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def report_process(request, report_type, report_id):
+    categories = Category.objects.all().order_by('category')
     if report_type == 'post':
         report = get_object_or_404(ReportPost, id=report_id)
     else:
@@ -649,6 +715,7 @@ From MMU Forum Team
         'report': report,
         'report_type': report_type,
         'current_resolution': report.resolution,
+        'categories': categories,
     }
     
     return render (request, 'admin_manager/admin_report_process.html', context)
@@ -656,16 +723,19 @@ From MMU Forum Team
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_notifications(request):
+    categories = Category.objects.all().order_by('category')
     notifications = request.user.notifications.all().order_by('-created_at')
     
     context = {
         'notifications': notifications,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_notification.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_major(request, major_name):
+    categories = Category.objects.all().order_by('category')
     posts = Post.objects.filter(
         author__user_profile__major__major_name=major_name
     ).order_by('date_posted')
@@ -676,12 +746,14 @@ def admin_major(request, major_name):
     context = {
         'posts' : posts,
         'selected_major' : major_name,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_main.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_database_management(request):
+    categories = Category.objects.all().order_by('category')
     majors = Major.objects.all().order_by('major_name')
     categories = Category.objects.all().order_by('category')
 
@@ -694,6 +766,7 @@ def admin_database_management(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def database_add(request, model_type):
+    categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         name = request.POST.get('name')
         print(f"model_type: {model_type}")
@@ -711,12 +784,14 @@ def database_add(request, model_type):
     context = {
         'model_type': model_type,
         'title': f'Add {model_type.title()}',
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_add_database.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def database_edit(request, model_type, item_id):
+    categories = Category.objects.all().order_by('category')
     if model_type == 'major':
         item = get_object_or_404(Major, id=item_id)
         field_value = item.major_name
@@ -744,12 +819,14 @@ def database_edit(request, model_type, item_id):
         'model_type': model_type,
         'title': f'{model_type.title()}',
         'field_value': field_value,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_edit_database.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def database_delete_confirmation(request, model_type, item_id):
+    categories = Category.objects.all().order_by('category')
     if model_type == 'major':
         item = get_object_or_404(Major, id=item_id)
         item_name = item.major_name
@@ -764,12 +841,14 @@ def database_delete_confirmation(request, model_type, item_id):
         'item_name': item_name,
         'model_type': model_type,
         'title': f'Delete {model_type.title()}',
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_delete_database.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def database_delete_execute(request, model_type, item_id):
+    categories = Category.objects.all().order_by('category')
     print(f"Deleting {model_type} with id {item_id}")
     if model_type == 'major':
         item = get_object_or_404(Major, id=item_id)
@@ -782,16 +861,18 @@ def database_delete_execute(request, model_type, item_id):
     
     item.delete()
     messages.success(request, f'{model_type.title()} "{item_name}" deleted successfully.')
-    return redirect('database-management') 
+    return redirect('database-management')
 
 
 def admin_logout(request):
+    categories = Category.objects.all().order_by('category')
     logout(request)
     return redirect('forum-home')
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_edit_post(request, post_id):
+    categories = Category.objects.all().order_by('category')
     post = get_object_or_404(Post, id=post_id)
     categories = Category.objects.all().order_by('category')
     
@@ -839,6 +920,7 @@ def admin_edit_post(request, post_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_delete_post(request, post_id):
+    categories = Category.objects.all().order_by('category')
     post = get_object_or_404(Post, id=post_id)
     
     if request.method == 'POST':
@@ -848,12 +930,14 @@ def admin_delete_post(request, post_id):
     
     context = {
         'post': post,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_delete_post.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_create_post(request):
+    categories = Category.objects.all().order_by('category')
     categories = Category.objects.all().order_by('category')
     
     if request.method == 'POST':
@@ -895,6 +979,7 @@ def admin_create_post(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_delete_comment(request, comment_id):
+    categories = Category.objects.all().order_by('category')
     comment = get_object_or_404(Comment, id=comment_id)
     post_id = comment.post.id
     
@@ -906,12 +991,14 @@ def admin_delete_comment(request, comment_id):
     context = {
         'comment': comment,
         'post': comment.post,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_delete_comment.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def offender(request):
+    categories = Category.objects.all().order_by('category')
     offenders = Offender.objects.all().order_by('-marked_at')
 
     if request.method == 'POST':
@@ -932,5 +1019,100 @@ def offender(request):
     
     context = {
         'offenders': offenders,
+        'categories': categories,
     }
     return render(request, 'admin_manager/admin_offender.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_add_comment(request, post_id):
+    categories = Category.objects.all().order_by('category')
+    if request.method == 'POST':
+        post = get_object_or_404(Post, id=post_id)
+        content = request.POST.get('content')
+        parent_id = request.POST.get('parent_id')
+        parent_object = None
+
+        if content:
+            if parent_id and parent_id.strip():
+                target_comment = Comment.objects.filter(id=parent_id).first()
+                if target_comment.parent_comment:
+                    parent_object = target_comment.parent_comment
+                else:
+                    parent_object = target_comment
+
+            Comment.objects.create(
+                post=post,
+                user=request.user,
+                text=content,
+                parent_comment=parent_object
+            )
+
+            if parent_object:
+                Notification.objects.create(
+                    receiver=parent_object.user,
+                    sender=request.user,
+                    notification_type='comment_reply',
+                    post=post
+                )
+
+                if parent_object.user.email:
+                    subject = f"Someone replied to your comment on MMU Forum!"
+                    current_site = request.build_absolute_uri('/')[:-1]
+                    #post_url = f"{current_site}/post/{post.id}/"
+
+                    email_body = f"""
+Hi {parent_object.user.username},
+
+Great news! {request.user.username} just replied to your comment on the post titled "{post.title}" on MMU Forum.
+
+You can view the post here:
+
+From MMU Forum Team
+"""
+                try:
+                    send_mail(
+                        subject, 
+                        email_body, 
+                        settings.EMAIL_HOST_USER,
+                        [parent_object.user.email],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+
+            else:
+                if post.author != request.user:
+                    Notification.objects.create(
+                        receiver=post.author,
+                        sender=request.user,
+                        notification_type='post_comment',
+                        post=post
+                    )
+                
+                if post.author.email:
+                    subject = f"New comment on your post: {post.title} on MMU Forum!"
+                    current_site = request.build_absolute_uri('/')[:-1]
+                    #post_url = f"{current_site}/post/{post.id}/"
+                    email_body = f"""
+Hi {post.author.username},
+
+Great news! {request.user.username} just commented on your post titled "{post.title}" on MMU Forum.
+
+You can view your post here:
+
+From MMU Forum Team
+                    """
+                try:
+                    send_mail(
+                        subject, 
+                        email_body, 
+                        settings.EMAIL_HOST_USER,
+                        [post.author.email],
+                        fail_silently=False,
+                    )
+
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+
+    return redirect(f"{reverse('admin-post-detail', kwargs={'post_id': post.id})}#comments", {'categories': categories})

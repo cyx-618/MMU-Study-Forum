@@ -64,7 +64,7 @@
                             <h3 class="post-title">
                                 <a href="{% url 'post-detail' post.pk %}" class="title-searchable"> {{ post.title }} </a>
                             </h3>
-                            <p class="post-content searchable">{{ post.content }}</p>
+                            <p class="post-content searchable">{{ post.content|linebreaksbr }}</p>
                         </div>
 
                         {% if post.image or post.video_file or post.pdf %}

@@ -1,107 +1,141 @@
 {% load static %}
 
 <html>
-    <head>
-        <title>{% block title %}{% endblock title %}</title>
-        <link rel="stylesheet" href="{% static 'admin_manager/admin.css' %}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Titan+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Kedebideri:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
-        <link rel="icon" type="image/x-icon" href="{% static 'home/images/website-logo.png' %}">
-    </head>
 
-    <body>
-        <nav class="admin-banner" id="main-banner">
-            <div class="banner-top">
-                <div class="logo-area">
-                    <a href="{% url 'admin-main' %}" class="logo-link">
-                        <img src="{% static 'post/images/website-logo.png' %}" alt="Main">
-                        <script src="{% static 'admin_manager/admin.js' %}"></script>
-                        MMU Forum
-                    </a>
-                </div>
+<head>
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'admin_manager/admin.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Titan+One&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kedebideri:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'home/images/website-logo.png' %}">
+</head>
 
-                <div class="search-container">
-                    <form action="{% url 'admin-main' %}" method="GET">
-                        <div class="search-wrapper">
-                            <i class="fas fa-search"></i>
-                            <input type="text" name="q" placeholder="Search..." value="{{ query }}">
-
-                            <select name="type" class="search-select">
-                                <option value="post" {% if search_type == 'post' or not search_type %}selected{% endif %}>Posts</option>
-                                <option value="user" {% if search_type == 'user' %}selected{% endif %}>Users</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="banner-actions">
-                    <a href="{% url 'admin-logout' %}" class="logout-item" title="Log Out">
-                        <img src="{% static 'admin_manager/images/logout.png'%}" alt="Logout">
-                    </a>
-                </div>
+<body>
+    <nav class="admin-banner" id="main-banner">
+        <div class="banner-top">
+            <div class="logo-area">
+                <a href="{% url 'admin-main' %}" class="logo-link">
+                    <img src="{% static 'post/images/website-logo.png' %}" alt="Main">
+                    <script src="{% static 'admin_manager/admin.js' %}"></script>
+                    MMU Forum
+                </a>
             </div>
 
-            <div class="category-bar">
-                <button><a href= "{% url 'admin-major' 'Faculty of Computing and Informatics (FCI)' %}">FCI</a></button>
-                <button><a href= "{% url 'admin-major' 'Faculty of Creative Multimedia (FCM)' %}">FCM</a></button>
-                <button><a href= "{% url 'admin-major' 'Faculty of Management (FOM)' %}">FOM</a></button>
-                <button><a href= "{% url 'admin-major' 'Faculty of Cinematic Arts (FCA)' %}">FCA</a></button>
-                <button><a href= "{% url 'admin-major' 'Faculty of Applied Communication (FAC)' %}">FAC</a></button>
-                <button><a href= "{% url 'admin-major' 'Faculty of AI % Engineering (FAIE)' %}">FAIE</a></button>
-                <button><a href= "{% url 'admin-major' 'Faculty of Law (FOL)' %}">FOL</a></button>
-                <button><a href= "{% url 'admin-major' 'Faculty of Buisness (FOB)' %}">FOB</a></button>
-            </div>
-        </nav>
+            <div class="search-container">
+                <form action="{% url 'admin-main' %}" method="GET">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="q" placeholder="Search..." value="{{ query }}">
 
-        <div class="sidebar">
-            <div class="sidebar-menu">
-                <a href="{% url 'admin-main' %}" class="sidebar-item" alt="Home" title="Mainpage">
-                    <i class="fa fa-home"></i>
-                </a>
-                <a href="{% url 'admin-create-post' %}" class="sidebar-item" alt="Create" title="Create Post/Announcement">
-                    <i class="fas fa-plus-circle"></i>
-                </a>
-                <a href="{% url 'admin-notifications' %}" class="sidebar-item" alt="Notification" title="Notification">
-                    <i class="fas fa-bell"></i>
-                </a>
-                <a href="{% url 'admin-panel' %}" class="sidebar-item" alt="Admin Panel" title="Admin Panel">
-                    <i class="fas fa-user-shield"></i>
-                </a>
-                <a href="{% url 'my-profile'%}" class="sidebar-item" alt="Profile" title="Profile">
-                    <i class="fas fa-user-circle"></i>
+                        <select name="type" class="search-select">
+                            <option value="post" {% if search_type == 'post' or not search_type %}selected{% endif %}>
+                                Posts</option>
+                            <option value="user" {% if search_type == 'user' %}selected{% endif %}>Users</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="banner-actions">
+                <div class="category-filter">
+                    <button class="category-filter-btn" onclick="toggleCategoryDropdown()">
+                        <i class="fas fa-filter"></i>
+                        <span class="filter-label">
+                            {% if selected_category %}
+                            {{ selected_category.category }}
+                            {% else %}
+                            All
+                            {% endif %}
+                        </span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
+                    <div class="category-dropdown" id="categoryDropdown">
+                        <a href="{% url 'admin-main' %}" class="{% if not selected_category %}active{% endif %}">
+                            <i class="fas fa-th-list"></i> All Categories
+                        </a>
+                        {% for category in categories %}
+                        <a href="{% url 'admin-main' %}?category={{ category.id }}"
+                            class="{% if selected_category and selected_category.id == category.id %}active{% endif %}">
+                            {{ category.category }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <a href="{% url 'admin-logout' %}" class="logout-item" title="Log Out">
+                    <img src="{% static 'admin_manager/images/logout.png'%}" alt="Logout">
                 </a>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="content-container">
+        <div class="category-bar">
+            <button><a href="{% url 'admin-main' %}">All</a></button>
 
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dimissible">
-                            <span class="alert-icon">
-                                {% if message.tags == 'success' %}
-                                    <i class="fas fa-check-circle"></i>
-                                {% elif message.tags == 'error' %}
-                                    <i class="fas fa-exclamation-circle"></i>
-                                {% else %}
-                                    <i class="fas fa-info-circle"></i>
-                                {% endif %}
-                            </span>
-                            <span class="alert-message">{{ message }}</span>
-                            <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                {% block content %}
-                {% endblock %}
-            </div>
+            {% for major in majors %}
+            <button>
+                <a href="{% url 'admin-major' major.major_name %}">
+                    {{ major.major_name }}
+                </a>
+            </button>
+            {% empty %}
+            <p>No majors available.</p>
+            {% endfor %}
         </div>
-    </body>
+    </nav>
+
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="{% url 'admin-main' %}" class="sidebar-item" alt="Home" title="Mainpage">
+                <i class="fa fa-home"></i>
+            </a>
+            <a href="{% url 'admin-create-post' %}" class="sidebar-item" alt="Create" title="Create Post/Announcement">
+                <i class="fas fa-plus-circle"></i>
+            </a>
+            <a href="{% url 'admin-notifications' %}" class="sidebar-item" alt="Notification" title="Notification">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="{% url 'admin-panel' %}" class="sidebar-item" alt="Admin Panel" title="Admin Panel">
+                <i class="fas fa-user-shield"></i>
+            </a>
+            <a href="{% url 'my-profile'%}" class="sidebar-item" alt="Profile" title="Profile">
+                <i class="fas fa-user-circle"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="content-container">
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dimissible">
+                <span class="alert-icon">
+                    {% if message.tags == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'error' %}
+                    <i class="fas fa-exclamation-circle"></i>
+                    {% else %}
+                    <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                </span>
+                <span class="alert-message">{{ message }}</span>
+                <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+
 </html>
