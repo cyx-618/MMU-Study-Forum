@@ -50,6 +50,8 @@ def signup (request):
             User_profile.objects.create(user=user)
             auth_login(request, user)
 
+            request.session['show_welcome'] = True
+
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created successfully! Welcome, {username}!')
             return redirect('forum-profile')
@@ -66,6 +68,9 @@ def login(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
+
+            request.session['show_welcome'] = True
+
             return redirect('dispatch-user')
     else:
         form= LoginForm(request=request)
@@ -214,6 +219,9 @@ def view_profile(request,username):
         'posts': posts,
         'post_count': post_count,
         'liked_posts': liked_posts,
+        'liked_post_ids': Like.objects.filter(
+            user=request.user
+        ).values_list('post_id', flat=True),
     }
     return render(request, 'user/view_profile.html', context)
 
