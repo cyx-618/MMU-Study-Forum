@@ -20,3 +20,20 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+if __name__ == '__main__':
+    import sys
+    if 'migrate' in sys.argv:
+        try:
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            if not User.objects.filter(username='Admin').exists():
+                User.objects.create_superuser('Admin', 'mmuforum33@gmail.com', 'mmuforum123')
+                print("=========================================")
+                print("SUPERUSER CREATED: Admin | mmuforum123")
+                print("=========================================")
+        except Exception as e:
+            print(f"Superuser creation skipped: {e}")
+    # ------------------------------------------------
+    
+    main()
