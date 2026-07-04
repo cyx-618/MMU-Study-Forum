@@ -18,9 +18,12 @@
             <div class="user-sec">
             <div class="avatar">
                  {% if profile_user.user_profile.profile_picture %}
-                <img src="{{ profile_user.user_profile.profile_picture.url }}" alt="Profile Picture" class="avatar-img">
+                <img src="{{ profile_user.user_profile.profile_picture.url }}" 
+                alt="Profile Picture" class="avatar-img">
             {% else %}
-                <p>No profile picture.</p>
+                <img src="{% static 'user/images/default.png' %}" 
+             alt="Default Profile Picture" 
+            class="avatar-img">
             {% endif %}
             </div>
         <div class="profile-info">
