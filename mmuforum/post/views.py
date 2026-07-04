@@ -470,7 +470,7 @@ class  PostListView(LoginRequiredMixin, ListView):
 
         queryset = Post.objects.filter(is_deleted=False)
         reported_ids = ReportPost.objects.filter(reporter=self.request.user).values_list('post_id', flat=True)
-        queryset = queryset.exclude(id__in=reported_ids).order_by('-date_posted')
+        queryset = queryset.exclude(id__in=reported_ids).order_by('-is_announcement','-date_posted')
 
         search_query = self.request.GET.get('q', '').strip()
 
