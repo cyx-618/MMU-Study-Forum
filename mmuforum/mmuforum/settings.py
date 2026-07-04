@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-6p#z)ruocjy2)s3gk#b2c1allu@3-u@-q$sba8la2ozwbw5#0e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mmu-forum.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
