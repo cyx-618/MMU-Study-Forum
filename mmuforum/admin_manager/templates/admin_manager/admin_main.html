@@ -11,7 +11,7 @@
         {% if post.author.user_profile.profile_picture %}
         <img src="{{ post.author.user_profile.profile_picture.url }}" class="post-avatar">
         {% else %}
-        <img src="{% static 'admin_manager/images/default_avatar.png' %}" class="post-avatar">
+        <img src="{% static 'profile_picture/default.png' %}" class="post-avatar">
         {% endif %}
 
         <div class="author-info">
