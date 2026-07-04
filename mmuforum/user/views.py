@@ -17,6 +17,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from post.models import ReportPost,ReportComment
+from user.models import Major
 from .form import (
     UserRegisterForm,
     UserUpdateForm,
@@ -92,6 +93,7 @@ def dispatch_user(request):
 
 @login_required
 def profile(request):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, request.FILES, instance=request.user.user_profile)
@@ -104,13 +106,15 @@ def profile(request):
     
     context={
         'title':'Update Profile',
-        'categories': categories
+        'categories': categories,
+        'all_majors': all_majors
     }
     return render(request,'user/profile.html',{'form': form})
 
 
 @login_required
 def submit_feedback(request):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
@@ -176,11 +180,12 @@ From MMU Forum Admin System
         'title': 'Submit Feedback',
         'categories': categories,
     }
-    return render(request, 'user/feedback.html', {'form': form})
+    return render(request, 'user/feedback.html', {'form': form, 'all_majors': all_majors})
 
 
 @login_required
 def feedback_list(request):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     feedbacks = Feedback.objects.filter(user=request.user).order_by('-created_at')
 
@@ -188,12 +193,14 @@ def feedback_list(request):
         'feedbacks': feedbacks,
         'title': 'My Feedback',
         'categories': categories,
+        'all_majors': all_majors,
     }
     return render(request, 'user/feedback_list.html', context)
 
 
 @login_required
 def feedback_detail(request, feedback_id):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     feedback = get_object_or_404(Feedback, id=feedback_id)
     if not request.user.is_superuser and not request.user.is_staff and feedback.user != request.user:
@@ -204,6 +211,7 @@ def feedback_detail(request, feedback_id):
         'feedback': feedback,
         'title': f'Feedback Detail - {feedback.subject}',
         'categories': categories,
+        'all_majors': all_majors,
     }
 
     return render(request, 'user/feedback_detail.html', context)
@@ -211,6 +219,7 @@ def feedback_detail(request, feedback_id):
 
 @login_required
 def view_profile(request,username):
+    all_majors = Major.objects.all()
     user=get_object_or_404(User, username=username)
     user_profile = User_profile.objects.filter(user=user).first()
     posts = Post.objects.filter(author=user, is_deleted=False).order_by('-date_posted')
@@ -224,6 +233,7 @@ def view_profile(request,username):
         user_post_count = 0
     context = {
         'profile_user': user,
+        'all_majors': all_majors,
         'user_profile': user_profile,
         'posts': posts,
         'post_count': post_count,
@@ -238,6 +248,7 @@ def view_profile(request,username):
 
 @login_required
 def edit_profile(request):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, request.FILES, instance=request.user.user_profile)
@@ -252,12 +263,14 @@ def edit_profile(request):
         'title':'Edit Profile',
         'form': form,
         'categories': categories,
+        'all_majors': all_majors
     }
     return render(request,'user/edit_profile.html',{'form': form})
 
 
 @login_required
 def delete_profile(request):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     if request.method == 'POST':
         user = request.user
@@ -265,22 +278,24 @@ def delete_profile(request):
         logout(request)
         messages.success(request, 'Your account has been deleted!')
         return redirect('forum-home')
-    return render(request, 'user/delete_profile.html', {'categories': categories})
+    return render(request, 'user/delete_profile.html', {'categories': categories, 'all_majors': all_majors})
 
 
 @login_required
 def notifications(request):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     notifications = request.user.notifications.all()
 
     unread_notifications = notifications.filter(is_read=False)
     unread_notifications.update(is_read=True)
 
-    return render(request, 'user/notification.html', {'notifications': notifications, 'categories': categories})
+    return render(request, 'user/notification.html', {'notifications': notifications, 'categories': categories, 'all_majors': all_majors})
     
 
 @login_required
 def view_other_profile(request,user_id):
+    all_majors = Major.objects.all()
     categories = Category.objects.all().order_by('category')
     profile_user = get_object_or_404(User, id=user_id)
 
@@ -297,7 +312,8 @@ def view_other_profile(request,user_id):
         'user_posts_count': user_posts_count,
         'user': profile_user,
         'title': f"{profile_user.username}'s Profile",
-        'categories': categories
+        'categories': categories,
+        'all_majors': all_majors,
     }
     return render(request, 'user/view_other_profile.html', context)
 
@@ -410,6 +426,7 @@ def resend_otp_view(request):
 
 @login_required
 def view_report(request):
+   all_majors = Major.objects.all()
    categories = Category.objects.all().order_by('category')
    user_reports = ReportPost.objects.filter(reporter=request.user).select_related('post')
    report_comment=ReportComment.objects.filter(reporter=request.user).select_related('comment')
@@ -417,5 +434,6 @@ def view_report(request):
         'reports': user_reports,
         'comment_reports':report_comment,
         'categories': categories,
+        'all_majors': all_majors,
     }
    return render(request, 'user/view_report.html', context)

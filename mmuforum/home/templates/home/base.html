@@ -94,16 +94,17 @@
             </div>
         </div>
 
-        <nav class="category-bar">
-            <button><a href="/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
-            <button><a href="/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
-            <button><a href="/main/forum/Faculty of Management (FOM)">FOM</a></button>
-            <button><a href="/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
-            <button><a href="/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
-            <button><a href="/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
-            <button><a href="/main/forum/Faculty of Law (FOL)">FOL</a></button>
-            <button><a href="/main/forum/Faculty of Business (FOB)">FOB</a></button>
-        </nav>
+        <div class="category-bar">
+            {% for major in all_majors %}
+        <button>
+            <a href="{% url 'major-forum' major.major_name %}">
+                {{ major.major_name }}
+            </a>
+        </button>
+    {% empty %}
+        <p>No faculties available.</p>
+    {% endfor %}
+        </div>
     </nav>
 
     <div class="sidebar">

@@ -11,7 +11,7 @@ from django.views.generic import (
     DeleteView
 )
 from post.models import Post, Like, Comment, Category
-from user.models import Feedback, Notification
+from user.models import Feedback, Notification, Major
 from django.urls import reverse
 from django.urls import reverse_lazy
 
@@ -27,10 +27,13 @@ from django.http import JsonResponse
 # Create your views here.
 def main(request):
     categories = Category.objects.all().order_by('category')
+    all_majors = Major.objects.all()
     context = {
         #'posts': Post.objects.all().prefetch_related('comments','likes'),
         'posts': Post.objects.filter(is_deleted=False).prefetch_related('comments','likes').order_by('is_announcement', '-date_posted'),
         'title':'Main Forum',
+        'all_majors': all_majors,
+        'categories':categories
     }
     return render(request, 'post/main.html', context)
 
@@ -46,28 +49,32 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 def major_post_list(request, major_name):
-        categories = Category.objects.all().order_by('category')
-        posts = Post.objects.filter(
-            author__user_profile__major__major_name=major_name,
-            is_deleted=False
+    all_majors = Major.objects.all()
+    categories = Category.objects.all().order_by('category')
+    posts = Post.objects.filter(
+        author__user_profile__major__major_name=major_name,
+        is_deleted=False
     ).order_by('-date_posted').prefetch_related('comments', 'likes')
 
-        search_query = request.GET.get('q', '').strip()
-        if search_query:
-            posts = posts.filter(
-                Q(title__icontains=search_query) |
-                Q(content__icontains=search_query) |
-                Q(author__username__icontains=search_query)
-            ).distinct()
+    all_majors = Major.objects.all()
+
+    search_query = request.GET.get('q', '').strip()
+    if search_query:
+        posts = posts.filter(
+            Q(title__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(author__username__icontains=search_query)
+        ).distinct()
     
-        context = {
-            'posts': posts,
-            'major_name': major_name,
-            'title': f'{major_name} Forum',
-            'search_query': search_query,
-            'categories': categories,
-        }
-        return render(request, 'post/major_forum.html', context)
+    context = {
+        'posts': posts,
+        'major_name': major_name,
+        'title': f'{major_name} Forum',
+        'search_query': search_query,
+        'categories': categories,
+        'all_majors': all_majors
+    }
+    return render(request, 'post/major_forum.html', context)
 
 
 @login_required
@@ -491,6 +498,7 @@ class  PostListView(LoginRequiredMixin, ListView):
         context['search_query'] = search_query
         context['search_type_display'] = 'Post' if search_type == 'posts' else 'User'
         context['show_welcome'] = self.request.session.pop('show_welcome', False)
+        context['all_majors'] = Major.objects.all()
         
         liked_posts = Like.objects.filter(
             user = self.request.user
