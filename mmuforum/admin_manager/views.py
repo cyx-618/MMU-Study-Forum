@@ -601,6 +601,8 @@ def report_process(request, report_type, report_id):
             offender = report.post.author if report_type == 'post' else report.comment.user
             offender.is_active = False
             offender.save()
+
+            Post.objects.filter(author=offender).update(is_deleted=True)
             resolution = 'approved_suspended'
 
             offender_record, created = Offender.objects.get_or_create(
