@@ -10,7 +10,7 @@ from django.views.generic import (
     UpdateView, 
     DeleteView
 )
-from post.models import Post, Like, Comment
+from post.models import Post, Like, Comment, Category
 from user.models import Feedback, Notification
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -26,13 +26,13 @@ from django.http import JsonResponse
 
 # Create your views here.
 def main(request):
+    categories = Category.objects.all().order_by('category')
     context = {
         #'posts': Post.objects.all().prefetch_related('comments','likes'),
         'posts': Post.objects.filter(is_deleted=False).prefetch_related('comments','likes').order_by('is_announcement', '-date_posted'),
         'title':'Main Forum',
     }
     return render(request, 'post/main.html', context)
-
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -46,6 +46,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 def major_post_list(request, major_name):
+        categories = Category.objects.all().order_by('category')
         posts = Post.objects.filter(
             author__user_profile__major__major_name=major_name,
             is_deleted=False
@@ -64,8 +65,8 @@ def major_post_list(request, major_name):
             'major_name': major_name,
             'title': f'{major_name} Forum',
             'search_query': search_query,
+            'categories': categories,
         }
-        #return render(request, 'post/major_forum.html', {'posts': posts, 'major_name': major_name})
         return render(request, 'post/major_forum.html', context)
 
 
@@ -279,6 +280,7 @@ From MMU Forum Team
 
 @login_required
 def report_post(request, post_id):
+    categories = Category.objects.all().order_by('category')
     post = get_object_or_404(Post, id=post_id)
     
     existing_report = ReportPost.objects.filter(post=post, reporter=request.user).first()
@@ -349,6 +351,7 @@ MMU Forum System
         'form': form,
         'post': post,
         'reported_post': post,
+        'categories': categories,
     }
     return render(request, 'post/report_post.html', context)
 
@@ -368,6 +371,7 @@ def delete_comment(request, comment_id):
 
 @login_required
 def report_comment(request, comment_id):
+    categories = Category.objects.all().order_by('category')
     comment = get_object_or_404(Comment, id=comment_id)
     post = comment.post
     
@@ -442,6 +446,7 @@ MMU Forum System
         'comment': comment,
         'reported_post': post,
         'post':post,
+        'categories': categories,
     }
     return render(request, 'post/report_comment.html', context)
 
@@ -461,6 +466,10 @@ class  PostListView(LoginRequiredMixin, ListView):
         queryset = queryset.exclude(id__in=reported_ids).order_by('-date_posted')
 
         search_query = self.request.GET.get('q', '').strip()
+
+        self.category_id = self.request.GET.get('category')
+        if self.category_id:
+            queryset = queryset.filter(category_id=self.category_id)
         
         if search_query:
             if search_type == 'posts':
@@ -488,6 +497,11 @@ class  PostListView(LoginRequiredMixin, ListView):
         ).values_list('post_id', flat=True)
 
         context['liked_posts'] = liked_posts
+
+        context['categories'] = Category.objects.all().order_by('category')
+        context['selected_category'] = None
+        if hasattr(self, 'category_id') and self.category_id:
+            context['selected_category'] = Category.objects.filter(id=self.category_id).first()
 
         users = []
         if search_query and search_type == 'users':

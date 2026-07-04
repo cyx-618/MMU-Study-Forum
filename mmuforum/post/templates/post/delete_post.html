@@ -64,7 +64,7 @@
 
                     <div class="post-preview-box">
                         <div class="post-title-preview">{{ post.title }}</div>
-                        <div class="post-content-preview">{{ post.content }}</div>
+                        <div class="post-content-preview">{{ post.content|linebreaksbr }}</div>
                         <div class="post-meta-preview">
                             <strong>Author:</strong>{{ object.author.username }} &nbsp;|&nbsp;
                             <strong>Posted:</strong>{{ post.date_posted|date:"F d, Y" }}

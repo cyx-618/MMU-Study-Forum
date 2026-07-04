@@ -28,7 +28,7 @@
 
     <div class="post-body">
         <h3 class="post-title">{{ post.title }}</h3>
-        <p class="post-content">{{ post.content }}</p>
+        <p class="post-content">{{ post.content|linebreaksbr }}</p>
     </div>
 
     {% if post.image or post.video_file or post.pdf %}
@@ -70,7 +70,7 @@
             <form method="post" action="{% url 'like_post' post.id %}" class="like-form" data-post-id="{{ post.id }}">
                 {% csrf_token %}
                 <button type="button" class="action-buttons like-post">
-                    {% if user in post.likes.all %}
+                    {% if post.user_has_liked %}
                     <i class="fas fa-heart" style="color: #e74c3c;"></i>
                     {% else %}
                     <i class="far fa-heart"></i>
@@ -143,7 +143,7 @@
         </div>
 
         <div id="reply-form-main-{{ comment.id }}" class="reply-form" style="display: none; margin-left: 42px;">
-            <form method="post" action="{% url 'add-comment' post.id %}">
+            <form method="post" action="{% url 'admin-add-comment' post.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="parent_id" value="{{ comment.id }}">
                 <input type="text" name="content" placeholder="Reply to {{ comment.user.username }}..." required>
@@ -188,7 +188,7 @@
                 </div>
 
                 <div id="reply-form-{{ reply.id }}" class="reply-form" style="display: none;">
-                    <form method="post" action="{% url 'add-comment' post.id %}">
+                    <form method="post" action="{% url 'admin-add-comment' post.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="parent_id" value="{{ reply.id }}">
                         <input type="hidden" name="reply_to_id" value="{{ reply.user.id }}">
@@ -209,7 +209,7 @@
     {% endfor %}
 
     <div class="comment-form">
-        <form method="post" action="{% url 'add-comment' post.id %}">
+        <form method="post" action="{% url 'admin-add-comment' post.id %}">
             {% csrf_token %}
             <textarea name="content" rows="3" placeholder="Write a comment..."></textarea>
             <button type="submit">Post comment</button>

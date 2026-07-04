@@ -1,136 +1,177 @@
 <!--Anything same in different html files can put here-->
 {% load static %}
 <html>
-    <head>
-        {% if title %}
-        <title>MMU-Forum - {{title}}</title>
-        {% else %}
-        <title>MMU-Forum</title>
-        {% endif %}
 
-        <meta charset="utf-8">
-        <link rel="icon" type="image/x-icon" href="{% static 'home/images/website-logo.png' %}">
-        <meta name="viewport" content="width=device-width">       
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Erica+One&family=Titan+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
-        <link rel="stylesheet" href="{% static 'home/base.css' %}?v={% now 'YmdHis' %}">
-        <link rel="stylesheet" href="{% static 'home/base.css' %}">
-        {% block extra_css %}{% endblock %}
-    </head>
+<head>
+    {% if title %}
+    <title>MMU-Forum - {{title}}</title>
+    {% else %}
+    <title>MMU-Forum</title>
+    {% endif %}
 
-    <body>
-        <nav class="top_bar" id="main-banner">
-            <div class="banner-top">
-                {% block nav_title%}
-                <div class="title">
-                    <img src="{% static 'post/images/website-logo.png' %}" alt="MMU Forum" style="width: 50px; height: 50px">
-                    <h2>MMU Forum</h2>
-                </div>
-                {% endblock %}
 
-                <div class="search-bar">
-                    <form method="get" action="{% url 'forum-main' %}">
-                        <div class="search-wrapper">
-                            <select name="search_type" class="search-type-select">
-                                <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>POST</option>
-                                <option value="users" {% if search_type == 'users' %}selected{% endif %}>USER</option>
-                            </select>
-                            <input type="text" name="q" placeholder="Search something here..." value="{{ search_query|default:'' }}"><br>
-                            <span>
-                                <button type="submit" style="border: none; background-color: #f1f6e5;"><img src="{% static 'post/images/search.png' %}" alt="Search" style="width:20px; height:20px;"></button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-            
-                <div class="register">
-                    <a href= "{% url 'forum-home' %}" class="register-icon" onclick="return confirm('Are you sure you want to log out?')"><img src="{% static 'post/images/logout.png' %}" alt="Log out" style="width: 28px; height: 28px; padding:20px"></a>
-                    <span><a href= "{% url 'submit-feedback' %}" class="register-icon"><img src="{% static 'post/images/feedback.png' %}" alt="Send feedback" style="width: 28px; height: 28px"></a></span>
-                </div>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="{% static 'home/images/website-logo.png' %}">
+    <meta name="viewport" content="width=device-width">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Erica+One&family=Titan+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css">
+    <link rel="stylesheet" href="{% static 'home/base.css' %}?v={% now 'YmdHis' %}">
+    <link rel="stylesheet" href="{% static 'home/base.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <nav class="top_bar" id="main-banner">
+        <div class="banner-top">
+            {% block nav_title%}
+            <div class="title">
+                <img src="{% static 'post/images/website-logo.png' %}" alt="MMU Forum"
+                    style="width: 50px; height: 50px">
+                <h2>MMU Forum</h2>
             </div>
+            {% endblock %}
 
-            <nav class="category-bar">
-                <button><a href= "/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
-                <button><a href= "/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
-                <button><a href= "/main/forum/Faculty of Management (FOM)">FOM</a></button>
-                <button><a href= "/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
-                <button><a href= "/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
-                <button><a href= "/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
-                <button><a href= "/main/forum/Faculty of Law (FOL)">FOL</a></button>
-                <button><a href= "/main/forum/Faculty of Business (FOB)">FOB</a></button>
-            </nav>
-        </nav>
-
-        <div class="sidebar">
-            <div class="sidebar-menu">
-                <a href="{% url 'forum-main' %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/home.png' %}" alt="Home">
-                </a>
-                {% if user.is_authenticated and user.username %}
-                <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
-                </a>
-                {% else %}
-                <a href="{% url 'forum-login' %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/user.png' %}" alt="Profile">
-                </a>
-                {% endif %}
-                <a href="{% url 'user-notifications' %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/bell.png' %}" alt="Notification">
-                </a>
-                <a href="{% url 'post-create' %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/add.png' %}" alt="Create">
-                </a>
-                <a href="{% url 'view-report' %}" class="sidebar-icon">
-                    <img src="{% static 'post/images/report.png' %}" alt="Create">
-                </a>
-            </div>
-        </div>
-
-        {% if messages %}
-        <div class="messages-container" id="messagesContainer">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}" id="alert-{{ forloop.counter }}">
-                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
-                <span>{{ message }}</span>
-                <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="main-content">
-            <div class="content-container">
-                {% if search_query %}
-                    <div class="search-info">
-                        <p>Search "{{ search_query }}" result:found 
-                            {% if search_type == 'users' %}
-                                {{ users|length }}
-                            {% else %}
-                                {% if total_results %}
-                                    {{ total_results }}
-                                {% else %}
-                                    {{ posts|length }}
-                                {% endif %}
-                            {% endif %}
-                        </p>
-                        <a href="{% url 'forum-main' %}">Clear</a>
+            <div class="search-bar">
+                <form method="get" action="{% url 'forum-main' %}">
+                    <div class="search-wrapper">
+                        <select name="search_type" class="search-type-select">
+                            <option value="posts" {% if search_type == 'posts' %}selected{% endif %}>POST</option>
+                            <option value="users" {% if search_type == 'users' %}selected{% endif %}>USER</option>
+                        </select>
+                        <input type="text" name="q" placeholder="Search something here..."
+                            value="{{ search_query|default:'' }}"><br>
+                        <span>
+                            <button type="submit" style="border: none; background-color: #f1f6e5;"><img
+                                    src="{% static 'post/images/search.png' %}" alt="Search"
+                                    style="width:20px; height:20px;"></button>
+                        </span>
                     </div>
-                    {% endif %}
-            {% block content %}{% endblock %}
+                </form>
+            </div>
+
+            <div class="register">
+                <div class="category-filter">
+                    <button class="category-filter-btn" onclick="toggleCategoryDropdown()">
+                        <i class="fas fa-filter"></i>
+                        <span class="filter-label">
+                            {% if selected_category %}
+                            {{ selected_category.category }}
+                            {% else %}
+                            All
+                            {% endif %}
+                        </span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+
+                    <div class="category-dropdown" id="categoryDropdown">
+                        <a href="{% url 'forum-main' %}" class="{% if not selected_category %}active{% endif %}">
+                            <i class="fas fa-th-list"></i> All Categories
+                        </a>
+                        {% for category in categories %}
+                        <a href="{% url 'forum-main' %}?category={{ category.id }}" class="{% if selected_category and selected_category.id == category.id %}active{% endif %}">
+                            {{ category.category }}
+                        </a>
+                        {% empty %}
+                        <p>No categories available.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <a href="{% url 'forum-home' %}" class="register-icon"
+                    onclick="return confirm('Are you sure you want to log out?')"><img
+                        src="{% static 'post/images/logout.png' %}" alt="Log out"
+                        style="width: 28px; height: 28px; padding:20px"></a>
+                <span><a href="{% url 'submit-feedback' %}" class="register-icon"><img
+                            src="{% static 'post/images/feedback.png' %}" alt="Send feedback"
+                            style="width: 28px; height: 28px"></a></span>
             </div>
         </div>
-        
-<script>
-    let lastScrollTop = 0;
+
+        <nav class="category-bar">
+            <button><a href="/main/forum/Faculty of Computing & Informatics (FCI)">FCI</a></button>
+            <button><a href="/main/forum/Faculty of Creative Multimedia (FCM)">FCM</a></button>
+            <button><a href="/main/forum/Faculty of Management (FOM)">FOM</a></button>
+            <button><a href="/main/forum/Faculty of Cinematic Arts (FCA)">FCA</a></button>
+            <button><a href="/main/forum/Faculty of Applied Communication (FAC)">FAC</a></button>
+            <button><a href="/main/forum/Faculty of AI & Engineering (FAIE)">FAIE</a></button>
+            <button><a href="/main/forum/Faculty of Law (FOL)">FOL</a></button>
+            <button><a href="/main/forum/Faculty of Business (FOB)">FOB</a></button>
+        </nav>
+    </nav>
+
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="{% url 'forum-main' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/home.png' %}" alt="Home">
+            </a>
+            {% if user.is_authenticated and user.username %}
+            <a href="{% url 'view-profile' user.username %}" class="sidebar-icon">
+                <img src="{% static 'post/images/user.png' %}" alt="Profile">
+            </a>
+            {% else %}
+            <a href="{% url 'forum-login' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/user.png' %}" alt="Profile">
+            </a>
+            {% endif %}
+            <a href="{% url 'user-notifications' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/bell.png' %}" alt="Notification">
+            </a>
+            <a href="{% url 'post-create' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/add.png' %}" alt="Create">
+            </a>
+            <a href="{% url 'view-report' %}" class="sidebar-icon">
+                <img src="{% static 'post/images/report.png' %}" alt="Create">
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container" id="messagesContainer">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" id="alert-{{ forloop.counter }}">
+            <i
+                class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+            <span>{{ message }}</span>
+            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="main-content">
+        <div class="content-container">
+            {% if search_query %}
+            <div class="search-info">
+                <p>Search "{{ search_query }}" result:found
+                    {% if search_type == 'users' %}
+                    {{ users|length }}
+                    {% else %}
+                    {% if total_results %}
+                    {{ total_results }}
+                    {% else %}
+                    {{ posts|length }}
+                    {% endif %}
+                    {% endif %}
+                </p>
+                <a href="{% url 'forum-main' %}">Clear</a>
+            </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script>
+        let lastScrollTop = 0;
         const banner = document.getElementById('main-banner');
 
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
             if (scrollTop > lastScrollTop && scrollTop > 100) {
@@ -138,56 +179,56 @@
             } else {
                 banner.classList.remove('banner-hidden');
             }
-            lastScrollTop= scrollTop;
+            lastScrollTop = scrollTop;
         });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            const container = document.getElementById('messagesContainer');
-            if (container) {
-                container.style.transition = 'opacity 0.5s ease';
-                container.style.opacity = '0';
-                setTimeout(function() {
-                    container.remove();
-                }, 500);
-            }
-        }, 5000);
-        
-        document.querySelectorAll('.alert-close').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const alert = this.parentElement;
-                alert.style.transition = 'opacity 0.3s ease';
-                alert.style.opacity = '0';
-                setTimeout(function() {
-                    alert.remove();
-                }, 300);
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                const container = document.getElementById('messagesContainer');
+                if (container) {
+                    container.style.transition = 'opacity 0.5s ease';
+                    container.style.opacity = '0';
+                    setTimeout(function () {
+                        container.remove();
+                    }, 500);
+                }
+            }, 5000);
+
+            document.querySelectorAll('.alert-close').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const alert = this.parentElement;
+                    alert.style.transition = 'opacity 0.3s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(function () {
+                        alert.remove();
+                    }, 300);
+                });
             });
         });
-    });
 
-    function highlightSearchTerms(){
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchQuery = urlParams.get('q') || urlParams.get('search') || '';
+        function highlightSearchTerms() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('q') || urlParams.get('search') || '';
 
-        if (!searchQuery.trim()) return;
+            if (!searchQuery.trim()) return;
             const keywords = searchQuery.trim().split(/\s+/).filter(k => k.length > 0);
             if (keywords.length === 0) return;
 
             document.querySelectorAll('.searchable').forEach(element => {
-            let text = element.textContent;
-            let highlightedText = text;
+                let text = element.textContent;
+                let highlightedText = text;
 
-            keywords.forEach(keyword => {
-                const regex = new RegExp(escapeRegExp(keyword), 'gi');
-                highlightedText = highlightedText.replace(regex, match => 
-                    `<span class="highlight">${match}</span>`
-                );
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(escapeRegExp(keyword), 'gi');
+                    highlightedText = highlightedText.replace(regex, match =>
+                        `<span class="highlight">${match}</span>`
+                    );
+                });
+
+                if (highlightedText !== text) {
+                    element.innerHTML = highlightedText;
+                }
             });
-
-            if (highlightedText !== text) {
-                element.innerHTML = highlightedText;
-            }
-        });
 
             document.querySelectorAll('.title-searchable').forEach(element => {
                 let text = element.textContent;
@@ -195,7 +236,7 @@
 
                 keywords.forEach(keyword => {
                     const regex = new RegExp(escapeRegExp(keyword), 'gi');
-                    highlightedText = highlightedText.replace(regex, match => 
+                    highlightedText = highlightedText.replace(regex, match =>
                         `<span class="highlight">${match}</span>`
                     );
                 });
@@ -206,39 +247,39 @@
             });
 
             document.querySelectorAll('.author-username, .username-searchable').forEach(element => {
-            let text = element.textContent;
-            let highlightedText = text;
+                let text = element.textContent;
+                let highlightedText = text;
 
-            keywords.forEach(keyword => {
-                const regex = new RegExp(escapeRegExp(keyword), 'gi');
-                highlightedText = highlightedText.replace(regex, match => 
-                    `<span class="highlight">${match}</span>`
-                );
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(escapeRegExp(keyword), 'gi');
+                    highlightedText = highlightedText.replace(regex, match =>
+                        `<span class="highlight">${match}</span>`
+                    );
+                });
+
+                if (highlightedText !== text) {
+                    element.innerHTML = highlightedText;
+                }
             });
-
-            if (highlightedText !== text) {
-                element.innerHTML = highlightedText;
-            }
-        });
-    }
+        }
 
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
-        document.addEventListener('DOMContentLoaded', function(){
+        document.addEventListener('DOMContentLoaded', function () {
             highlightSearchTerms();
-    
+
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('post_id');
 
-            if(postId){
+            if (postId) {
                 const postDetail = sessionStorage.getItem('post_Detail');
 
-                if (postDetail === 'true'){
-                    setTimeout(function(){
+                if (postDetail === 'true') {
+                    setTimeout(function () {
                         const targetPost = document.getElementById('post-' + postId);
-                        if(targetPost){
+                        if (targetPost) {
                             targetPost.scrollIntoView({
                                 behavior: 'smooth',
                                 block: 'center'
@@ -247,7 +288,7 @@
                             targetPost.style.transition = 'box-shadow 0.3s ease';
                             targetPost.style.boxShadow = '0 0 0 2px #2c5a2e, 0 4px 15px rgba(52, 152, 219, 0.3)';
 
-                            setTimeout(function(){
+                            setTimeout(function () {
                                 targetPost.style.boxShadow = '';
                             }, 3000);
 
@@ -260,9 +301,20 @@
             }
         });
 
-</script>
+        function toggleCategoryDropdown() {
+            const dropdown = document.getElementById('categoryDropdown');
+            dropdown.classList.toggle('show');
+        }
 
-{% block extra_js %}{% endblock %}
+        document.addEventListener('click', function (e) {
+            const filter = document.querySelector('.category-filter');
+            if (filter && !filter.contains(e.target)) {
+                document.getElementById('categoryDropdown').classList.remove('show');
+            }
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
 </body>
 
 </html>

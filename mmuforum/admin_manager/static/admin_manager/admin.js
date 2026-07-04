@@ -13,3 +13,15 @@ window.addEventListener('scroll', function () {
     lastScrollTop = scrollTop;
 });
 
+//category-dropdown
+function toggleCategoryDropdown() {
+    const dropdown = document.getElementById('categoryDropdown');
+    dropdown.classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+    const filter = document.querySelector('.category-filter');
+    if (filter && !filter.contains(e.target)) {
+        document.getElementById('categoryDropdown').classList.remove('show');
+    }
+});

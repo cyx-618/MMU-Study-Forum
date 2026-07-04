@@ -19,6 +19,7 @@
                 <span class="author-username">{{ post.author.username }}</span>
             </a>
             <span class="author-major">{{ post.author.user_profile.major}}</span>
+            <span class="author-major">{{ post.category }}</span>
         </div>
     </div>
 
@@ -33,7 +34,7 @@
             <a href="{% url 'admin-post-detail' post.pk %}" class="view-detail-link">View Details →</a>
         </div>
         {% else %}
-        <p class="post-content">{{ post.content }}</p>
+        <p class="post-content">{{ post.content|linebreaksbr }}</p>
         {% endif %}
     </div>
 

@@ -57,7 +57,7 @@
                             <h3 class="post-title">
                                 <a href="{% url 'post-detail' post.pk %}"> {{ post.title }} </a>
                             </h3>
-                            <p class="post-content">{{ post.content }}</p>
+                            <p class="post-content">{{ post.content|linebreaksbr }}</p>
                         </div>
 
                         {% if post.image or post.video_file or post.pdf %}

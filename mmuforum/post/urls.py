@@ -21,6 +21,7 @@ urlpatterns = [
     path('report/comment/<int:comment_id>/', views.report_comment, name='report-comment'),
     path('comment/delete/<int:comment_id>', views.delete_comment, name='delete-comment'),
     path('comment/like/<int:comment_id>/', views.like_comment, name='like-comment'),
+
 ]
 
 #<app>/<model>_<viewtype>.html
