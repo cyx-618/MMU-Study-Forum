@@ -15,8 +15,16 @@ db.sqlite3
 db.sqlite3-journal
 
 media/
+!media/profile_picture/
+!media/profile_picture/default.png
+
+
 staticfiles/
 
+.vscode/
+.idea/
+*.swp
+*.swo
 .vscode/
 .idea/
 *.swp
