@@ -14,6 +14,16 @@ import os
 from pathlib import Path
 import dj_database_url
 
+import socket
+old_getaddrinfo = socket.getaddrinfo
+
+def new_getaddrinfo(*args, **kwargs):
+    return [
+        ai for ai in old_getaddrinfo(*args, **kwargs)
+        if ai[0] == socket.AF_INET 
+    ]
+
+socket.getaddrinfo = new_getaddrinfo
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -94,9 +104,8 @@ DATABASES = {
     }
 }
 
-if os.environ.get('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
+if os.environ.get('mmu-forum-db'):
+    DATABASES['default'] = dj_database_url.config(env='mmu-forum-db', conn_max_age=600, ssl_require=True)
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
