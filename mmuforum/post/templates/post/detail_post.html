@@ -37,19 +37,23 @@
             <small class="text-muted">Posted on: {{ post.date_posted|date:"F d, Y" }}</small>
         </div>
 
-        <div class="manage-post">
-            <button class="manage-button">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
-            {% if post.author == user or user.is_staff %}
-            <div class="manage-dropdown">
-                <a href="{% url 'post-update' post.pk %}"><i class="fas fa-edit"></i> Edit</a>
-                <a href="{% url 'post-delete' post.pk %}"><i class="fas fa-trash"></i> Delete</a>
-            </div>
-            {% else %}
-            <div class="manage-dropdown">
-                <a href="{% url 'report-post' post.pk %}"><i class="fas fa-thumbtack"></i> Report</a>
-            </div>
+                <div class="manage-post">
+            {% if post.author == user or user.is_staff or not post.author.is_staff and not post.author.is_superuser %} 
+                <button class="manage-button">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+
+                {% if post.author == user or user.is_staff %}
+                    <div class="manage-dropdown">
+                        <a href="{% url 'post-update' post.pk %}"><i class="fas fa-edit"></i> Edit</a>
+                        <a href="{% url 'post-delete' post.pk %}"><i class="fas fa-trash"></i> Delete</a>
+                    </div>
+                {% else %}
+                    <div class="manage-dropdown">
+                        <a href="{% url 'report-post' post.pk %}"><i class="fas fa-thumbtack"></i> Report</a>
+                    </div>
+                {% endif %}
+
             {% endif %}
         </div>
     </div>
