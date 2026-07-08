@@ -564,7 +564,9 @@ class PostDetailView(LoginRequiredMixin, DetailView):
     template_name = 'post/detail_post.html' 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        context['categories'] = Category.objects.all().order_by('category')
+        context['all_majors'] = Major.objects.all()
+        
         context['post_liked'] = Like.objects.filter(
             user=self.request.user,
             post=self.object
